@@ -35,7 +35,6 @@
         {
             _SupplierName = supName;
             _CategoryName = catName;
-            _isDirty = false;
         }
     }
 }

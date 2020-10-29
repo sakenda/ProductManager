@@ -89,11 +89,7 @@ namespace ProductManager.Models
             }
         }
 
-        public Product() : base()
-        {
-
-        }
-
+        public Product() : base() { }
         public Product(string name, double price, int quantity, string description, int? catID, int? supID) : base(name)
         {
             if (price >= 0) _Price = price;
@@ -115,25 +111,11 @@ namespace ProductManager.Models
             _Description = description;
             _CategoryID = catID;
             _SupplierID = supID;
-            _isDirty = false;
         }
 
         protected override void Value_InvalidMeasure(object sender, InvalidMeasureEventArgs e)
         {
-            if (e.PropertyName == nameof(Quantity))
-            {
-                Console.WriteLine($"Ungültige Wertübergabe bei {e.PropertyName}: {e.InvalidIntMeasure}. {e.Error.Message}");
-                Console.Write("Bitte geben sie eine Menge an, die einen positiven Wert hat: ");
-                Quantity = DatabaseClientCast.ValidInputCheck<int>(Console.ReadLine());
-            }
-
-            if (e.PropertyName == nameof(Price))
-            {
-                Console.WriteLine($"Ungültige Wertübergabe bei {e.PropertyName}: {e.InvalidDoubleMeasure}. {e.Error.Message}");
-                Console.Write("Bitte geben sie den Preis des Produktes ein: ");
-                Price = DatabaseClientCast.ValidInputCheck<double>(Console.ReadLine());
-            }
-
+            Console.WriteLine($"Ungültige Wertübergabe bei {e.PropertyName}: {e.InvalidMeasure}. {e.Error.Message}");
         }
     }
 }

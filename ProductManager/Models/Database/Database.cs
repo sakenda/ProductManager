@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using ProductManager.Models;
 
 namespace ProductManager.Models
 {
@@ -75,7 +74,6 @@ namespace ProductManager.Models
         public List<DatabaseMetaData> GetProductSupplier()
         {
             List<DatabaseMetaData> list = new List<DatabaseMetaData>();
-            //list.Add(new DatabaseMetaData(null, null));
 
             SqlCommand cmd = new SqlCommand("")
             {
@@ -106,7 +104,6 @@ namespace ProductManager.Models
         public List<DatabaseMetaData> GetProductCategory()
         {
             List<DatabaseMetaData> list = new List<DatabaseMetaData>();
-            //list.Add(new DatabaseMetaData(null, null));
 
             SqlCommand cmd = new SqlCommand("")
             {

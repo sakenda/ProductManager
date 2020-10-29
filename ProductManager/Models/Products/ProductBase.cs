@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using ProductManager.Views;
+using System.ComponentModel;
+using System.Windows;
 
 namespace ProductManager.Models
 {
@@ -35,8 +37,6 @@ namespace ProductManager.Models
             PropertyChanged += Value_PropertyChanged;
         }
 
-
-
         public ProductBase(string name) : this()
         {
             _ProductName = name;
@@ -56,6 +56,8 @@ namespace ProductManager.Models
             if (InvalidMeasure != null) InvalidMeasure(this, e);
             else throw e.Error;
         }
-        protected virtual void Value_InvalidMeasure(object sender, InvalidMeasureEventArgs e) { }
+        protected virtual void Value_InvalidMeasure(object sender, InvalidMeasureEventArgs e)
+        {
+        }
     }
 }
