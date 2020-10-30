@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProductManager.ViewModels;
+using System;
 
 namespace ProductManager.Models
 {

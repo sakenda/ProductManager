@@ -1,8 +1,10 @@
-﻿using System;
+﻿using ProductManager.Models;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SqlClient;
 
-namespace ProductManager.Models
+namespace ProductManager.ViewModels
 {
     public class Database
     {
@@ -71,9 +73,9 @@ namespace ProductManager.Models
             }
         }
 
-        public List<DatabaseMetaData> GetProductSupplier()
+        public ObservableCollection<DatabaseMetaData> GetProductSupplier()
         {
-            List<DatabaseMetaData> list = new List<DatabaseMetaData>();
+            ObservableCollection<DatabaseMetaData> list = new ObservableCollection<DatabaseMetaData>();
 
             SqlCommand cmd = new SqlCommand("")
             {
@@ -100,10 +102,9 @@ namespace ProductManager.Models
             }
             return list;
         }
-
-        public List<DatabaseMetaData> GetProductCategory()
+        public ObservableCollection<DatabaseMetaData> GetProductCategory()
         {
-            List<DatabaseMetaData> list = new List<DatabaseMetaData>();
+            ObservableCollection<DatabaseMetaData> list = new ObservableCollection<DatabaseMetaData>();
 
             SqlCommand cmd = new SqlCommand("")
             {
@@ -130,6 +131,65 @@ namespace ProductManager.Models
             }
             return list;
         }
+        //public List<DatabaseMetaData> GetProductSupplier()
+        //{
+        //    List<DatabaseMetaData> list = new List<DatabaseMetaData>();
+
+        //    SqlCommand cmd = new SqlCommand("")
+        //    {
+        //        CommandText = "select s.SupplierID, s.SupplierName "
+        //                    + "from Suppliers s "
+        //    };
+
+        //    using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+        //    {
+        //        cmd.Connection = conn;
+        //        conn.Open();
+
+        //        using (SqlDataReader reader = cmd.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                list.Add(
+        //                    new DatabaseMetaData(
+        //                        (int)reader[nameof(ProductMetaData.SupplierID)],
+        //                        reader[nameof(ProductMetaData.SupplierName)].ToString()
+        //                        ));
+        //            }
+        //        }
+        //    }
+        //    return list;
+        //}
+
+        //public List<DatabaseMetaData> GetProductCategory()
+        //{
+        //    List<DatabaseMetaData> list = new List<DatabaseMetaData>();
+
+        //    SqlCommand cmd = new SqlCommand("")
+        //    {
+        //        CommandText = "select c.CategoryID, c.CategoryName "
+        //                    + "from Categories c "
+        //    };
+
+        //    using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+        //    {
+        //        cmd.Connection = conn;
+        //        conn.Open();
+
+        //        using (SqlDataReader reader = cmd.ExecuteReader())
+        //        {
+        //            while (reader.Read())
+        //            {
+        //                list.Add(
+        //                    new DatabaseMetaData(
+        //                        (int)reader[nameof(ProductMetaData.CategoryID)],
+        //                        reader[nameof(ProductMetaData.CategoryName)].ToString()
+        //                        ));
+        //            }
+        //        }
+        //    }
+        //    return list;
+        //}
 
         private void DeleteProduct(Product product)
         {

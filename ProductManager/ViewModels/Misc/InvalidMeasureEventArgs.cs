@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ProductManager.Models
+namespace ProductManager.ViewModels
 {
     public delegate void InvalidMeasureEventHandler(object sender, InvalidMeasureEventArgs e);
 

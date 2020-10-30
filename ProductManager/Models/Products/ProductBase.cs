@@ -1,6 +1,5 @@
-﻿using ProductManager.Views;
+﻿using ProductManager.ViewModels;
 using System.ComponentModel;
-using System.Windows;
 
 namespace ProductManager.Models
 {

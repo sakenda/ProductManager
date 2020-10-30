@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using ProductManager.Models;
+using ProductManager.ViewModels;
 
 namespace ProductManager.Views
 {

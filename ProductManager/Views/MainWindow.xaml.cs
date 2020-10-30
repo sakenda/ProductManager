@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -6,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using ProductManager.Models;
+using ProductManager.ViewModels;
 
 namespace ProductManager.Views
 {
@@ -206,9 +208,16 @@ namespace ProductManager.Views
         }
         private void InitializeComboBoxMetaData()
         {
-            ComboBox_Category.ItemsSource = Database.Instance.GetProductCategory();
-            ComboBox_Supplier.ItemsSource = Database.Instance.GetProductSupplier();
+            var categoryCollection = new ObservableCollection<DatabaseMetaData>();
+            var supplierCollection = new ObservableCollection<DatabaseMetaData>();
 
+            categoryCollection = Database.Instance.GetProductCategory();
+            supplierCollection = Database.Instance.GetProductSupplier();
+
+
+
+            //ComboBox_Category.ItemsSource = Database.Instance.GetProductCategory();
+            //ComboBox_Supplier.ItemsSource = Database.Instance.GetProductSupplier();
         }
 
         #endregion
