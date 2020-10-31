@@ -123,6 +123,7 @@
                        Width="100"/>
                 <TextBox Text="1,23"
                          x:Name="TextBox_ProductPrice"
+                         
                          FontFamily="Candara"
                          FontSize="18"
                          FontWeight="Medium"

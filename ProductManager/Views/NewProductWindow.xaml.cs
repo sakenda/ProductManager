@@ -28,29 +28,15 @@ namespace ProductManager.Views
 
         private void Button_CreateProduct_Click(object sender, RoutedEventArgs e)
         {
-            Product p;
+            Product product = new Product();
+            product.ProductName = TextBox_ProductName.Text;
+            product.Price = Convert.ToDouble(TextBox_ProductPrice.Text);
+            product.Quantity = Convert.ToInt32(TextBox_ProductQuantity.Text);
+            product.Description = TextBox_ProductDescription.Text;
+            product.CategoryID = ((DatabaseMetaData)ComboBox_Category.SelectedItem).DataID;
+            product.SupplierID = ((DatabaseMetaData)ComboBox_Supplier.SelectedItem).DataID;
 
-            /*
-            p = new Product(
-                TextBox_ProductName.Text.ToString(),
-                Convert.ToDouble(TextBox_ProductPrice.Text),
-                Convert.ToInt32(TextBox_ProductQuantity.Text),
-                TextBox_ProductDescription.Text.ToString(),
-                (ComboBox_Categories.SelectedItem as DatabaseMetaData).DataID,
-                (ComboBox_Suppliers.SelectedItem as DatabaseMetaData).DataID
-            );
-            */
-
-            p = new Product();
-            p.ProductName = TextBox_ProductName.Text;
-            p.Price = Convert.ToDouble(TextBox_ProductPrice.Text);
-            p.Quantity = Convert.ToInt32(TextBox_ProductQuantity.Text);
-            p.Description = TextBox_ProductDescription.Text;
-            p.CategoryID = (ComboBox_Categories.SelectedItem as DatabaseMetaData).DataID;
-            p.SupplierID = (ComboBox_Suppliers.SelectedItem as DatabaseMetaData).DataID;
-
-            Database.Instance.CurrentProducts.Add(p);
-            this.DialogResult = true;
+            Database.Instance.ObsCurrentProducts.Add(product);
             this.Close();
         }
         #endregion
@@ -58,17 +44,22 @@ namespace ProductManager.Views
         #region Methods
         private void InitializeComboBoxMetaData()
         {
-            ComboBox_Categories.ItemsSource = Database.Instance.GetProductCategory();
-            ComboBox_Suppliers.ItemsSource = Database.Instance.GetProductSupplier();
+            ComboBox_Category.ItemsSource = MetaData.Instance.CategoryList;
+            ComboBox_Category.DisplayMemberPath = nameof(DatabaseMetaData.DataName);
+            ComboBox_Category.SelectedValuePath = nameof(DatabaseMetaData.DataID);
 
-            if (ComboBox_Categories.Items.Count > 0)
+            ComboBox_Supplier.ItemsSource = MetaData.Instance.SupplierList;
+            ComboBox_Supplier.DisplayMemberPath = nameof(DatabaseMetaData.DataName);
+            ComboBox_Supplier.SelectedValuePath = nameof(DatabaseMetaData.DataID);
+
+            if (ComboBox_Category.Items.Count > 0)
             {
-                ComboBox_Categories.SelectedIndex = 0;
+                ComboBox_Category.SelectedIndex = -1;
             }
 
-            if (ComboBox_Suppliers.Items.Count > 0)
+            if (ComboBox_Supplier.Items.Count > 0)
             {
-                ComboBox_Suppliers.SelectedIndex = 0;
+                ComboBox_Supplier.SelectedIndex = -1;
             }
 
         }

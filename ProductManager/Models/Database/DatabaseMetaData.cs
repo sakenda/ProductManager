@@ -2,8 +2,8 @@
 {
     public class DatabaseMetaData
     {
-        public int? DataID;
-        public string DataName;
+        public int? DataID { get; set; }
+        public string DataName { get; set; }
 
         public DatabaseMetaData(int? id, string name)
         {
@@ -13,7 +13,7 @@
 
         public override string ToString()
         {
-            return this.DataName;
+            return DataID.ToString() + " - " + DataName;
         }
     }
 }

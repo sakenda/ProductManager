@@ -5,9 +5,6 @@ namespace ProductManager.Models
 {
     public class ProductBase : INotifyPropertyChanged
     {
-        public event InvalidMeasureEventHandler InvalidMeasure;
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private int _ProductID;
         private string _ProductName;
         protected bool _isDirty;
@@ -25,15 +22,23 @@ namespace ProductManager.Models
                 }
             }
         }
-        public bool isDirty => _isDirty;
+        public bool isDirty
+        {
+            get => _isDirty;
+            private set
+            {
+                _isDirty = value;
+                OnPropertyChanged(nameof(isDirty));
+            }
+        }
 
         protected ProductBase()
         {
             _ProductID = -1;
             _isDirty = false;
 
-            InvalidMeasure += Value_InvalidMeasure;
             PropertyChanged += Value_PropertyChanged;
+            InvalidMeasure += Value_InvalidMeasure;
         }
 
         public ProductBase(string name) : this()
@@ -44,12 +49,14 @@ namespace ProductManager.Models
         public virtual void SetProductID(int value) => _ProductID = value;
         public virtual void ResetIsDirty() => _isDirty = false;
 
+        public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         protected virtual void Value_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (!_isDirty) _isDirty = true;
+            if (!_isDirty) isDirty = true;
         }
 
+        public event InvalidMeasureEventHandler InvalidMeasure;
         protected virtual void OnInvalidMeasure(InvalidMeasureEventArgs e)
         {
             if (InvalidMeasure != null) InvalidMeasure(this, e);

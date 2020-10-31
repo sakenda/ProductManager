@@ -116,7 +116,7 @@ namespace ProductManager.Models
 
         protected override void Value_InvalidMeasure(object sender, InvalidMeasureEventArgs e)
         {
-            Console.WriteLine($"Ungültige Wertübergabe bei {e.PropertyName}: {e.InvalidMeasure}. {e.Error.Message}");
+            //Console.WriteLine($"Ungültige Wertübergabe bei {e.PropertyName}: {e.InvalidMeasure}. {e.Error.Message}");
         }
     }
 }

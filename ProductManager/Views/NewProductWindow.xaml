@@ -96,13 +96,13 @@
                        Padding="2"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                <ComboBox x:Name="ComboBox_Categories"
+                <ComboBox x:Name="ComboBox_Category"
                           FontFamily="Candara"
                           FontSize="13"
                           FontWeight="Normal"
                           Width="150"/>
                 <StackPanel Orientation="Vertical" Margin="40,0,0,0"/>
-                <ComboBox x:Name="ComboBox_Suppliers"
+                <ComboBox x:Name="ComboBox_Supplier"
                           FontFamily="Candara"
                           FontSize="13"
                           FontWeight="Normal"

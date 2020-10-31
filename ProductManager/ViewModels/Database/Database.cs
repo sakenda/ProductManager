@@ -2,23 +2,25 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Data.SqlClient;
 
 namespace ProductManager.ViewModels
 {
-    public class Database
+    public class Database : DatabaseProperties//, INotifyCollectionChanged
     {
-        private const string DBCONNECTION = "Server=localhost; Database=TestDB; Trusted_Connection=True;";
-
-        public List<Product> CurrentProducts { get; private set; }
-        public List<Product> DeletedProducts { get; private set; }
+        public ObservableCollection<Product> ObsCurrentProducts { get; private set; }
+        public ObservableCollection<Product> ObsDeletedProducts { get; private set; }
 
         #region Singleton
         private static Database _instance = null;
+
+
         private Database()
         {
-            this.CurrentProducts = new List<Product>();
-            this.DeletedProducts = new List<Product>();
+            this.ObsCurrentProducts = new ObservableCollection<Product>();
+            this.ObsDeletedProducts = new ObservableCollection<Product>();
         }
         public static Database Instance
         {
@@ -35,8 +37,8 @@ namespace ProductManager.ViewModels
         public void LoadProducts()
         {
             Product p;
-            this.CurrentProducts.Clear();
-            this.DeletedProducts.Clear();
+            this.ObsCurrentProducts.Clear();
+            this.ObsDeletedProducts.Clear();
 
             SqlCommand cmd = new SqlCommand("")
             {
@@ -67,129 +69,11 @@ namespace ProductManager.ViewModels
                             );
                         p.SetProductID((int)reader[nameof(p.ProductID)]);
 
-                        CurrentProducts.Add(p);
+                        ObsCurrentProducts.Add(p);
                     }
                 }
             }
         }
-
-        public ObservableCollection<DatabaseMetaData> GetProductSupplier()
-        {
-            ObservableCollection<DatabaseMetaData> list = new ObservableCollection<DatabaseMetaData>();
-
-            SqlCommand cmd = new SqlCommand("")
-            {
-                CommandText = "select s.SupplierID, s.SupplierName "
-                            + "from Suppliers s "
-            };
-
-            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-            {
-                cmd.Connection = conn;
-                conn.Open();
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        list.Add(
-                            new DatabaseMetaData(
-                                (int)reader[nameof(ProductMetaData.SupplierID)],
-                                reader[nameof(ProductMetaData.SupplierName)].ToString()
-                                ));
-                    }
-                }
-            }
-            return list;
-        }
-        public ObservableCollection<DatabaseMetaData> GetProductCategory()
-        {
-            ObservableCollection<DatabaseMetaData> list = new ObservableCollection<DatabaseMetaData>();
-
-            SqlCommand cmd = new SqlCommand("")
-            {
-                CommandText = "select c.CategoryID, c.CategoryName "
-                            + "from Categories c "
-            };
-
-            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-            {
-                cmd.Connection = conn;
-                conn.Open();
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        list.Add(
-                            new DatabaseMetaData(
-                                (int)reader[nameof(ProductMetaData.CategoryID)],
-                                reader[nameof(ProductMetaData.CategoryName)].ToString()
-                                ));
-                    }
-                }
-            }
-            return list;
-        }
-        //public List<DatabaseMetaData> GetProductSupplier()
-        //{
-        //    List<DatabaseMetaData> list = new List<DatabaseMetaData>();
-
-        //    SqlCommand cmd = new SqlCommand("")
-        //    {
-        //        CommandText = "select s.SupplierID, s.SupplierName "
-        //                    + "from Suppliers s "
-        //    };
-
-        //    using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-        //    {
-        //        cmd.Connection = conn;
-        //        conn.Open();
-
-        //        using (SqlDataReader reader = cmd.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                list.Add(
-        //                    new DatabaseMetaData(
-        //                        (int)reader[nameof(ProductMetaData.SupplierID)],
-        //                        reader[nameof(ProductMetaData.SupplierName)].ToString()
-        //                        ));
-        //            }
-        //        }
-        //    }
-        //    return list;
-        //}
-
-        //public List<DatabaseMetaData> GetProductCategory()
-        //{
-        //    List<DatabaseMetaData> list = new List<DatabaseMetaData>();
-
-        //    SqlCommand cmd = new SqlCommand("")
-        //    {
-        //        CommandText = "select c.CategoryID, c.CategoryName "
-        //                    + "from Categories c "
-        //    };
-
-        //    using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-        //    {
-        //        cmd.Connection = conn;
-        //        conn.Open();
-
-        //        using (SqlDataReader reader = cmd.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                list.Add(
-        //                    new DatabaseMetaData(
-        //                        (int)reader[nameof(ProductMetaData.CategoryID)],
-        //                        reader[nameof(ProductMetaData.CategoryName)].ToString()
-        //                        ));
-        //            }
-        //        }
-        //    }
-        //    return list;
-        //}
 
         private void DeleteProduct(Product product)
         {
@@ -274,12 +158,12 @@ namespace ProductManager.ViewModels
 
         public void SaveProductList()
         {
-            foreach (Product p in this.DeletedProducts)
+            foreach (Product p in this.ObsDeletedProducts)
             {
                 this.DeleteProduct(p);
             }
 
-            foreach (Product p in this.CurrentProducts)
+            foreach (Product p in this.ObsCurrentProducts)
             {
                 if (!p.isDirty)
                     continue;
