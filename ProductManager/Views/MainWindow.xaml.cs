@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ProductManager.Models;
+using ProductManager.ViewModels;
+using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
-using ProductManager.Models;
-using ProductManager.ViewModels;
 
 namespace ProductManager.Views
 {
@@ -16,27 +13,31 @@ namespace ProductManager.Views
     {
         public MainWindow()
         {
+
             InitializeComponent();
             ClearFields();
             InitializeComboBoxMetaData();
             Database.Instance.LoadProducts();
 
-            DataGrid_ProductList.SetBinding(ItemsControl.ItemsSourceProperty, GetBinding(Database.Instance.ObsCurrentProducts));
+            // Zugriff über erstellte Liste
+            ListView_ProductList.ItemsSource = Database.Instance.ObsCurrentProducts;
+            // Zugriff direkt über Database
+            //ListView_ProductList.ItemsSource = Database.Instance.LoadDataBase();
 
             _Window.MouseLeftButtonDown += _Window_MouseLeftButtonDown;
-            DataGrid_ProductList.SelectionChanged += DataGrid_ProductList_SelectionChanged;
+            ListView_ProductList.SelectionChanged += ListView_ProductList_SelectionChanged;
             ComboBox_Category.SelectionChanged += ComboBox_Category_SelectionChanged;
             ComboBox_Supplier.SelectionChanged += ComboBox_Supplier_SelectionChanged;
-            //DataGrid_ProductList.AutoGeneratingColumn += DataGrid_ProductList_AutoGeneratingColumn;
 
             TextBox_ProductID.IsEnabled = false;
         }
 
         #region Events
         private void _Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) => DragMove();
-        private void DataGrid_ProductList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        private void ListView_ProductList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (DataGrid_ProductList.SelectedItem is Product selectedProduct)
+            if (ListView_ProductList.SelectedItem is Product selectedProduct)
             {
                 TextBox_ProductID.Text = selectedProduct.ProductID.ToString();
 
@@ -52,8 +53,8 @@ namespace ProductManager.Views
 
         private void ComboBox_Supplier_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedProduct = DataGrid_ProductList.SelectedItem as Product;
-            var selectedSupplier = ComboBox_Supplier.SelectedItem as DatabaseMetaData;
+            var selectedProduct = ListView_ProductList.SelectedItem as Product;
+            var selectedSupplier = ComboBox_Supplier.SelectedItem as MetaData;
 
             if (selectedProduct != null && selectedSupplier != null)
             {
@@ -63,8 +64,8 @@ namespace ProductManager.Views
 
         private void ComboBox_Category_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedProduct = DataGrid_ProductList.SelectedItem as Product;
-            var selectedCategory = ComboBox_Category.SelectedItem as DatabaseMetaData;
+            var selectedProduct = ListView_ProductList.SelectedItem as Product;
+            var selectedCategory = ComboBox_Category.SelectedItem as MetaData;
 
             if (selectedProduct != null && selectedCategory != null)
             {
@@ -124,19 +125,22 @@ namespace ProductManager.Views
 
         #region Interaction
         private void Btn_Close_Click(object sender, RoutedEventArgs e) => Environment.Exit(0);
+
         private void Btn_Delete_Click(object sender, RoutedEventArgs e)
         {
-            if (DataGrid_ProductList.SelectedItem is Product selectedProduct)
+            if (ListView_ProductList.SelectedItem is Product selectedProduct)
             {
                 Database.Instance.ObsDeletedProducts.Add(selectedProduct);
                 Database.Instance.ObsCurrentProducts.Remove(selectedProduct);
             }
         }
+
         private void Btn_AddNew_Click(object sender, RoutedEventArgs e)
         {
             NewProductWindow newProductWindow = new NewProductWindow();
             newProductWindow.ShowDialog();
         }
+
         private void Btn_Save_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = UserDecisionMessage();
@@ -194,13 +198,13 @@ namespace ProductManager.Views
         }
         private void InitializeComboBoxMetaData()
         {
-            ComboBox_Category.ItemsSource = MetaData.Instance.CategoryList;
-            ComboBox_Category.DisplayMemberPath = nameof(DatabaseMetaData.DataName);
-            ComboBox_Category.SelectedValuePath = nameof(DatabaseMetaData.DataID);
+            ComboBox_Category.ItemsSource = DatabaseMetaData.Instance.CategoryList;
+            ComboBox_Category.DisplayMemberPath = nameof(MetaData.DataName);
+            ComboBox_Category.SelectedValuePath = nameof(MetaData.DataID);
 
-            ComboBox_Supplier.ItemsSource = MetaData.Instance.SupplierList;
-            ComboBox_Supplier.DisplayMemberPath = nameof(DatabaseMetaData.DataName);
-            ComboBox_Supplier.SelectedValuePath = nameof(DatabaseMetaData.DataID);
+            ComboBox_Supplier.ItemsSource = DatabaseMetaData.Instance.SupplierList;
+            ComboBox_Supplier.DisplayMemberPath = nameof(MetaData.DataName);
+            ComboBox_Supplier.SelectedValuePath = nameof(MetaData.DataID);
 
             if (ComboBox_Category.Items.Count > 0)
             {

@@ -1,11 +1,11 @@
 ﻿namespace ProductManager.Models
 {
-    public class DatabaseMetaData
+    public class MetaData
     {
         public int? DataID { get; set; }
         public string DataName { get; set; }
 
-        public DatabaseMetaData(int? id, string name)
+        public MetaData(int? id, string name)
         {
             DataID = id;
             DataName = name;

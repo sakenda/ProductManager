@@ -6,22 +6,9 @@ namespace ProductManager.Models
     public class ProductBase : INotifyPropertyChanged
     {
         private int _ProductID;
-        private string _ProductName;
         protected bool _isDirty;
 
         public int ProductID { get => _ProductID; }
-        public string ProductName
-        {
-            get => _ProductName;
-            set
-            {
-                if (value != _ProductName)
-                {
-                    _ProductName = value;
-                    OnPropertyChanged(nameof(ProductName));
-                }
-            }
-        }
         public bool isDirty
         {
             get => _isDirty;
@@ -39,11 +26,6 @@ namespace ProductManager.Models
 
             PropertyChanged += Value_PropertyChanged;
             InvalidMeasure += Value_InvalidMeasure;
-        }
-
-        public ProductBase(string name) : this()
-        {
-            _ProductName = name;
         }
 
         public virtual void SetProductID(int value) => _ProductID = value;

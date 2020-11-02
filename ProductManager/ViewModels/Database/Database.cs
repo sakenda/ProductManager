@@ -1,38 +1,66 @@
 ﻿using ProductManager.Models;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace ProductManager.ViewModels
 {
-    public class Database : DatabaseProperties//, INotifyCollectionChanged
+    public class Database : DatabaseProperties
     {
         public ObservableCollection<Product> ObsCurrentProducts { get; private set; }
         public ObservableCollection<Product> ObsDeletedProducts { get; private set; }
 
         #region Singleton
         private static Database _instance = null;
-
-
-        private Database()
-        {
-            this.ObsCurrentProducts = new ObservableCollection<Product>();
-            this.ObsDeletedProducts = new ObservableCollection<Product>();
-        }
         public static Database Instance
         {
             get
             {
                 if (_instance == null)
+                {
                     _instance = new Database();
-
+                }
                 return _instance;
             }
         }
+        private Database()
+        {
+            this.ObsCurrentProducts = new ObservableCollection<Product>();
+            this.ObsDeletedProducts = new ObservableCollection<Product>();
+        }
         #endregion
+
+        public DataView LoadDataBase()
+        {
+            DataTable dataTable = new DataTable();
+            SqlDataAdapter adapter = new SqlDataAdapter();
+
+            adapter.SelectCommand = new SqlCommand()
+            {
+                CommandText = "select p.ProductID, p.ProductName, p.Price, p.Quantity, p.Description, "
+                            + "p.CategoryID, c.CategoryName, s.SupplierID, s.SupplierName "
+                            + "from Products p "
+                            + "left join Categories c on p.CategoryID = c.CategoryID "
+                            + "left join Suppliers s on p.SupplierID = s.SupplierID "
+                            + "order by p.ProductID"
+            };
+
+            try
+            {
+                using (adapter.SelectCommand.Connection = new SqlConnection(DBCONNECTION))
+                {
+                    adapter.SelectCommand.Connection.Open();
+                    adapter.Fill(dataTable);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message + ":\n" + ex.StackTrace);
+            }
+
+            return dataTable.DefaultView;
+        }
 
         public void LoadProducts()
         {
@@ -42,8 +70,8 @@ namespace ProductManager.ViewModels
 
             SqlCommand cmd = new SqlCommand("")
             {
-                CommandText = "select p.ProductID, p.ProductName, p.Price, p.Quantity, p.Description, p.CategoryID, "
-                            + "c.CategoryName, s.SupplierID, s.SupplierName "
+                CommandText = "select p.ProductID, p.ProductName, p.Price, p.Quantity, p.Description, "
+                            + "p.CategoryID, c.CategoryName, s.SupplierID, s.SupplierName "
                             + "from Products p "
                             + "left join Categories c on p.CategoryID = c.CategoryID "
                             + "left join Suppliers s on p.SupplierID = s.SupplierID "

@@ -13,6 +13,38 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         BorderThickness="1">
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Candara"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Light"/>
+
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="FontFamily" Value="Candara"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style TargetType="DataGrid">
+            <Setter Property="FontFamily" Value="Candara"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontFamily" Value="Candara"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="FontFamily" Value="Candara"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Thin"/>
+        </Style>
+
+    </Window.Resources>
+
     <Grid x:Name="Grid_Window">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30"/>
@@ -42,27 +74,18 @@
                     VerticalAlignment="Bottom">
             <Button x:Name="Btn_Save"
                     Content="Save All"
-                    FontFamily="Candara"
-                    FontSize="18"
-                    Background="Transparent"
                     Width="90"
                     Height="30"
                     Margin="0,0,0,10"
                     Click="Btn_Save_Click"/>
             <Button x:Name="Btn_Delete"
                     Content="Delete"
-                    FontFamily="Candara"
-                    FontSize="18"
-                    Background="Transparent"
                     Width="90"
                     Height="30"
                     Margin="0,0,0,10"
                     Click="Btn_Delete_Click"/>
             <Button x:Name="Btn_AddNew"
                     Content="Add New"
-                    FontFamily="Candara"
-                    FontSize="18"
-                    Background="Transparent"
                     Width="90"
                     Height="30"
                     Margin="0,0,0,8"
@@ -72,75 +95,48 @@
         <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical" VerticalAlignment="Top">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                 <Label Content="ProductID"
-                       FontFamily="Candara"
-                       FontSize="18"
-                       FontWeight="DemiBold"
                        Width="100"/>
                 <TextBox Text="123"
                          x:Name="TextBox_ProductID"
-                         FontFamily="Candara"
-                         FontSize="18"
-                         FontWeight="Medium"
                          VerticalAlignment="Center"
                          BorderThickness="1"
                          Width="250"
                          Margin="0,0,40,0"/>
                 <Label Content="Category"
-                       FontFamily="Candara"
-                       FontSize="18"
-                       FontWeight="DemiBold"
                        Width="100"/>
-                <ComboBox x:Name="ComboBox_Category" Width="150" Height="20"/>
+                <ComboBox x:Name="ComboBox_Category" 
+                          Width="150" 
+                          Height="30"/>
 
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                 <Label Content="Name"
-                       FontFamily="Candara"
-                       FontSize="18"
-                       FontWeight="DemiBold"
                        Width="100"/>
                 <TextBox Text="ProductName"
                          x:Name="TextBox_ProductName"
-                         FontFamily="Candara"
-                         FontSize="18"
-                         FontWeight="Medium"
                          VerticalAlignment="Center"
                          BorderThickness="1"
                          Width="250"
                          Margin="0,0,40,0"/>
                 <Label Content="Supplier"
-                       FontFamily="Candara"
-                       FontSize="18"
-                       FontWeight="DemiBold"
                        Width="100"/>
-                <ComboBox x:Name="ComboBox_Supplier" Width="150" Height="20"/>
+                <ComboBox x:Name="ComboBox_Supplier" 
+                          Width="150" 
+                          Height="30"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                 <Label Content="Price"
-                       FontFamily="Candara"
-                       FontSize="18"
-                       FontWeight="DemiBold"
                        Width="100"/>
                 <TextBox Text="1,23"
                          x:Name="TextBox_ProductPrice"
-                         
-                         FontFamily="Candara"
-                         FontSize="18"
-                         FontWeight="Medium"
                          VerticalAlignment="Center"
                          BorderThickness="1"
                          Width="50"/>
                 <StackPanel Orientation="Horizontal" Margin="50,0,0,0"/>
                 <Label Content="Quantity"
-                       FontFamily="Candara"
-                       FontSize="18"
-                       FontWeight="DemiBold"
                        Width="100"/>
                 <TextBox Text="22"
                          x:Name="TextBox_ProductQuantity"
-                         FontFamily="Candara"
-                         FontSize="18"
-                         FontWeight="Medium"
                          VerticalAlignment="Center"
                          BorderThickness="1"
                          Width="50"/>
@@ -148,15 +144,9 @@
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Height="140" Margin="0,3,0,0">
                 <Label Content="Description"
-                       FontFamily="Candara"
-                       FontSize="18"
-                       FontWeight="DemiBold"
                        Width="100"/>
                 <TextBox Text="Text (lateinisch texere 'weben', 'flechten') bezeichnet im nichtwissenschaftlichen Sprachgebrauch eine abgegrenzte, zusammenhängende..."
                          x:Name="TextBox_ProductDescription"
-                         FontFamily="Candara"
-                         FontSize="18"
-                         FontWeight="Medium"
                          VerticalAlignment="top"
                          TextWrapping="Wrap"
                          BorderThickness="1"
@@ -168,9 +158,35 @@
         </StackPanel>
 
         <DockPanel Grid.Column="1" Grid.Row="2">
-            <DataGrid x:Name="DataGrid_ProductList"
-                      AutoGenerateColumns="True"
-                      />
+
+            <ListView x:Name="ListView_ProductList">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="P_ID" 
+                                        DisplayMemberBinding="{Binding Path=ProductID}"/>
+                        <GridViewColumn Header="Name" 
+                                        DisplayMemberBinding="{Binding Path=ProductName}"/>
+                        <GridViewColumn Header="Price" 
+                                        DisplayMemberBinding="{Binding Path=Price}"/>
+                        <GridViewColumn Header="Quantity"
+                                        DisplayMemberBinding="{Binding Path=Quantity}"/>
+
+                        <GridViewColumn Header="C_ID"
+                                        DisplayMemberBinding="{Binding Path=CategoryID}"/>
+                        <GridViewColumn Header="C_Name"
+                                        DisplayMemberBinding="{Binding Path=CategoryName}"/>
+
+                        <GridViewColumn Header="S_ID"
+                                        DisplayMemberBinding="{Binding Path=SupplierID}"/>
+                        <GridViewColumn Header="S_Name"
+                                        DisplayMemberBinding="{Binding Path=SupplierName}"/>
+
+                        <GridViewColumn Header="Description" 
+                                        DisplayMemberBinding="{Binding Path=Description}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
         </DockPanel>
 
     </Grid>

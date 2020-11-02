@@ -5,9 +5,10 @@ namespace ProductManager.Models
 {
     public class Product : ProductBase
     {
-        private double _Price;
-        private int _Quantity;
+        private string _ProductName;
         private string _Description;
+        private double _Price;
+        private int? _Quantity;
         private int? _CategoryID;
         private int? _SupplierID;
 
@@ -56,7 +57,7 @@ namespace ProductManager.Models
                 }
             }
         }
-        public virtual int Quantity
+        public virtual int? Quantity
         {
             get => _Quantity;
             set
@@ -89,9 +90,21 @@ namespace ProductManager.Models
                 }
             }
         }
+        public string ProductName
+        {
+            get => _ProductName;
+            set
+            {
+                if (value != _ProductName)
+                {
+                    _ProductName = value;
+                    OnPropertyChanged(nameof(ProductName));
+                }
+            }
+        }
 
         public Product() : base() { }
-        public Product(string name, double price, int quantity, string description, int? catID, int? supID) : base(name)
+        public Product(string name, double price, int quantity, string description, int? catID, int? supID) : base()
         {
             if (price >= 0) _Price = price;
             else
@@ -112,6 +125,8 @@ namespace ProductManager.Models
             _Description = description;
             _CategoryID = catID;
             _SupplierID = supID;
+            _ProductName = name;
+
         }
 
         protected override void Value_InvalidMeasure(object sender, InvalidMeasureEventArgs e)
