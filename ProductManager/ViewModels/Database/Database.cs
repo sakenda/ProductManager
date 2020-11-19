@@ -1,4 +1,5 @@
 ﻿using ProductManager.Models;
+using ProductManager.Models.Database;
 using System;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -8,8 +9,8 @@ namespace ProductManager.ViewModels
 {
     public class Database : DatabaseProperties
     {
-        public ObservableCollection<Product> ObsCurrentProducts { get; private set; }
-        public ObservableCollection<Product> ObsDeletedProducts { get; private set; }
+        public ObservableCollection<ProductFullDetail> CurrentProducts { get; private set; }
+        public ObservableCollection<ProductFullDetail> DeletedProducts { get; private set; }
 
         #region Singleton
         private static Database _instance = null;
@@ -26,47 +27,19 @@ namespace ProductManager.ViewModels
         }
         private Database()
         {
-            this.ObsCurrentProducts = new ObservableCollection<Product>();
-            this.ObsDeletedProducts = new ObservableCollection<Product>();
+            this.CurrentProducts = new ObservableCollection<ProductFullDetail>();
+            this.DeletedProducts = new ObservableCollection<ProductFullDetail>();
         }
         #endregion
 
-        public DataView LoadDataBase()
+        public void GetFullDetailProducts()
         {
-            DataTable dataTable = new DataTable();
-            SqlDataAdapter adapter = new SqlDataAdapter();
+            ProductFullDetail product;
+            CategoryData categoryData;
+            SupplierData supplierData;
 
-            adapter.SelectCommand = new SqlCommand()
-            {
-                CommandText = "select p.ProductID, p.ProductName, p.Price, p.Quantity, p.Description, "
-                            + "p.CategoryID, c.CategoryName, s.SupplierID, s.SupplierName "
-                            + "from Products p "
-                            + "left join Categories c on p.CategoryID = c.CategoryID "
-                            + "left join Suppliers s on p.SupplierID = s.SupplierID "
-                            + "order by p.ProductID"
-            };
-
-            try
-            {
-                using (adapter.SelectCommand.Connection = new SqlConnection(DBCONNECTION))
-                {
-                    adapter.SelectCommand.Connection.Open();
-                    adapter.Fill(dataTable);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message + ":\n" + ex.StackTrace);
-            }
-
-            return dataTable.DefaultView;
-        }
-
-        public void LoadProducts()
-        {
-            Product p;
-            this.ObsCurrentProducts.Clear();
-            this.ObsDeletedProducts.Clear();
+            this.CurrentProducts.Clear();
+            this.DeletedProducts.Clear();
 
             SqlCommand cmd = new SqlCommand("")
             {
@@ -87,23 +60,32 @@ namespace ProductManager.ViewModels
                 {
                     while (reader.Read())
                     {
-                        p = new Product(
-                            reader[nameof(p.ProductName)].ToString(),
-                            Convert.ToDouble(reader[nameof(p.Price)]),
-                            Convert.ToInt32(reader[nameof(p.Quantity)]),
-                            reader[nameof(p.Description)].ToString(),
-                            DatabaseClientCast.DBToValue<int>(reader[nameof(p.CategoryID)]),
-                            DatabaseClientCast.DBToValue<int>(reader[nameof(p.SupplierID)])
+                        categoryData = new CategoryData(
+                            DatabaseClientCast.DBToValue<int>(reader["CategoryID"]),
+                            reader[nameof(product.CategoryData.CategoryName)].ToString()
                             );
-                        p.SetProductID((int)reader[nameof(p.ProductID)]);
+                        supplierData = new SupplierData(
+                            DatabaseClientCast.DBToValue<int>(reader["SupplierID"]),
+                            reader[nameof(product.SupplierData.SupplierName)].ToString()
+                            );
 
-                        ObsCurrentProducts.Add(p);
+                        product = new ProductFullDetail(
+                            reader[nameof(product.ProductName)].ToString(),
+                            Convert.ToDouble(reader[nameof(product.Price)]),
+                            Convert.ToInt32(reader[nameof(product.Quantity)]),
+                            reader[nameof(product.Description)].ToString(),
+                            categoryData,
+                            supplierData
+                            );
+                        product.SetProductID((int)reader[nameof(product.ProductID)]);
+
+                        CurrentProducts.Add(product);
                     }
                 }
             }
         }
 
-        private void DeleteProduct(Product product)
+        private void DeleteProduct(ProductFullDetail product)
         {
             string sql;
             SqlCommand cmd;
@@ -112,7 +94,7 @@ namespace ProductManager.ViewModels
                 + "where ProductID = @id";
 
             cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = product.ProductID;
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ProductID;
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -124,24 +106,24 @@ namespace ProductManager.ViewModels
             }
         }
 
-        private void UpdateProduct(Product product)
+        private void UpdateProduct(ProductFullDetail product)
         {
             string sql;
             SqlCommand cmd;
 
             sql = "update Products set ProductName = @productName, Price = @price, Quantity = @quantity, Description = @description, "
-                + "                        CategoryID = @categoryID, SupplierID = @supplierID "
+                + "                     CategoryID = @categoryID, SupplierID = @supplierID "
                 + "where ProductID = @id";
 
             cmd = new SqlCommand(sql);
 
-            cmd.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = product.ProductID;
-            cmd.Parameters.Add("@productName", System.Data.SqlDbType.NVarChar).Value = product.ProductName.StringToDb();
-            cmd.Parameters.Add("@price", System.Data.SqlDbType.Money).Value = product.Price;
-            cmd.Parameters.Add("@quantity", System.Data.SqlDbType.Int).Value = product.Quantity;
-            cmd.Parameters.Add("@description", System.Data.SqlDbType.NVarChar).Value = product.Description.StringToDb();
-            cmd.Parameters.Add("@categoryID", System.Data.SqlDbType.Int).Value = product.CategoryID.ValueToDb<int>();
-            cmd.Parameters.Add("@supplierID", System.Data.SqlDbType.Int).Value = product.SupplierID.ValueToDb<int>();
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ProductID;
+            cmd.Parameters.Add("@productName", SqlDbType.NVarChar).Value = product.ProductName.StringToDb();
+            cmd.Parameters.Add("@price", SqlDbType.Money).Value = product.Price;
+            cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
+            cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
+            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryData.DataID.ValueToDb<int>();
+            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierData.DataID.ValueToDb<int>();
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -153,21 +135,21 @@ namespace ProductManager.ViewModels
             }
         }
 
-        private void InsertProduct(Product product)
+        private void InsertProduct(ProductFullDetail product)
         {
             string sql;
             SqlCommand cmd;
 
             sql = "insert into Products(ProductName, Price, Quantity, Description, CategoryID, SupplierID) "
-                + "    values (@productName, @price, @quantity, @description, @categoryID, @supplierID)";
+                + "         values (@productName, @price, @quantity, @description, @categoryID, @supplierID)";
 
             cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@productName", System.Data.SqlDbType.NVarChar).Value = product.ProductName.StringToDb();
-            cmd.Parameters.Add("@price", System.Data.SqlDbType.Money).Value = product.Price;
-            cmd.Parameters.Add("@quantity", System.Data.SqlDbType.Int).Value = product.Quantity;
-            cmd.Parameters.Add("@description", System.Data.SqlDbType.NVarChar).Value = product.Description.StringToDb();
-            cmd.Parameters.Add("@categoryID", System.Data.SqlDbType.Int).Value = product.CategoryID.ValueToDb<int>();
-            cmd.Parameters.Add("@supplierID", System.Data.SqlDbType.Int).Value = product.SupplierID.ValueToDb<int>();
+            cmd.Parameters.Add("@productName", SqlDbType.NVarChar).Value = product.ProductName.StringToDb();
+            cmd.Parameters.Add("@price", SqlDbType.Money).Value = product.Price;
+            cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
+            cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
+            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryData.DataID.ValueToDb<int>();
+            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierData.DataID.ValueToDb<int>();
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -186,12 +168,12 @@ namespace ProductManager.ViewModels
 
         public void SaveProductList()
         {
-            foreach (Product p in this.ObsDeletedProducts)
+            foreach (ProductFullDetail p in this.DeletedProducts)
             {
                 this.DeleteProduct(p);
             }
 
-            foreach (Product p in this.ObsCurrentProducts)
+            foreach (ProductFullDetail p in this.CurrentProducts)
             {
                 if (!p.isDirty)
                     continue;

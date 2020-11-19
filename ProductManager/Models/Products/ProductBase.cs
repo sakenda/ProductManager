@@ -8,7 +8,11 @@ namespace ProductManager.Models
         private int _ProductID;
         protected bool _isDirty;
 
-        public int ProductID { get => _ProductID; }
+        public int ProductID
+        {
+            get => _ProductID;
+        }
+
         public bool isDirty
         {
             get => _isDirty;
@@ -25,7 +29,6 @@ namespace ProductManager.Models
             _isDirty = false;
 
             PropertyChanged += Value_PropertyChanged;
-            InvalidMeasure += Value_InvalidMeasure;
         }
 
         public virtual void SetProductID(int value) => _ProductID = value;
@@ -38,14 +41,5 @@ namespace ProductManager.Models
             if (!_isDirty) isDirty = true;
         }
 
-        public event InvalidMeasureEventHandler InvalidMeasure;
-        protected virtual void OnInvalidMeasure(InvalidMeasureEventArgs e)
-        {
-            if (InvalidMeasure != null) InvalidMeasure(this, e);
-            else throw e.Error;
-        }
-        protected virtual void Value_InvalidMeasure(object sender, InvalidMeasureEventArgs e)
-        {
-        }
     }
 }

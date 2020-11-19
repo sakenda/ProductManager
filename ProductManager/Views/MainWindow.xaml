@@ -18,7 +18,6 @@
             <Setter Property="FontFamily" Value="Candara"/>
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="Light"/>
-
         </Style>
         <Style TargetType="Label">
             <Setter Property="FontFamily" Value="Candara"/>
@@ -97,6 +96,7 @@
                 <Label Content="ProductID"
                        Width="100"/>
                 <TextBox Text="123"
+                         IsEnabled="False"
                          x:Name="TextBox_ProductID"
                          VerticalAlignment="Center"
                          BorderThickness="1"
@@ -160,31 +160,64 @@
         <DockPanel Grid.Column="1" Grid.Row="2">
 
             <ListView x:Name="ListView_ProductList">
-                <ListView.View>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate x:Name="TripleLineDataTemplate" DataType="ProductFullDetail">
+
+                        <Grid Background="LightGray">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="5"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="5"/>
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="1" 
+                                        Grid.Column="1" 
+                                        Height="80">
+                                <TextBlock Text="{Binding Path=ProductName}" Margin="0,4,0,0"/>
+                                <TextBlock Text="{Binding Path=SupplierData.SupplierName}" Opacity=".8" Margin="0,4,0,0"/>
+                                <TextBlock Text="{Binding Description}" Opacity=".6" Margin="0,4,0,0"/>
+                            </DockPanel>
+
+                        </Grid>
+
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+                <!--<ListView.View>
                     <GridView>
-                        <GridViewColumn Header="P_ID" 
+
+                        <GridViewColumn Header="X" 
+                                        DisplayMemberBinding="{Binding Path=isDirty}"/>
+
+                        <GridViewColumn Header="Intern ID" 
                                         DisplayMemberBinding="{Binding Path=ProductID}"/>
+
+                        <GridViewColumn Header="Supplier"
+                                        DisplayMemberBinding="{Binding Path=SupplierData.SupplierName}"/>
+
                         <GridViewColumn Header="Name" 
                                         DisplayMemberBinding="{Binding Path=ProductName}"/>
+
                         <GridViewColumn Header="Price" 
                                         DisplayMemberBinding="{Binding Path=Price}"/>
+
                         <GridViewColumn Header="Quantity"
                                         DisplayMemberBinding="{Binding Path=Quantity}"/>
 
-                        <GridViewColumn Header="C_ID"
-                                        DisplayMemberBinding="{Binding Path=CategoryID}"/>
-                        <GridViewColumn Header="C_Name"
-                                        DisplayMemberBinding="{Binding Path=CategoryName}"/>
-
-                        <GridViewColumn Header="S_ID"
-                                        DisplayMemberBinding="{Binding Path=SupplierID}"/>
-                        <GridViewColumn Header="S_Name"
-                                        DisplayMemberBinding="{Binding Path=SupplierName}"/>
-
                         <GridViewColumn Header="Description" 
                                         DisplayMemberBinding="{Binding Path=Description}"/>
+
+                        <GridViewColumn Header="Category"
+                                        DisplayMemberBinding="{Binding Path=CategoryData.CategoryName}"/>
+
                     </GridView>
-                </ListView.View>
+                </ListView.View>-->
             </ListView>
 
         </DockPanel>

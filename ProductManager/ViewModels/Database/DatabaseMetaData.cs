@@ -1,4 +1,5 @@
 ﻿using ProductManager.Models;
+using ProductManager.Models.Database;
 using System.Collections.ObjectModel;
 using System.Data.SqlClient;
 
@@ -6,8 +7,8 @@ namespace ProductManager.ViewModels
 {
     public class DatabaseMetaData : DatabaseProperties
     {
-        public ObservableCollection<MetaData> CategoryList { get; private set; }
-        public ObservableCollection<MetaData> SupplierList { get; private set; }
+        public ObservableCollection<CategoryData> CategoryList { get; private set; }
+        public ObservableCollection<SupplierData> SupplierList { get; private set; }
 
         #region Singleton
         private static DatabaseMetaData _instance = null;
@@ -25,10 +26,10 @@ namespace ProductManager.ViewModels
 
         private DatabaseMetaData()
         {
-            CategoryList = new ObservableCollection<MetaData>();
+            CategoryList = new ObservableCollection<CategoryData>();
             GetProductCategory();
 
-            SupplierList = new ObservableCollection<MetaData>();
+            SupplierList = new ObservableCollection<SupplierData>();
             GetProductSupplier();
         }
         #endregion
@@ -52,7 +53,7 @@ namespace ProductManager.ViewModels
                     while (reader.Read())
                     {
                         SupplierList.Add(
-                            new MetaData(
+                            new SupplierData(
                                 (int?)reader["SupplierID"],
                                 (string)reader["SupplierName"]
                                 ));
@@ -79,7 +80,7 @@ namespace ProductManager.ViewModels
                     while (reader.Read())
                     {
                         CategoryList.Add(
-                            new MetaData(
+                            new CategoryData(
                                 (int?)reader["CategoryID"],
                                 (string)reader["CategoryName"]
                                 ));
@@ -87,68 +88,6 @@ namespace ProductManager.ViewModels
                 }
             }
         }
-
-
-
-        //public List<DatabaseMetaData> GetProductSupplier()
-        //{
-        //    List<DatabaseMetaData> list = new List<DatabaseMetaData>();
-
-        //    SqlCommand cmd = new SqlCommand("")
-        //    {
-        //        CommandText = "select s.SupplierID, s.SupplierName "
-        //                    + "from Suppliers s "
-        //    };
-
-        //    using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-        //    {
-        //        cmd.Connection = conn;
-        //        conn.Open();
-
-        //        using (SqlDataReader reader = cmd.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                list.Add(
-        //                    new DatabaseMetaData(
-        //                        (int)reader[nameof(ProductMetaData.SupplierID)],
-        //                        reader[nameof(ProductMetaData.SupplierName)].ToString()
-        //                        ));
-        //            }
-        //        }
-        //    }
-        //    return list;
-        //}
-
-        //public List<DatabaseMetaData> GetProductCategory()
-        //{
-        //    List<DatabaseMetaData> list = new List<DatabaseMetaData>();
-
-        //    SqlCommand cmd = new SqlCommand("")
-        //    {
-        //        CommandText = "select c.CategoryID, c.CategoryName "
-        //                    + "from Categories c "
-        //    };
-
-        //    using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-        //    {
-        //        cmd.Connection = conn;
-        //        conn.Open();
-
-        //        using (SqlDataReader reader = cmd.ExecuteReader())
-        //        {
-        //            while (reader.Read())
-        //            {
-        //                list.Add(
-        //                    new DatabaseMetaData(
-        //                        (int)reader[nameof(ProductMetaData.CategoryID)],
-        //                        reader[nameof(ProductMetaData.CategoryName)].ToString()
-        //                        ));
-        //            }
-        //        }
-        //    }
-        //    return list;
-        //}
 
     }
 }

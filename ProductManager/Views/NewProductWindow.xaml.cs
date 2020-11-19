@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using ProductManager.Models;
+using ProductManager.Models.Database;
 using ProductManager.ViewModels;
 
 namespace ProductManager.Views
@@ -28,15 +29,15 @@ namespace ProductManager.Views
 
         private void Button_CreateProduct_Click(object sender, RoutedEventArgs e)
         {
-            Product product = new Product();
+            ProductFullDetail product = new ProductFullDetail();
             product.ProductName = TextBox_ProductName.Text;
             product.Price = Convert.ToDouble(TextBox_ProductPrice.Text);
             product.Quantity = Convert.ToInt32(TextBox_ProductQuantity.Text);
             product.Description = TextBox_ProductDescription.Text;
-            product.CategoryID = (int?)ComboBox_Category.SelectedValue;
-            product.SupplierID = (int?)ComboBox_Supplier.SelectedValue;
+            product.CategoryData.DataID = (int?)ComboBox_Category.SelectedValue;
+            product.SupplierData.DataID = (int?)ComboBox_Supplier.SelectedValue;
 
-            Database.Instance.ObsCurrentProducts.Add(product);
+            Database.Instance.CurrentProducts.Add(product);
             this.Close();
         }
         #endregion
@@ -44,13 +45,13 @@ namespace ProductManager.Views
         #region Methods
         private void InitializeComboBoxMetaData()
         {
-            ComboBox_Category.ItemsSource = ViewModels.DatabaseMetaData.Instance.CategoryList;
-            ComboBox_Category.DisplayMemberPath = nameof(MetaData.DataName);
-            ComboBox_Category.SelectedValuePath = nameof(MetaData.DataID);
+            ComboBox_Category.ItemsSource = DatabaseMetaData.Instance.CategoryList;
+            ComboBox_Category.DisplayMemberPath = nameof(CategoryData.CategoryName);
+            ComboBox_Category.SelectedValuePath = nameof(CategoryData.DataID);
 
-            ComboBox_Supplier.ItemsSource = ViewModels.DatabaseMetaData.Instance.SupplierList;
-            ComboBox_Supplier.DisplayMemberPath = nameof(MetaData.DataName);
-            ComboBox_Supplier.SelectedValuePath = nameof(MetaData.DataID);
+            ComboBox_Supplier.ItemsSource = DatabaseMetaData.Instance.SupplierList;
+            ComboBox_Supplier.DisplayMemberPath = nameof(SupplierData.SupplierName);
+            ComboBox_Supplier.SelectedValuePath = nameof(SupplierData.DataID);
 
             if (ComboBox_Category.Items.Count > 0)
             {

@@ -1,4 +1,5 @@
 ﻿using ProductManager.Models;
+using ProductManager.Models.Database;
 using ProductManager.ViewModels;
 using System;
 using System.Collections.ObjectModel;
@@ -13,23 +14,17 @@ namespace ProductManager.Views
     {
         public MainWindow()
         {
-
             InitializeComponent();
             ClearFields();
             InitializeComboBoxMetaData();
-            Database.Instance.LoadProducts();
+            Database.Instance.GetFullDetailProducts();
 
-            // Zugriff über erstellte Liste
-            ListView_ProductList.ItemsSource = Database.Instance.ObsCurrentProducts;
-            // Zugriff direkt über Database
-            //ListView_ProductList.ItemsSource = Database.Instance.LoadDataBase();
+            ListView_ProductList.ItemsSource = Database.Instance.CurrentProducts;
 
             _Window.MouseLeftButtonDown += _Window_MouseLeftButtonDown;
             ListView_ProductList.SelectionChanged += ListView_ProductList_SelectionChanged;
             ComboBox_Category.SelectionChanged += ComboBox_Category_SelectionChanged;
             ComboBox_Supplier.SelectionChanged += ComboBox_Supplier_SelectionChanged;
-
-            TextBox_ProductID.IsEnabled = false;
         }
 
         #region Events
@@ -37,7 +32,7 @@ namespace ProductManager.Views
 
         private void ListView_ProductList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ListView_ProductList.SelectedItem is Product selectedProduct)
+            if (ListView_ProductList.SelectedItem is ProductFullDetail selectedProduct)
             {
                 TextBox_ProductID.Text = selectedProduct.ProductID.ToString();
 
@@ -46,81 +41,34 @@ namespace ProductManager.Views
                 TextBox_ProductQuantity.SetBinding(TextBox.TextProperty, GetBinding(nameof(selectedProduct.Quantity), selectedProduct));
                 TextBox_ProductDescription.SetBinding(TextBox.TextProperty, GetBinding(nameof(selectedProduct.Description), selectedProduct));
 
-                ComboBox_Supplier.SelectedValue = selectedProduct.SupplierID;
-                ComboBox_Category.SelectedValue = selectedProduct.CategoryID;
+                ComboBox_Supplier.SelectedValue = selectedProduct.SupplierData.DataID;
+                ComboBox_Category.SelectedValue = selectedProduct.CategoryData.DataID;
             }
         }
 
         private void ComboBox_Supplier_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedProduct = ListView_ProductList.SelectedItem as Product;
-            var selectedSupplier = ComboBox_Supplier.SelectedItem as MetaData;
+            var selectedProduct = ListView_ProductList.SelectedItem as ProductFullDetail;
+            var selectedSupplier = ComboBox_Supplier.SelectedItem as SupplierData;
 
-            if (selectedProduct != null && selectedSupplier != null)
+            if (selectedProduct != null && selectedSupplier != null && selectedProduct.SupplierData.DataID != selectedSupplier.DataID)
             {
-                selectedProduct.SupplierID = selectedSupplier.DataID;
+                selectedProduct.SupplierData.DataID = selectedSupplier.DataID;
+                selectedProduct.SupplierData.SupplierName = selectedSupplier.SupplierName;
             }
         }
 
         private void ComboBox_Category_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selectedProduct = ListView_ProductList.SelectedItem as Product;
-            var selectedCategory = ComboBox_Category.SelectedItem as MetaData;
+            var selectedProduct = ListView_ProductList.SelectedItem as ProductFullDetail;
+            var selectedCategory = ComboBox_Category.SelectedItem as CategoryData;
 
-            if (selectedProduct != null && selectedCategory != null)
+            if (selectedProduct != null && selectedCategory != null && selectedProduct.CategoryData.DataID != selectedCategory.DataID)
             {
-                selectedProduct.CategoryID = selectedCategory.DataID;
+                selectedProduct.CategoryData.DataID = selectedCategory.DataID;
+                selectedProduct.CategoryData.CategoryName = selectedCategory.CategoryName;
             }
         }
-
-        //private void DataGrid_ProductList_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
-        //{
-        //    string temp = e.Column.Header.ToString();
-        //    switch (temp)
-        //    {
-        //        case nameof(Product.isDirty):
-        //            e.Column.Header = "Not Saved";
-        //            e.Column.DisplayIndex = 0;
-        //            break;
-        //        case nameof(Product.ProductID):
-        //            e.Column.Header = "ID";
-        //            e.Column.DisplayIndex = 1;
-        //            break;
-        //        case nameof(Product.ProductName):
-        //            e.Column.Header = "Name";
-        //            e.Column.DisplayIndex = 2;
-        //            break;
-        //        case nameof(Product.Price):
-        //            e.Column.Header = "Price";
-        //            e.Column.DisplayIndex = 3;
-        //            break;
-        //        case nameof(Product.Quantity):
-        //            e.Column.Header = "Quantity";
-        //            e.Column.DisplayIndex = 4;
-        //            break;
-        //        case nameof(Product.Description):
-        //            e.Column.Header = "Description";
-        //            e.Column.DisplayIndex = 5;
-        //            break;
-        //        case nameof(ProductMetaData.CategoryID):
-        //            e.Cancel = true;
-        //            break;
-        //        case nameof(ProductMetaData.CategoryName):
-        //            e.Column.Header = "Category";
-        //            e.Column.DisplayIndex = 6;
-        //            break;
-        //        case nameof(ProductMetaData.SupplierID):
-        //            e.Cancel = true;
-        //            break;
-        //        case nameof(ProductMetaData.SupplierName):
-        //            e.Column.Header = "Supplier";
-        //            e.Column.DisplayIndex = 7;
-        //            break;
-        //        default:
-        //            break;
-        //    }
-
-        //}
         #endregion
 
         #region Interaction
@@ -128,10 +76,10 @@ namespace ProductManager.Views
 
         private void Btn_Delete_Click(object sender, RoutedEventArgs e)
         {
-            if (ListView_ProductList.SelectedItem is Product selectedProduct)
+            if (ListView_ProductList.SelectedItem is ProductFullDetail selectedProduct)
             {
-                Database.Instance.ObsDeletedProducts.Add(selectedProduct);
-                Database.Instance.ObsCurrentProducts.Remove(selectedProduct);
+                Database.Instance.DeletedProducts.Add(selectedProduct);
+                Database.Instance.CurrentProducts.Remove(selectedProduct);
             }
         }
 
@@ -150,10 +98,10 @@ namespace ProductManager.Views
                     break;
                 case MessageBoxResult.Yes:
                     Database.Instance.SaveProductList();
-                    Database.Instance.LoadProducts();
+                    Database.Instance.GetFullDetailProducts();
                     break;
                 case MessageBoxResult.No:
-                    Database.Instance.LoadProducts();
+                    Database.Instance.GetFullDetailProducts();
                     break;
                 default:
                     break;
@@ -170,6 +118,7 @@ namespace ProductManager.Views
             MessageBoxImage icon = MessageBoxImage.Question;
             return MessageBox.Show(messageBoxText, caption, button, icon);
         }
+
         private void ClearFields()
         {
             TextBox_ProductName.Text = "";
@@ -178,7 +127,8 @@ namespace ProductManager.Views
             TextBox_ProductQuantity.Text = "";
             TextBox_ProductDescription.Text = "";
         }
-        private Binding GetBinding(string propertyName, Product product)
+
+        private Binding GetBinding(string propertyName, ProductFullDetail product)
         {
             return new Binding(propertyName)
             {
@@ -187,24 +137,16 @@ namespace ProductManager.Views
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
         }
-        private Binding GetBinding(ObservableCollection<Product> productList)
-        {
-            return new Binding()
-            {
-                Source = productList,
-                Mode = BindingMode.OneWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            };
-        }
+
         private void InitializeComboBoxMetaData()
         {
             ComboBox_Category.ItemsSource = DatabaseMetaData.Instance.CategoryList;
-            ComboBox_Category.DisplayMemberPath = nameof(MetaData.DataName);
-            ComboBox_Category.SelectedValuePath = nameof(MetaData.DataID);
+            ComboBox_Category.DisplayMemberPath = nameof(CategoryData.CategoryName);
+            ComboBox_Category.SelectedValuePath = nameof(CategoryData.DataID);
 
             ComboBox_Supplier.ItemsSource = DatabaseMetaData.Instance.SupplierList;
-            ComboBox_Supplier.DisplayMemberPath = nameof(MetaData.DataName);
-            ComboBox_Supplier.SelectedValuePath = nameof(MetaData.DataID);
+            ComboBox_Supplier.DisplayMemberPath = nameof(SupplierData.SupplierName);
+            ComboBox_Supplier.SelectedValuePath = nameof(SupplierData.DataID);
 
             if (ComboBox_Category.Items.Count > 0)
             {

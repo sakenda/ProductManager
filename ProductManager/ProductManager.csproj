@@ -1,21 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="test.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Shared\Icons\add_white.png" />
+		<None Remove="Shared\Icons\delete_white.png" />
+		<None Remove="Shared\Icons\products_white.png" />
+		<None Remove="Shared\Icons\shipping_white.png" />
+		<None Remove="Shared\Icons\users_white.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="test.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<Resource Include="Shared\Icons\add_white.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Shared\Icons\delete_white.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Shared\Icons\products_white.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Shared\Icons\shipping_white.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Shared\Icons\users_white.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
+	</ItemGroup>
 
 </Project>
