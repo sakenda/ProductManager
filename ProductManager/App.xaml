@@ -3,27 +3,48 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ProductManager"
     StartupUri="Views/NewMain.xaml">
-    <!--StartupUri="MainWindow.xaml">-->
     <Application.Resources>
+        <ResourceDictionary>
 
-        <Style TargetType="Window">
-            <Setter Property="FontFamily" Value="Lato"/>
-        </Style>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Views/Resource/Btn_Blue.xaml"/>
+                <ResourceDictionary Source="/Views/Resource/Colors.xaml"/>
+                <ResourceDictionary Source="/Views/Resource/ListView.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <Style TargetType="Page">
-            <Setter Property="FontFamily" Value="Lato"/>
-        </Style>
+            <Style TargetType="Window">
+                <Setter Property="FontFamily" Value="Tahoma"/>
+                <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
+            </Style>
 
-        <Style TargetType="TextBox">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-        </Style>
+            <Style TargetType="Page">
+                <Setter Property="FontFamily" Value="Tahoma"/>
+                <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
+            </Style>
 
-        <Style x:Key="btnDefault" TargetType="Button">
-            <Setter Property="Background" Value="#2279BE"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Margin" Value="10"/>
-        </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="Padding" Value="10 0 0 0"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Foreground" Value="{StaticResource hSchriftv2}"/>
+                <Setter Property="TextBox.Effect">
+                    <Setter.Value>
+                        <DropShadowEffect ShadowDepth="3" Direction="330" Color="Black" Opacity="0.5" BlurRadius="4"/>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
+
+<!-- Mask nutzen um bilder einzufärben
+        <Rectangle Width="30" Height="30">
+            <Rectangle.Fill>
+                <SolidColorBrush Color="Red"/>
+            </Rectangle.Fill>
+            <Rectangle.OpacityMask>
+                <ImageBrush ImageSource="/Shared/Icons/save_black.png"/>
+            </Rectangle.OpacityMask>
+        </Rectangle>
+        -->

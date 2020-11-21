@@ -1,16 +1,7 @@
 ﻿using ProductManager.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ProductManager
 {
@@ -22,14 +13,46 @@ namespace ProductManager
         public ProductsPage()
         {
             InitializeComponent();
+            ListView_ProductList.Items.Clear();
 
             Database.Instance.GetFullDetailProducts();
             ListView_ProductList.ItemsSource = Database.Instance.CurrentProducts;
+            btnDelete.IsEnabled = false;
+            btnSave.IsEnabled = false;
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (ListView_ProductList.SelectedItem != null)
+            {
+                btnDelete.IsEnabled = true;
+                btnSave.IsEnabled = true;
+            }
+            else
+            {
+                btnDelete.IsEnabled = false;
+                btnSave.IsEnabled = false;
+            }
+        }
 
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var searchTextBox = sender as TextBox;
+            if (searchTextBox != null && searchTextBox.Text == "Suchen...")
+            {
+                searchTextBox.Text = "";
+                searchTextBox.Foreground = (Brush)TryFindResource("dSchriftv2");
+            }
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var searchTextBox = sender as TextBox;
+            if (searchTextBox != null && searchTextBox.Text == "")
+            {
+                searchTextBox.Text = "Suchen...";
+                searchTextBox.Foreground = (Brush)TryFindResource("hSchriftv2");
+            }
         }
     }
 }

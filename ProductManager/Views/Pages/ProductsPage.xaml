@@ -10,34 +10,48 @@
       FontSize="18"
       Background="White">
 
+    <!-- Ressources -->
     <Page.Resources>
+
         <Style TargetType="ListView">
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Background" Value="#EDEDEE"/>
-            <EventSetter Event="SelectionChanged" Handler="ListView_SelectionChanged"/>
+            <Setter Property="Background" Value="{StaticResource dGrau}"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect ShadowDepth="3" Direction="330" Color="Black" Opacity="0.5" BlurRadius="4"/>
+                </Setter.Value>
+            </Setter>
         </Style>
+
         <Style TargetType="GridViewColumnHeader">
-            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Background" Value="{StaticResource hGrau}"/>
+            <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
             <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Padding" Value="10 0 0 0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
         </Style>
+
         <Style TargetType="ListViewItem">
-            <Setter Property="Background" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource hGrau}"/>
+            <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="VerticalContentAlignment" Value="Stretch"/>
         </Style>
+
     </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="60"/>
+            <RowDefinition Height="{Binding ElementName=spHeader, Path=Height}"/>
+            <RowDefinition Height="{Binding ElementName=spSuchfeld, Path=Height}"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- HEADER -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Background="#2279BE">
+        <StackPanel Name="spHeader" Grid.Row="0" Orientation="Horizontal" Background="#01579B" Height="40">
             <Image Source="/Shared/Icons/products_white.png"
                    Height="30"
                    Margin="10 0 10 0"
@@ -50,84 +64,218 @@
         </StackPanel>
 
         <!-- SUCHFELD -->
-        <StackPanel Orientation="Horizontal"
+        <StackPanel Name="spSuchfeld"
                     Grid.Row="1"
-                    Background="#EDEDEE">
+                    Orientation="Horizontal"
+                    Background="{StaticResource hGrau}"
+                    Height="60">
+            <StackPanel.Style>
+                <Style>
+                    <Setter Property="Border.Effect">
+                        <Setter.Value>
+                            <DropShadowEffect ShadowDepth="3"
+                                      Direction="330"
+                                      Color="Black"
+                                      Opacity="0.5"
+                                      BlurRadius="4"/>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </StackPanel.Style>
 
-            <TextBox Text="Search..."
+            <TextBox Text="Suchen..."
+                     Name="txtSearch"
                      Width="450"
-                     Margin="10"
-                     Padding="10 0 0 0"
-                     VerticalContentAlignment="Center"/>
+                     GotFocus="TextBox_GotFocus"
+                     LostFocus="TextBox_LostFocus"/>
 
-            <Button Style="{StaticResource btnDefault}"
-                    Width="140">
+            <Button Name="btnNew" Width="170">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Shared/Icons/add_white.png" Height="24"/>
-                        <Label Content="Neu"
-                               Margin="5 0 0 0"
-                               Padding="0"
-                               VerticalContentAlignment="Center"
-                               FontWeight="Bold"
-                               Foreground="White"/>
+                        <Label Content="Neu" Margin="5 0 0 0" Foreground="{StaticResource hSchriftv1}"/>
                     </StackPanel>
                 </Button.Content>
             </Button>
-            <Button Style="{StaticResource btnDefault}"
-                    Width="140"
-                    IsEnabled="False">
+            <Button Name="btnDelete" Width="170">
                 <Button.Content>
-                    <StackPanel Orientation="Horizontal" Name="btnDelete">
+                    <StackPanel Orientation="Horizontal">
                         <Image Source="/Shared/Icons/delete_white.png" Height="24"/>
-                        <Label Content="Löschen"
-                               Margin="5 0 0 0"
-                               Padding="0"
-                               VerticalContentAlignment="Center"
-                               FontWeight="Bold"
-                               Foreground="White"/>
+                        <Label Content="Löschen" Margin="5 0 0 0" Foreground="{StaticResource hSchriftv1}"/>
                     </StackPanel>
                 </Button.Content>
             </Button>
+            <Button Name="btnSave" Width="170">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="/Shared/Icons/save_white.png" Height="24"/>
+                        <Label Content="Speichern" Margin="5 0 0 0" Foreground="{StaticResource hSchriftv1}"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+
         </StackPanel>
 
         <!-- LISTVIEW -->
-        <StackPanel Background="White" Grid.Row="2" Margin="10 10 10 0">
+        <ScrollViewer Grid.Row="2"
+                      Margin="10 10 10 10"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      CanContentScroll="True">
             <ListView x:Name="ListView_ProductList"
-                      SelectionChanged="ListView_SelectionChanged">
+                      SelectionChanged="ListView_SelectionChanged"
+                      Background="White">
 
                 <ListView.View>
                     <GridView>
+                        
+                        <!-- Header Template / Style -->
+                        <GridView.ColumnHeaderContainerStyle>
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="Height" Value="50"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="FontSize" Value="16"/>
+                                <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource dGrau}"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="GridViewColumnHeader">
 
-                        <GridViewColumn Width="50">
+                                            <Grid Background="{StaticResource hGrau}">
+
+                                                <Label Content="{TemplateBinding Content}" 
+                                                       Foreground="{TemplateBinding Foreground}"
+                                                       HorizontalAlignment="Center" 
+                                                       VerticalAlignment="Center"/>
+
+                                            </Grid>
+                                            
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GridView.ColumnHeaderContainerStyle>
+  
+                        <!-- CheckBox isDirty -->
+                        <GridViewColumn Width="60">
                             <GridViewColumn.Header>
-                                <CheckBox IsEnabled="False"/>
+                                    <Image Source="/Shared/Icons/save_black.png" Height="25"/>
                             </GridViewColumn.Header>
-
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <CheckBox IsEnabled="False"
-                                              IsChecked="{Binding isDirty, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
-                                              HorizontalContentAlignment="Center"
-                                              VerticalContentAlignment="Center"/>
+                                    
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <CheckBox IsEnabled="False" IsChecked="{Binding isDirty, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
+                                    </StackPanel>
+                                    
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
-                        <GridViewColumn Width="100" Header="IdentNr" DisplayMemberBinding="{Binding Path=ProductID}"/>
-                        <GridViewColumn Width="150" Header="Hersteller" DisplayMemberBinding="{Binding Path=SupplierData.SupplierName}"/>
-                        <GridViewColumn Width="200" Header="Name" DisplayMemberBinding="{Binding Path=ProductName}"/>
-                        <GridViewColumn Width="100" Header="Preis" DisplayMemberBinding="{Binding Path=Price}"/>
-                        <GridViewColumn Width="100" Header="Bestand" DisplayMemberBinding="{Binding Path=Quantity}"/>
-                        <GridViewColumn Width="200" Header="Beschreibung" DisplayMemberBinding="{Binding Path=Description}"/>
-                        <GridViewColumn Width="150" Header="Kategorie" DisplayMemberBinding="{Binding Path=CategoryData.CategoryName}"/>
+                        <!-- Produkt -->
+                        <GridViewColumn Width="300" Header="PRODUKT">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+
+                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="10 10 0 10">
+                                        <TextBlock Text="{Binding ProductName}" FontSize="16" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding Description}" FontSize="12" TextWrapping="WrapWithOverflow"/>
+                                    </StackPanel>
+
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <!-- Preis -->
+                        <GridViewColumn Width="160" Header="PREIS">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+
+                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="10 10 0 10">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="EK-Preis: " FontSize="16" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Price}" FontSize="16"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Marge: " FontSize="12"/>
+                                            <TextBlock Text="12%" FontSize="12" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <!-- Bestand -->
+                        <GridViewColumn Width="120" Header="BESTAND">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+
+                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="10 10 0 10">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Lager: " FontSize="16" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding Quantity}" FontSize="16"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Bestellt: " FontSize="12"/>
+                                            <TextBlock Text="10" FontSize="12" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <!-- Kategorie -->
+                        <GridViewColumn Width="200" Header="KATEGORIE">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+
+                                    <StackPanel Orientation="Vertical" Margin="10 10 0 10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding CategoryData.CategoryName}"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <!-- Hersteller -->
+                        <GridViewColumn Width="200" Header="HERSTELLER">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+
+                                    <StackPanel Orientation="Vertical" Margin="10 10 0 10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding SupplierData.SupplierName}" FontSize="16" FontWeight="Bold"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <TextBlock Text="Straße 134, 66386 St. Ingbert" TextWrapping="WrapWithOverflow" FontSize="12" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
 
                     </GridView>
                 </ListView.View>
+                <ListViewItem></ListViewItem>
+                <ListViewItem></ListViewItem>
+                <ListViewItem></ListViewItem>
+                <ListViewItem></ListViewItem>
             </ListView>
-        </StackPanel>
+
+        </ScrollViewer>
 
         <!-- PRODUKTFELD -->
+        <!-- Von unten Aufklappbares Feld mit Details des selektierten Produktes -->
 
     </Grid>
 </Page>

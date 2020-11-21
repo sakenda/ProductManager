@@ -11,15 +11,15 @@
         WindowStartupLocation="CenterScreen"
         Topmost="True">
 
-    <DockPanel LastChildFill="True" Background="#002233">
+    <DockPanel LastChildFill="True" Background="{StaticResource dBlau}">
 
         <StackPanel DockPanel.Dock="Left" Width="100" Orientation="Vertical" VerticalAlignment="Top">
 
-            <Border Height="80" Background="#F15740">
-                <Label Content="π" FontSize="50" HorizontalAlignment="Center" Foreground="LightBlue"/>
+            <Border Height="80" Background="{StaticResource Orange}">
+                <Label Content="π" FontSize="50" HorizontalAlignment="Center" Foreground="White"/>
             </Border>
 
-            <Border Background="#002233" Width="100" Margin="0 5 0 5">
+            <Border Background="{StaticResource hBlau}" Width="100" Margin="0 5 0 5">
                 <Button HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         Background="Transparent"
@@ -29,13 +29,13 @@
                         <Label Content="Produkte"
                                HorizontalAlignment="Center"
                                Margin="0 0 0 0"
-                               Foreground="#AEB7BD"
+                               Foreground="White"
                                FontSize="16"/>
                     </StackPanel>
                 </Button>
             </Border>
 
-            <Border Background="#002233" Width="100" Margin="0 5 0 5">
+            <Border Background="{StaticResource dBlau}" Width="100" Margin="0 5 0 5">
                 <Button HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         Background="Transparent"
@@ -45,13 +45,13 @@
                         <Label Content="Nutzer"
                                HorizontalAlignment="Center"
                                Margin="0 -5 0 0"
-                               Foreground="#AEB7BD"
+                               Foreground="White"
                                FontSize="16"/>
                     </StackPanel>
                 </Button>
             </Border>
 
-            <Border Background="#002233" Width="100" Margin="0 5 0 5">
+            <Border Background="{StaticResource dBlau}" Width="100" Margin="0 5 0 5">
                 <Button HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         Background="Transparent"
@@ -61,21 +61,19 @@
                         <Label Content="Versand"
                                HorizontalAlignment="Center"
                                Margin="0 -5 0 0"
-                               Foreground="#AEB7BD"
+                               Foreground="White"
                                FontSize="16"/>
                     </StackPanel>
                 </Button>
             </Border>
         </StackPanel>
 
-        <Grid>
-            <Border Background="#EDEDEE">
-                <Frame Name="mainFrame"
-                       NavigationUIVisibility="Hidden"
-                       Source="/Views/Pages/ProductsPage.xaml"
-                       />
-            </Border>
-        </Grid>
+        <Frame Name="mainFrame"
+               NavigationUIVisibility="Hidden"
+               Background="{StaticResource hGrau}"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               Source="/Views/Pages/ProductsPage.xaml"/>
 
     </DockPanel>
 

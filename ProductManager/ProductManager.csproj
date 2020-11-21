@@ -10,6 +10,8 @@
 		<None Remove="Shared\Icons\add_white.png" />
 		<None Remove="Shared\Icons\delete_white.png" />
 		<None Remove="Shared\Icons\products_white.png" />
+		<None Remove="Shared\Icons\save_black.png" />
+		<None Remove="Shared\Icons\save_white.png" />
 		<None Remove="Shared\Icons\shipping_white.png" />
 		<None Remove="Shared\Icons\users_white.png" />
 	</ItemGroup>
@@ -27,6 +29,12 @@
 		</Resource>
 		<Resource Include="Shared\Icons\products_white.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Shared\Icons\save_black.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Shared\Icons\save_white.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Shared\Icons\shipping_white.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
