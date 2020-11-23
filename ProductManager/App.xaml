@@ -13,12 +13,14 @@
             </ResourceDictionary.MergedDictionaries>
 
             <Style TargetType="Window">
-                <Setter Property="FontFamily" Value="Tahoma"/>
+                <Setter Property="FontFamily" Value="Segoe MDL2"/>
+                <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
             </Style>
 
             <Style TargetType="Page">
-                <Setter Property="FontFamily" Value="Tahoma"/>
+                <Setter Property="FontFamily" Value="Segoe MDL2"/>
+                <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
             </Style>
 
@@ -26,7 +28,8 @@
                 <Setter Property="Margin" Value="10"/>
                 <Setter Property="Padding" Value="10 0 0 0"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="Foreground" Value="{StaticResource hSchriftv2}"/>
+                <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
+                <Setter Property="FontSize" Value="14"/>
                 <Setter Property="TextBox.Effect">
                     <Setter.Value>
                         <DropShadowEffect ShadowDepth="3" Direction="330" Color="Black" Opacity="0.5" BlurRadius="4"/>

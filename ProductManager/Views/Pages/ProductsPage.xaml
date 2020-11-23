@@ -4,14 +4,17 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ProductManager"
+      xmlns:custom="clr-namespace:ProductManager.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="800"
       d:DesignWidth="1400"
-      FontSize="18"
+      FontSize="14"
       Background="White">
 
     <!-- Ressources -->
     <Page.Resources>
+
+        <TextBlock x:Key="ekPreis" Text="EK-Preis"/>
 
         <Style TargetType="ListView">
             <Setter Property="BorderThickness" Value="0"/>
@@ -26,12 +29,26 @@
         <Style TargetType="GridViewColumnHeader">
             <Setter Property="Background" Value="{StaticResource hGrau}"/>
             <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
+            <Setter Property="Height" Value="50"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="Padding" Value="10 0 0 0"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="GridViewColumnHeader">
+
+                        <Grid Background="{StaticResource hGrau}">
+                            <Label Content="{TemplateBinding Content}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+
+                        </Grid>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style TargetType="ListViewItem">
@@ -39,6 +56,11 @@
             <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+
+            <Setter Property="BorderBrush" Value="{StaticResource hSchriftv2}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
         </Style>
 
     </Page.Resources>
@@ -48,10 +70,15 @@
             <RowDefinition Height="{Binding ElementName=spHeader, Path=Height}"/>
             <RowDefinition Height="{Binding ElementName=spSuchfeld, Path=Height}"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="200"/>
         </Grid.RowDefinitions>
 
         <!-- HEADER -->
-        <StackPanel Name="spHeader" Grid.Row="0" Orientation="Horizontal" Background="#01579B" Height="40">
+        <StackPanel Grid.Row="0" 
+                    Name="spHeader" 
+                    Orientation="Horizontal" 
+                    Background="#01579B" 
+                    Height="45">
             <Image Source="/Shared/Icons/products_white.png"
                    Height="30"
                    Margin="10 0 10 0"
@@ -60,15 +87,16 @@
                    Padding="0"
                    VerticalContentAlignment="Center"
                    FontWeight="Light"
+                   FontSize="24"
                    Foreground="White"/>
         </StackPanel>
 
         <!-- SUCHFELD -->
-        <StackPanel Name="spSuchfeld"
-                    Grid.Row="1"
+        <StackPanel Grid.Row="1"
+                    Name="spSuchfeld"
                     Orientation="Horizontal"
                     Background="{StaticResource hGrau}"
-                    Height="60">
+                    Height="50">
             <StackPanel.Style>
                 <Style>
                     <Setter Property="Border.Effect">
@@ -85,31 +113,32 @@
 
             <TextBox Text="Suchen..."
                      Name="txtSearch"
-                     Width="450"
-                     GotFocus="TextBox_GotFocus"
-                     LostFocus="TextBox_LostFocus"/>
+                     Foreground="{StaticResource hSchriftv2}"
+                     Width="400"
+                     Margin="10 10 5 10"
+/>
 
-            <Button Name="btnNew" Width="170">
+            <Button Name="btnNew" Width="150" Margin="5 10 5 10">
                 <Button.Content>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" >
                         <Image Source="/Shared/Icons/add_white.png" Height="24"/>
-                        <Label Content="Neu" Margin="5 0 0 0" Foreground="{StaticResource hSchriftv1}"/>
+                        <Label Content="Neu" Foreground="{StaticResource hSchriftv1}"/>
                     </StackPanel>
                 </Button.Content>
             </Button>
-            <Button Name="btnDelete" Width="170">
+            <Button Name="btnDelete" Width="150" Margin="5 10 5 10">
                 <Button.Content>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" >
                         <Image Source="/Shared/Icons/delete_white.png" Height="24"/>
-                        <Label Content="Löschen" Margin="5 0 0 0" Foreground="{StaticResource hSchriftv1}"/>
+                        <Label Content="Löschen" Foreground="{StaticResource hSchriftv1}"/>
                     </StackPanel>
                 </Button.Content>
             </Button>
-            <Button Name="btnSave" Width="170">
+            <Button Name="btnSave" Width="150" Margin="5 10 5 10">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Shared/Icons/save_white.png" Height="24"/>
-                        <Label Content="Speichern" Margin="5 0 0 0" Foreground="{StaticResource hSchriftv1}"/>
+                        <Label Content="Speichern" Foreground="{StaticResource hSchriftv1}"/>
                     </StackPanel>
                 </Button.Content>
             </Button>
@@ -128,35 +157,7 @@
 
                 <ListView.View>
                     <GridView>
-                        
-                        <!-- Header Template / Style -->
-                        <GridView.ColumnHeaderContainerStyle>
-                            <Style TargetType="GridViewColumnHeader">
-                                <Setter Property="Height" Value="50"/>
-                                <Setter Property="FontWeight" Value="Bold"/>
-                                <Setter Property="FontSize" Value="16"/>
-                                <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
-                                <Setter Property="BorderBrush" Value="{StaticResource dGrau}"/>
-                                <Setter Property="BorderThickness" Value="1"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="GridViewColumnHeader">
 
-                                            <Grid Background="{StaticResource hGrau}">
-
-                                                <Label Content="{TemplateBinding Content}" 
-                                                       Foreground="{TemplateBinding Foreground}"
-                                                       HorizontalAlignment="Center" 
-                                                       VerticalAlignment="Center"/>
-
-                                            </Grid>
-                                            
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </GridView.ColumnHeaderContainerStyle>
-  
                         <!-- CheckBox isDirty -->
                         <GridViewColumn Width="60">
                             <GridViewColumn.Header>
@@ -180,7 +181,7 @@
 
                                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="10 10 0 10">
                                         <TextBlock Text="{Binding ProductName}" FontSize="16" FontWeight="Bold"/>
-                                        <TextBlock Text="{Binding Description}" FontSize="12" TextWrapping="WrapWithOverflow"/>
+                                        <TextBlock Text="{Binding Description}" FontSize="12" TextWrapping="WrapWithOverflow" TextTrimming="WordEllipsis" MaxHeight="60"/>
                                     </StackPanel>
 
                                 </DataTemplate>
@@ -275,7 +276,124 @@
         </ScrollViewer>
 
         <!-- PRODUKTFELD -->
-        <!-- Von unten Aufklappbares Feld mit Details des selektierten Produktes -->
+        <!-- Aufklappbares Feld mit Details des selektierten Produktes -->
+        <Grid Grid.Row="3" 
+              Background="{StaticResource hGrau}" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="500"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10">
+                <TextBlock Text="PRODUKTNAME"
+                       Padding="0"
+                       FontWeight="Bold"
+                       FontSize="14"/>
+                <TextBox Text="{Binding ElementName=ListView_ProductList, 
+                                        Path=SelectedItem.ProductName, 
+                                        Mode=TwoWay, 
+                                        UpdateSourceTrigger=PropertyChanged}"
+                         Padding="5"
+                         Margin="0 0 0 10"/>
+
+                <TextBlock Text="BESCHREIBUNG"
+                       Padding="0"
+                       FontWeight="Bold"
+                       FontSize="14"/>
+                <TextBox Text="{Binding ElementName=ListView_ProductList, 
+                                        Path=SelectedItem.Description, 
+                                        Mode=TwoWay, 
+                                        UpdateSourceTrigger=PropertyChanged}"
+                         Padding="5"
+                         Margin="0"
+                         Height="90"
+                         TextWrapping="WrapWithOverflow"
+                         MaxLines="20"
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Disabled"
+                         VerticalContentAlignment="Top"
+                         HorizontalContentAlignment="Left"/>
+            </StackPanel>
+
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+
+                </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0" Margin="10">
+                    <TextBlock Text="EK-PREIS"
+                               Padding="0"
+                               FontWeight="Bold"
+                               FontSize="14"/>
+                    <TextBox Text="{Binding ElementName=ListView_ProductList, 
+                                            Path=SelectedItem.Price, 
+                                            Mode=TwoWay, 
+                                            UpdateSourceTrigger=PropertyChanged,
+                                            StringFormat=#.##,
+                                            ValidatesOnDataErrors=True}"
+                              Padding="5"
+                              Margin="0 0 0 10"/>
+                    
+                    <TextBlock Text="LAGERBESTAND"
+                           Padding="0"
+                           FontWeight="Bold"
+                           FontSize="14"/>
+                    <TextBox Text="{Binding ElementName=ListView_ProductList, 
+                                            Path=SelectedItem.Quantity, 
+                                            Mode=TwoWay, 
+                                            UpdateSourceTrigger=PropertyChanged,
+                                            ValidatesOnDataErrors=True}"
+                             Padding="5"
+                             Margin="0 0 0 10"/>
+
+                    <TextBlock Text="KATEGORIE"
+                           Padding="0"
+                           FontWeight="Bold"
+                           FontSize="14"/>
+                    <ComboBox ItemsSource="{Binding Path=DatabaseMetaData.Instance.CategoryList}"
+                              Padding="5"
+                              Margin="0 0 0 10"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="0" Margin="10">
+                    <TextBlock Text="MARGE"
+                           Padding="0"
+                           FontWeight="Bold"
+                           FontSize="14"/>
+                    <TextBox Text="Nicht eingerichtet"
+                             Padding="5"
+                             Margin="0 0 0 10"/>
+
+                    <TextBlock Text="BESTELLT"
+                           Padding="0"
+                           FontWeight="Bold"
+                           FontSize="14"/>
+                    <TextBox Text="Nicht eingerichtet"
+                             Padding="5"
+                             Margin="0 0 0 10"/>
+
+                    <TextBlock Text="HERSTELLER"
+                           Padding="0"
+                           FontWeight="Bold"
+                           FontSize="14"/>
+                    <ComboBox ItemsSource="{Binding Path=DatabaseMetaData.Instance.SupplierList}"
+                              DisplayMemberPath="SupplierName"
+                              SelectedValuePath="DataID"
+                              Padding="5"
+                              Margin="0 0 0 10"/>
+
+                </StackPanel>
+
+            </Grid>
+            
+        </Grid>
+
 
     </Grid>
 </Page>

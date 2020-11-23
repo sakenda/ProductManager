@@ -1,11 +1,12 @@
 ﻿using ProductManager.Models.Database;
 using ProductManager.ViewModels;
 using System;
+using System.ComponentModel;
 using System.Linq;
 
 namespace ProductManager.Models
 {
-    public class ProductFullDetail : ProductBase
+    public class ProductFullDetail : ProductBase, IDataErrorInfo
     {
         private string _ProductName;
         private string _Description;
@@ -78,8 +79,8 @@ namespace ProductManager.Models
             {
                 if (value != _Price)
                 {
-                    _Price = value;
-                    OnPropertyChanged(nameof(Price));
+                        _Price = value;
+                        OnPropertyChanged(nameof(Price));
                 }
             }
         }
@@ -119,6 +120,23 @@ namespace ProductManager.Models
                     _ProductName = value;
                     OnPropertyChanged(nameof(ProductName));
                 }
+            }
+        }
+
+        public string Error => null;
+        public string this[string propertyName]
+        {
+            get
+            {
+                if (propertyName == nameof(Price) && _Price < 0)
+                {
+                    return "Wert darf nicht Negativ sein";
+                }
+                if (propertyName == nameof(Quantity) && _Quantity < 0)
+                {
+                    return "Menge darf nicht Negativ sein";
+                }
+                return null;
             }
         }
 
