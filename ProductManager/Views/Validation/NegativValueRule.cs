@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace ProductManager
 {
-    public class NegativValueValidationRule : ValidationRule
+    public class NegativValueRule : ValidationRule
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {

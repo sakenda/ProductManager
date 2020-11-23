@@ -12,65 +12,9 @@ namespace ProductManager.Models
         private string _Description;
         private double _Price;
         private int? _Quantity;
-        //private int? _CategoryID;
-        //private string _CategoryName;
-        //private int? _SupplierID;
-        //private string _SupplierName;
 
         public SupplierData SupplierData { get; set; }
         public CategoryData CategoryData { get; set; }
-
-        //public int? SupplierID
-        //{
-        //    get => _SupplierID;
-        //    set
-        //    {
-        //        if (value != _SupplierID)
-        //        {
-        //            _SupplierID = value;
-        //            OnPropertyChanged(nameof(SupplierID));
-        //        }
-        //    }
-        //}
-
-        //public string SupplierName
-        //{
-        //    get => _SupplierName;
-        //    set
-        //    {
-        //        if (value != _SupplierName)
-        //        {
-        //            _SupplierName = value;
-        //            OnPropertyChanged(nameof(SupplierName));
-        //        }
-        //    }
-        //}
-
-        //public int? CategoryID
-        //{
-        //    get => _CategoryID;
-        //    set
-        //    {
-        //        if (value != _CategoryID)
-        //        {
-        //            _CategoryID = value;
-        //            OnPropertyChanged(nameof(CategoryID));
-        //        }
-        //    }
-        //}
-
-        //public string CategoryName
-        //{
-        //    get => _CategoryName;
-        //    set
-        //    {
-        //        if (value != _CategoryName)
-        //        {
-        //            _CategoryName = value;
-        //            OnPropertyChanged(nameof(CategoryName));
-        //        }
-        //    }
-        //}
 
         public virtual double Price
         {
@@ -123,23 +67,6 @@ namespace ProductManager.Models
             }
         }
 
-        public string Error => null;
-        public string this[string propertyName]
-        {
-            get
-            {
-                if (propertyName == nameof(Price) && _Price < 0)
-                {
-                    return "Wert darf nicht Negativ sein";
-                }
-                if (propertyName == nameof(Quantity) && _Quantity < 0)
-                {
-                    return "Menge darf nicht Negativ sein";
-                }
-                return null;
-            }
-        }
-
         public ProductFullDetail() : base() { }
         public ProductFullDetail(string name, double price, int quantity, string description, CategoryData category, SupplierData supplier) : base()
         {
@@ -149,6 +76,39 @@ namespace ProductManager.Models
             _Description = description;
             CategoryData = category;
             SupplierData = supplier;
+        }
+
+        public string Error => null;
+        public string this[string propertyName]
+        {
+            get
+            {
+                if (propertyName == nameof(Price))
+                {
+                    if (_Price < 0)
+                    {
+                            return "Preis darf nicht Negativ sein";
+                    }
+                }
+
+                if (propertyName == nameof(Quantity))
+                {
+                    if (_Price < 0)
+                    {
+                            return "Menge darf nicht Negativ sein";
+                    }
+                }
+
+                if (propertyName == nameof(ProductName))
+                {
+                    if (string.IsNullOrEmpty(_ProductName) || _ProductName.Length < 3)
+                    {
+                        return "Produktname darf nicht leer oder weniger als drei Zeichen sein.";
+                    }
+                }
+
+                return null;
+            }
         }
 
     }

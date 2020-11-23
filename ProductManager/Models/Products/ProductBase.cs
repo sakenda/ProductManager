@@ -31,14 +31,23 @@ namespace ProductManager.Models
             PropertyChanged += Value_PropertyChanged;
         }
 
-        public virtual void SetProductID(int value) => _ProductID = value;
-        public virtual void ResetIsDirty() => _isDirty = false;
+        public virtual void SetProductID(int value)
+        {
+            _ProductID = value;
+        }
+        public virtual void ResetIsDirty()
+        {
+            _isDirty = false;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         protected virtual void Value_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (!_isDirty) isDirty = true;
+            if (!_isDirty)
+            {
+                isDirty = true;
+            }
         }
 
     }

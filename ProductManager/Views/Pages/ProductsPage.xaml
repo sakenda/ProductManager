@@ -4,17 +4,17 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ProductManager"
-      xmlns:custom="clr-namespace:ProductManager.ViewModels"
+      xmlns:validation="clr-namespace:ProductManager.Views.Validation"
+      xmlns:vm="clr-namespace:ProductManager.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="800"
       d:DesignWidth="1400"
       FontSize="14"
-      Background="White">
+      Background="White"
+      Name="mainPage">
 
     <!-- Ressources -->
     <Page.Resources>
-
-        <TextBlock x:Key="ekPreis" Text="EK-Preis"/>
 
         <Style TargetType="ListView">
             <Setter Property="BorderThickness" Value="0"/>
@@ -64,6 +64,13 @@
         </Style>
 
     </Page.Resources>
+    <Page.BindingGroup>
+        <BindingGroup>
+            <BindingGroup.ValidationRules>
+                <validation:ProductValidationRule/>
+            </BindingGroup.ValidationRules>
+        </BindingGroup>
+    </Page.BindingGroup>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -115,8 +122,7 @@
                      Name="txtSearch"
                      Foreground="{StaticResource hSchriftv2}"
                      Width="400"
-                     Margin="10 10 5 10"
-/>
+                     Margin="10 10 5 10"/>
 
             <Button Name="btnNew" Width="150" Margin="5 10 5 10">
                 <Button.Content>
@@ -147,29 +153,29 @@
 
         <!-- LISTVIEW -->
         <ScrollViewer Grid.Row="2"
-                      Margin="10 10 10 10"
+                      Margin="10"
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto"
                       CanContentScroll="True">
             <ListView x:Name="ListView_ProductList"
                       SelectionChanged="ListView_SelectionChanged"
                       Background="White">
-
+                
                 <ListView.View>
                     <GridView>
 
                         <!-- CheckBox isDirty -->
                         <GridViewColumn Width="60">
                             <GridViewColumn.Header>
-                                    <Image Source="/Shared/Icons/save_black.png" Height="25"/>
+                                <Image Source="/Shared/Icons/save_black.png" Height="25"/>
                             </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    
+
                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <CheckBox IsEnabled="False" IsChecked="{Binding isDirty, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                                     </StackPanel>
-                                    
+
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -278,122 +284,194 @@
         <!-- PRODUKTFELD -->
         <!-- Aufklappbares Feld mit Details des selektierten Produktes -->
         <Grid Grid.Row="3" 
-              Background="{StaticResource hGrau}" >
+              Background="{StaticResource hGrau}" 
+              Margin="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="400"/>
-                <ColumnDefinition Width="500"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="300"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="230"/>
+                <ColumnDefinition Width="5"/>
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
 
-            <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10">
+            <!-- Grid.Column 1 -->
+            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical">
                 <TextBlock Text="PRODUKTNAME"
-                       Padding="0"
-                       FontWeight="Bold"
-                       FontSize="14"/>
+                           Padding="0"
+                           FontWeight="Bold"
+                           Margin="5 5 0 0"
+                           FontSize="14"/>
                 <TextBox Text="{Binding ElementName=ListView_ProductList, 
                                         Path=SelectedItem.ProductName, 
                                         Mode=TwoWay, 
-                                        UpdateSourceTrigger=PropertyChanged}"
+                                        UpdateSourceTrigger=PropertyChanged,
+                                        ValidatesOnDataErrors=True}"
+                         Validation.ErrorTemplate="{StaticResource errorTemplate}"
                          Padding="5"
-                         Margin="0 0 0 10"/>
-
-                <TextBlock Text="BESCHREIBUNG"
-                       Padding="0"
-                       FontWeight="Bold"
-                       FontSize="14"/>
-                <TextBox Text="{Binding ElementName=ListView_ProductList, 
-                                        Path=SelectedItem.Description, 
-                                        Mode=TwoWay, 
-                                        UpdateSourceTrigger=PropertyChanged}"
-                         Padding="5"
-                         Margin="0"
-                         Height="90"
-                         TextWrapping="WrapWithOverflow"
-                         MaxLines="20"
-                         VerticalScrollBarVisibility="Auto"
-                         HorizontalScrollBarVisibility="Disabled"
-                         VerticalContentAlignment="Top"
-                         HorizontalContentAlignment="Left"/>
+                         Margin="5"/>
             </StackPanel>
 
-            <Grid Grid.Column="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-
-                </Grid.RowDefinitions>
-
-                <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="0" Margin="10">
-                    <TextBlock Text="EK-PREIS"
-                               Padding="0"
-                               FontWeight="Bold"
-                               FontSize="14"/>
+            <StackPanel Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Orientation="Vertical">
+                <TextBlock Text="BESCHREIBUNG"
+                           Padding="0"
+                           FontWeight="Bold"
+                           Margin="5 5 0 0"
+                           FontSize="14"/>
                     <TextBox Text="{Binding ElementName=ListView_ProductList, 
+                                            Path=SelectedItem.Description, 
+                                            Mode=TwoWay, 
+                                            UpdateSourceTrigger=PropertyChanged}"
+                             Padding="5"
+                             Margin="5"
+                             Height="90"
+                             TextWrapping="WrapWithOverflow"
+                             MaxLines="20"
+                             VerticalScrollBarVisibility="Auto"
+                             HorizontalScrollBarVisibility="Disabled"
+                             VerticalContentAlignment="Top"
+                             HorizontalContentAlignment="Left"/>
+            </StackPanel>
+
+            <!-- Grid.Column 2 -->
+            <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Vertical">
+                <TextBlock Text="EK-PREIS"
+                           Padding="0"
+                           FontWeight="Bold"
+                           Margin="5 5 0 0"
+                           FontSize="14"/>
+                <TextBox Text="{Binding ElementName=ListView_ProductList, 
                                             Path=SelectedItem.Price, 
                                             Mode=TwoWay, 
                                             UpdateSourceTrigger=PropertyChanged,
                                             StringFormat=#.##,
                                             ValidatesOnDataErrors=True}"
+                              Validation.ErrorTemplate="{StaticResource errorTemplate}"
                               Padding="5"
-                              Margin="0 0 0 10"/>
-                    
-                    <TextBlock Text="LAGERBESTAND"
+                              Margin="5"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Vertical">
+
+                <TextBlock Text="LAGERBESTAND"
                            Padding="0"
                            FontWeight="Bold"
+                           Margin="5 5 0 0"
                            FontSize="14"/>
-                    <TextBox Text="{Binding ElementName=ListView_ProductList, 
-                                            Path=SelectedItem.Quantity, 
-                                            Mode=TwoWay, 
-                                            UpdateSourceTrigger=PropertyChanged,
-                                            ValidatesOnDataErrors=True}"
+                <TextBox Text="{Binding ElementName=ListView_ProductList, 
+                                        Path=SelectedItem.Quantity, 
+                                        Mode=TwoWay, 
+                                        UpdateSourceTrigger=PropertyChanged,
+                                        ValidatesOnDataErrors=True}"
+                             Validation.ErrorTemplate="{StaticResource errorTemplate}"
                              Padding="5"
-                             Margin="0 0 0 10"/>
+                             Margin="5"/>
+            </StackPanel>
 
-                    <TextBlock Text="KATEGORIE"
+            <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Vertical">
+                <TextBlock Text="KATEGORIE"
                            Padding="0"
                            FontWeight="Bold"
+                           Margin="5 5 0 0"
                            FontSize="14"/>
-                    <ComboBox ItemsSource="{Binding Path=DatabaseMetaData.Instance.CategoryList}"
-                              Padding="5"
-                              Margin="0 0 0 10"/>
-                </StackPanel>
+                <ComboBox Name="cb_Category"
+                          SelectionChanged="cb_Category_SelectionChanged"
+                          Validation.ErrorTemplate="{StaticResource errorTemplate}"
+                          Padding="5"
+                          Margin="5"/>
+            </StackPanel>
 
-                <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="0" Margin="10">
-                    <TextBlock Text="MARGE"
+            <!-- Grid.Column 3 -->
+            <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Vertical">
+                <TextBlock Text="MARGE"
                            Padding="0"
                            FontWeight="Bold"
+                           Margin="5 5 0 0"
                            FontSize="14"/>
-                    <TextBox Text="Nicht eingerichtet"
+                <TextBox Text="Nicht eingerichtet"
+                         Padding="5"
+                         Margin="5"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="3" Grid.Row="1" Orientation="Vertical">
+                <TextBlock Text="BESTELLT"
+                           Padding="0"
+                           FontWeight="Bold"
+                           Margin="5 5 0 0"
+                           FontSize="14"/>
+                <TextBox Text="Nicht eingerichtet"
                              Padding="5"
-                             Margin="0 0 0 10"/>
+                             Margin="5"/>
+            </StackPanel>
 
-                    <TextBlock Text="BESTELLT"
+            <StackPanel Grid.Column="3" Grid.Row="2" Orientation="Vertical">
+                <TextBlock Text="HERSTELLER"
                            Padding="0"
                            FontWeight="Bold"
+                           Margin="5 5 0 0"
                            FontSize="14"/>
-                    <TextBox Text="Nicht eingerichtet"
-                             Padding="5"
-                             Margin="0 0 0 10"/>
+                <ComboBox Name="cb_Supplier"
+                          SelectionChanged="cb_Supplier_SelectionChanged"
+                          Validation.ErrorTemplate="{StaticResource errorTemplate}"
+                          Padding="5"
+                          Margin="5"/>
+            </StackPanel>
 
-                    <TextBlock Text="HERSTELLER"
-                           Padding="0"
-                           FontWeight="Bold"
-                           FontSize="14"/>
-                    <ComboBox ItemsSource="{Binding Path=DatabaseMetaData.Instance.SupplierList}"
-                              DisplayMemberPath="SupplierName"
-                              SelectedValuePath="DataID"
-                              Padding="5"
-                              Margin="0 0 0 10"/>
+            <!-- Grid.Column 4 -->
 
-                </StackPanel>
-
-            </Grid>
+            <Border  Grid.Column="4" Grid.RowSpan="3" BorderBrush="{StaticResource dGrau}" BorderThickness="1"  Margin="5">
+                <Image Source="/Shared/Images/notavailable.jpg"/>
+            </Border>
             
+            <!-- Grid.Column 5 -->
+            <Label Name="errorInfo" Grid.Row="0" Grid.Column="5" Foreground="Red"
+                   Content="{Binding ElementName=mainPage, Path=(Validation.Errors)[0].ErrorContent}"/>
+            
+            <StackPanel Grid.Column="5" Grid.Row="1" Grid.RowSpan="2" Orientation="Vertical" VerticalAlignment="Bottom">
+
+                <Button Name="btnUpdate" 
+                        Click="btnUpdate_Click"
+                        Height="35" 
+                        Margin="5"
+                        Grid.Column="3">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Shared/Icons/save_white.png" Height="24" Margin="0 0 5 0"/>
+                            <TextBlock Text="Aktualisiere Produkt"
+                                       TextWrapping="WrapWithOverflow"
+                                       Foreground="{StaticResource hSchriftv1}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+
+                <Button Name="btnCancel" 
+                        Click="btnCancel_Click"
+                        Height="35" 
+                        Margin="5"
+                        Grid.Column="3">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Shared/Icons/add_white.png" Height="24">
+                                <Image.LayoutTransform>
+                                    <RotateTransform Angle="45"/>
+                                </Image.LayoutTransform>
+                            </Image>
+                            <TextBlock Text="Abbrechen"
+                                   TextWrapping="WrapWithOverflow"
+                                   Foreground="{StaticResource hSchriftv1}"
+                                   VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+
         </Grid>
-
-
     </Grid>
 </Page>

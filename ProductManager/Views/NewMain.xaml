@@ -9,7 +9,7 @@
         Height="900"
         Width="1600"
         WindowStartupLocation="CenterScreen"
-        Topmost="True">
+        Topmost="False">
 
     <DockPanel LastChildFill="True" Background="{StaticResource dBlau}">
 
