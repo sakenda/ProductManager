@@ -37,20 +37,8 @@
                 </Setter>
             </Style>
 
-            <!--<ControlTemplate x:Key="errorTemplate">
-                <Border BorderBrush="Red" BorderThickness="2">
-                    <Grid>
-                        <AdornedElementPlaceholder/>
-                        <TextBlock Text="{Binding [0].ErrorContent}"
-                                   Foreground="Red"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Right"
-                                   Margin="0 0 5 0"/>
-                    </Grid>
-                </Border>
-            </ControlTemplate>-->
             <ControlTemplate x:Key="errorTemplate">
-                <Border BorderBrush="Red" BorderThickness="2">
+                <Border BorderBrush="Red" BorderThickness="0 0 0 2">
                     <Grid>
                         <AdornedElementPlaceholder/>
                         <TextBlock ToolTip="{Binding ElementName=adorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"

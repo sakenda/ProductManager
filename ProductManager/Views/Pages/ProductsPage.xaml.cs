@@ -124,6 +124,10 @@ namespace ProductManager
         }
         #endregion
 
+        private void btn_Image_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
 

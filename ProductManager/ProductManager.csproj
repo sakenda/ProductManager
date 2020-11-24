@@ -16,6 +16,7 @@
 		<None Remove="Shared\Icons\users_white.png" />
 		<None Remove="Shared\Icons\warning_red.png" />
 		<None Remove="Shared\Images\notavailable.jpg" />
+		<None Remove="Shared\Images\testImage.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -48,6 +49,9 @@
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Shared\Images\notavailable.jpg">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Shared\Images\testImage.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
 	</ItemGroup>
