@@ -11,7 +11,9 @@ namespace ProductManager.ViewModels
         public ObservableCollection<SupplierData> SupplierList { get; private set; }
 
         #region Singleton
+
         private static DatabaseMetaData _instance = null;
+
         public static DatabaseMetaData Instance
         {
             get
@@ -32,9 +34,10 @@ namespace ProductManager.ViewModels
             SupplierList = new ObservableCollection<SupplierData>();
             GetProductSupplier();
         }
-        #endregion
 
-        public void GetProductSupplier()
+        #endregion Singleton
+
+        private void GetProductSupplier()
         {
             SqlCommand cmd = new SqlCommand("")
             {
@@ -61,7 +64,8 @@ namespace ProductManager.ViewModels
                 }
             }
         }
-        public void GetProductCategory()
+
+        private void GetProductCategory()
         {
             SqlCommand cmd = new SqlCommand("")
             {
@@ -88,6 +92,5 @@ namespace ProductManager.ViewModels
                 }
             }
         }
-
     }
 }

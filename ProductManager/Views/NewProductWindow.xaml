@@ -3,137 +3,161 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ProductManager.Views"
+        xmlns:validation="clr-namespace:ProductManager.Views.Validation"
         mc:Ignorable="d"
         x:Name="_Window"
         WindowStartupLocation="CenterScreen"
-        Title="ProductOverview"
-        Height="372"
-        Width="402"
-        WindowStyle="None"
-        ResizeMode="NoResize"
-        BorderThickness="1"
-        Topmost="True">
+        Title="Neues Produkt anlegen"
+        Icon="\Shared\Icons\add_black.png"
+        Height="500"
+        Width="450"
+        ResizeMode="NoResize">
+    <Window.BindingGroup>
+        <BindingGroup>
+            <BindingGroup.ValidationRules>
+                <validation:ProductValidationRule ValidationStep="CommittedValue" />
+            </BindingGroup.ValidationRules>
+        </BindingGroup>
+    </Window.BindingGroup>
+
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="30"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="30"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
-        </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
+        <StackPanel Orientation="Vertical"
+                    Name="Context"
+                    Margin="10 10 10 10"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top">
 
-            <StackPanel Orientation="Vertical" Margin="0,0,0,10">
-                <Label Content="Productname: "
-                       FontFamily="Candara"
-                       FontSize="18"
-                       FontWeight="DemiBold"
-                       Padding="2"/>
-                <TextBox x:Name="TextBox_ProductName"
-                         FontFamily="Candara"
-                         FontSize="16"
-                         FontWeight="Normal"
-                         HorizontalAlignment="Stretch"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <Label Content="Price: "
-                       FontFamily="Candara"
-                       FontSize="18"
-                       FontWeight="DemiBold"
-                       Padding="2"/>
-                <TextBox x:Name="TextBox_ProductPrice"
-                         FontFamily="Candara"
-                         FontSize="16"
-                         FontWeight="Normal"
-                         Width="50"/>
-                <StackPanel Orientation="Horizontal" Margin="0,0,91,0"/>
-                <CheckBox x:Name="CheckBox_ProductInStock"
-                          VerticalAlignment="Center"
-                          Margin="0,0,2,0"/>
-                <Label Content="Quantity: "
-                       FontFamily="Candara"
-                       FontSize="18"
-                       FontWeight="DemiBold"
-                       Padding="2"/>
-                <TextBox x:Name="TextBox_ProductQuantity"
-                         FontFamily="Candara"
-                         FontSize="16"
-                         FontWeight="Normal"
-                         Width="50"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Vertical" Margin="0,0,0,5">
-                <Label Content="Product Description: "
-                       FontFamily="Candara"
-                       FontSize="18"
-                       FontWeight="DemiBold"
-                       Padding="2"/>
-                <TextBox x:Name="TextBox_ProductDescription"
-                         HorizontalAlignment="Stretch"
-                         FontFamily="Candara"
-                         FontSize="16"
-                         FontWeight="Normal"
-                         Height="100"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="PRODUKTNAME"
+                           Width="110"
+                           Padding="0"
+                           FontWeight="Bold"
+                           Margin="5 5 0 0"
+                           FontSize="14"
+                           VerticalAlignment="Center" />
+                <TextBox Text="{Binding ProductName}"
+                         x:Name="txt_Name"
+                         d:Text="Produktname"
+                         Width="280"
+                         Padding="5"
+                         Margin="5" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <Label Content="Category: "
-                       FontFamily="Candara"
-                       FontSize="12"
-                       Foreground="DimGray"
-                       Padding="2"/>
-                <StackPanel Orientation="Horizontal" Margin="134,0,0,0"/>
-                <Label Content="Supplier: "
-                       FontFamily="Candara"
-                       FontSize="12"
-                       Foreground="DimGray"
-                       Padding="2"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                <ComboBox x:Name="ComboBox_Category"
-                          FontFamily="Candara"
-                          FontSize="13"
-                          FontWeight="Normal"
-                          Width="150"/>
-                <StackPanel Orientation="Vertical" Margin="40,0,0,0"/>
-                <ComboBox x:Name="ComboBox_Supplier"
-                          FontFamily="Candara"
-                          FontSize="13"
-                          FontWeight="Normal"
-                          Width="150"/>
+                <TextBlock Text="EK-PREIS"
+                           Width="110"
+                           Padding="0"
+                           FontWeight="Bold"
+                           Margin="5 5 0 0"
+                           FontSize="14"
+                           VerticalAlignment="Center" />
+                <TextBox Text="{Binding Price}"
+                         x:Name="txt_Price"
+                         d:Text="2,99"
+                         Width="80"
+                         Padding="5"
+                         Margin="5 5 15 5" />
+
+                <TextBlock Text="MARGE"
+                           Width="90"
+                           Padding="0"
+                           FontWeight="Bold"
+                           Margin="5 5 0 0"
+                           FontSize="14"
+                           VerticalAlignment="Center" />
+                <TextBox d:Text="20%"
+                         x:Name="txt_Marge"
+                         Width="85"
+                         Padding="5"
+                         Margin="5" />
             </StackPanel>
 
-            <Separator/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="LAGERBESTAND"
+                           Width="110"
+                           Padding="0"
+                           FontWeight="Bold"
+                           Margin="5 5 0 0"
+                           FontSize="14"
+                           VerticalAlignment="Center" />
+                <TextBox Text="{Binding Quantity}"
+                         x:Name="txt_Quantity"
+                         d:Text="48"
+                         Width="80"
+                         Padding="5"
+                         Margin="5 5 15 5" />
+            </StackPanel>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
-                <Button x:Name="Button_CreateProduct"
-                        Content="Create"
-                        Width="80"
-                        Height="30"
-                        FontFamily="Candara"
-                        FontSize="18"
-                        FontWeight="DemiBold"
-                        BorderThickness="1"
-                        Background="Transparent" Click="Button_CreateProduct_Click"/>
-                <StackPanel Orientation="Horizontal" Margin="30,0,0,0"/>
-                <Button x:Name="Button_CancelCreateProduct"
-                        Content="Cancel"
-                        Width="80"
-                        Height="30"
-                        FontFamily="Candara"
-                        FontSize="18"
-                        FontWeight="DemiBold"
-                        BorderThickness="1"
-                        Background="Transparent" 
-                        Click="Button_CancelCreateProduct_Click"/>
+            <StackPanel Orientation="Horizontal" Height="150">
+                <TextBlock Text="BESCHREIBUNG"
+                           Width="110"
+                           Padding="0"
+                           FontWeight="Bold"
+                           Margin="5 10 0 0"
+                           FontSize="14" />
+                <TextBox Text="{Binding Description}"
+                         x:Name="txt_Description"
+                         d:Text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,"
+                         Padding="5"
+                         Margin="5"
+                         Height="140"
+                         Width="280"
+                         TextWrapping="WrapWithOverflow"
+                         MaxLines="20"
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Disabled"
+                         VerticalContentAlignment="Top"
+                         HorizontalContentAlignment="Left" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="KATEGORIE"
+                           Width="110"
+                           Padding="0"
+                           FontWeight="Bold"
+                           Margin="5 5 0 0"
+                           FontSize="14"
+                           VerticalAlignment="Center" />
+                <ComboBox Name="cb_Category"
+                          SelectedItem="{Binding CategoryData}"
+                          Width="280"
+                          Padding="5"
+                          Margin="5" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="HERSTELLER"
+                           Width="110"
+                           Padding="0"
+                           FontWeight="Bold"
+                           Margin="5 5 0 0"
+                           FontSize="14"
+                           VerticalAlignment="Center" />
+                <ComboBox Name="cb_Supplier"
+                          SelectedItem="{Binding SupplierData}"
+                          Width="280"
+                          Padding="5"
+                          Margin="5" />
             </StackPanel>
         </StackPanel>
 
+        <DockPanel HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <StackPanel Orientation="Vertical">
+
+                <TextBlock x:Name="errorInfo"
+                           Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=_Window}"
+                           d:Text="Fehler: Werte ungültig"
+                           Foreground="Red"
+                           FontSize="12"
+                           Margin="5 0 5 0"
+                           TextWrapping="WrapWithOverflow" />
+
+                <StackPanel Orientation="Horizontal" Margin="0">
+                    <Button x:Name="btnCreate" Content="Erstellen" Width="190" Height="35" Click="btnCreate_Click" />
+                    <Button x:Name="btnCancel" Content="Abbrechen" Width="190" Click="btnCancel_Click" Background="{StaticResource Orange}" />
+                </StackPanel>
+            </StackPanel>
+        </DockPanel>
     </Grid>
 </Window>

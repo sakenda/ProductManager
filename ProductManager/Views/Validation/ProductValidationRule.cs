@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using System.Windows.Data;
 using ProductManager.Models;
-using ProductManager.Models.Database;
 
 namespace ProductManager.Views.Validation
 {
@@ -10,41 +9,39 @@ namespace ProductManager.Views.Validation
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            BindingGroup bindingGroup = value as BindingGroup;
-            if (bindingGroup.Items.Count == 1)
-            {
-                string name;
-                double? price;
-                int? quantity;
-                SupplierData supplier;
+            string errorMsg = "";
 
-                ProductFullDetail product = (ProductFullDetail)bindingGroup.Items[0];
-                name = bindingGroup.GetValue(product, nameof(product.ProductName)) as string;
-                price = bindingGroup.GetValue(product, nameof(product.Price)) as double?;
-                quantity = bindingGroup.GetValue(product, nameof(product.Quantity)) as int?;
-                supplier = bindingGroup.GetValue(product, nameof(product.SupplierData)) as SupplierData;
+            BindingGroup bg = value as BindingGroup;
+
+            if (bg.Items.Count == 1)
+            {
+                ProductFullDetail product = (ProductFullDetail)bg.Items[0];
+
+                string name = (string)bg.GetValue(product, nameof(product.ProductName));
+                double? price = (double?)bg.GetValue(product, nameof(product.Price));
+                int? quantity = (int?)bg.GetValue(product, nameof(product.Quantity));
 
                 if (string.IsNullOrEmpty(name) || name.Length < 3)
                 {
-                    return new ValidationResult(false, "Produktname darf nicht weniger als drei Zeichen oder leer sein.");
+                    errorMsg += "Produktname darf nicht weniger als drei Zeichen oder leer sein.\n";
                 }
 
-                if (price < 0)
+                if (price < 0 || price == null)
                 {
-                    return new ValidationResult(false, "Der Preis darf keinen negativen Wert haben.");
+                    errorMsg += "Der Preis darf keinen negativen Wert haben.\n";
                 }
 
-                if (quantity < 0)
+                if (quantity < 0 || quantity == null)
                 {
-                    return new ValidationResult(false, "Die Menge darf keinen negativen Wert haben.");
-                }
-
-                if (supplier == null)
-                {
-                    return new ValidationResult(false, "Es muss ein Hersteller angegeben werden.");
+                    errorMsg += "Die Menge darf keinen negativen Wert haben.";
                 }
             }
-            return ValidationResult.ValidResult;
+            else
+            {
+                errorMsg += "Es wurden keine Daten übergeben.";
+            }
+
+            return string.IsNullOrEmpty(errorMsg) ? ValidationResult.ValidResult : new ValidationResult(false, errorMsg);
         }
     }
 }

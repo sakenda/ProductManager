@@ -13,7 +13,9 @@ namespace ProductManager.ViewModels
         public ObservableCollection<ProductFullDetail> DeletedProducts { get; private set; }
 
         #region Singleton
+
         private static Database _instance = null;
+
         public static Database Instance
         {
             get
@@ -25,12 +27,14 @@ namespace ProductManager.ViewModels
                 return _instance;
             }
         }
+
         private Database()
         {
             this.CurrentProducts = new ObservableCollection<ProductFullDetail>();
             this.DeletedProducts = new ObservableCollection<ProductFullDetail>();
         }
-        #endregion
+
+        #endregion Singleton
 
         public void GetFullDetailProducts()
         {
@@ -176,16 +180,19 @@ namespace ProductManager.ViewModels
             foreach (ProductFullDetail p in this.CurrentProducts)
             {
                 if (!p.isDirty)
+                {
                     continue;
+                }
 
                 if (p.ProductID > 0)
                 {
                     this.UpdateProduct(p);
                 }
                 else
+                {
                     this.InsertProduct(p);
+                }
             }
         }
-
     }
 }

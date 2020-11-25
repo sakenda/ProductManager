@@ -1,5 +1,5 @@
-﻿using ProductManager.ViewModels;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace ProductManager.Models
 {
@@ -19,7 +19,7 @@ namespace ProductManager.Models
             private set
             {
                 _isDirty = value;
-                OnPropertyChanged(nameof(isDirty));
+                OnPropertyChanged();
             }
         }
 
@@ -35,13 +35,16 @@ namespace ProductManager.Models
         {
             _ProductID = value;
         }
+
         public virtual void ResetIsDirty()
         {
             _isDirty = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "Unknown") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
         protected virtual void Value_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (!_isDirty)
@@ -49,6 +52,5 @@ namespace ProductManager.Models
                 isDirty = true;
             }
         }
-
     }
 }
