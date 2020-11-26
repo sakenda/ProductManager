@@ -9,11 +9,7 @@ namespace ProductManager.Models
         public int? DataID
         {
             get => _DataID;
-            set
-            {
-                _DataID = value;
-                OnPropertyChanged(nameof(DataID));
-            }
+            set => SetProperty(ref _DataID, value);
         }
 
         public MetaDataBase(int? id)

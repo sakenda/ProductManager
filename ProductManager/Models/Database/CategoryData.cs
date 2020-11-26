@@ -11,11 +11,7 @@ namespace ProductManager.Models.Database
         public string CategoryName
         {
             get => _CategoryName;
-            set
-            {
-                _CategoryName = value;
-                OnPropertyChanged(nameof(CategoryName));
-            }
+            set => SetProperty(ref _CategoryName, value);
         }
 
         public CategoryData(int? id, string name) : base(id)
@@ -27,6 +23,5 @@ namespace ProductManager.Models.Database
         {
             return DataID.ToString() + " - " + CategoryName;
         }
-
     }
 }

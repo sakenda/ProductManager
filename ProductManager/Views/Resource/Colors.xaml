@@ -7,9 +7,8 @@
     <SolidColorBrush x:Key="hGrau" Color="#EEEEEE" />
     <SolidColorBrush x:Key="dGrau" Color="#757575" />
     <SolidColorBrush x:Key="Orange" Color="#FF3D00" />
-    <SolidColorBrush x:Key="dSchriftv1" Color="#424242"/>
-    <SolidColorBrush x:Key="hSchriftv1" Color="#F5F5F5"/>
-    <SolidColorBrush x:Key="dSchriftv2" Color="#212121"/>
-    <SolidColorBrush x:Key="hSchriftv2" Color="#BDBDBD"/>
-
+    <SolidColorBrush x:Key="dSchriftv1" Color="#424242" />
+    <SolidColorBrush x:Key="hSchriftv1" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="dSchriftv2" Color="#212121" />
+    <SolidColorBrush x:Key="hSchriftv2" Color="#BDBDBD" />
 </ResourceDictionary>

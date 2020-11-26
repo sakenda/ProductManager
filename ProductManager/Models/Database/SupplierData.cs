@@ -11,11 +11,7 @@ namespace ProductManager.Models.Database
         public string SupplierName
         {
             get => _SupplierName;
-            set
-            {
-                _SupplierName = value;
-                OnPropertyChanged(nameof(SupplierName));
-            }
+            set => SetProperty(ref _SupplierName, value);
         }
 
         public SupplierData(int? id, string name) : base(id)
@@ -27,6 +23,5 @@ namespace ProductManager.Models.Database
         {
             return DataID.ToString() + " - " + SupplierName;
         }
-
     }
 }

@@ -5,9 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProductManager"
         mc:Ignorable="d"
-        Title="NewMain"
-        Height="900"
-        Width="1600"
+        Title="ProduktManager"
+        Icon="/Views/Shared/Icons/productmanager_black.png"
+        Height="1080"
+        Width="1920"
+        MinHeight="1000"
+        MinWidth="1200"
         WindowStartupLocation="CenterScreen"
         Topmost="False">
 
@@ -16,7 +19,7 @@
         <StackPanel DockPanel.Dock="Left" Width="100" Orientation="Vertical" VerticalAlignment="Top">
 
             <Border Height="80" Background="{StaticResource Orange}">
-                <Label Content="π" FontSize="50" HorizontalAlignment="Center" Foreground="White" />
+                <Image Source="/Views/Shared/Icons/productmanager_black.png" Height="50" />
             </Border>
 
             <Border Background="{StaticResource hBlau}" Width="100" Margin="0 5 0 5">
@@ -25,7 +28,7 @@
                         Background="Transparent"
                         BorderThickness="0">
                     <StackPanel Orientation="Vertical">
-                        <Image Source="../Shared/Icons/products_white.png" Height="40" />
+                        <Image Source="/Views/Shared/Icons/products_white.png" Height="40" />
                         <Label Content="Produkte"
                                HorizontalAlignment="Center"
                                Margin="0 0 0 0"
@@ -41,7 +44,7 @@
                         Background="Transparent"
                         BorderThickness="0">
                     <StackPanel Orientation="Vertical">
-                        <Image Source="../Shared/Icons/users_white.png" Height="40" />
+                        <Image Source="/Views/Shared/Icons/users_white.png" Height="40" />
                         <Label Content="Nutzer"
                                HorizontalAlignment="Center"
                                Margin="0 -5 0 0"
@@ -57,7 +60,7 @@
                         Background="Transparent"
                         BorderThickness="0">
                     <StackPanel Orientation="Vertical">
-                        <Image Source="../Shared/Icons/shipping_white.png" Height="40" />
+                        <Image Source="/Views/Shared/Icons/shipping_white.png" Height="40" />
                         <Label Content="Versand"
                                HorizontalAlignment="Center"
                                Margin="0 -5 0 0"

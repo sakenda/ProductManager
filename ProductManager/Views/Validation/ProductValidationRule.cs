@@ -1,7 +1,7 @@
-﻿using System.Globalization;
+﻿using ProductManager.Models;
+using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
-using ProductManager.Models;
 
 namespace ProductManager.Views.Validation
 {
@@ -10,38 +10,56 @@ namespace ProductManager.Views.Validation
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             string errorMsg = "";
-
             BindingGroup bg = value as BindingGroup;
 
-            if (bg.Items.Count == 1)
+            if (bg.Items[0] is ProductFullDetail product)
             {
-                ProductFullDetail product = (ProductFullDetail)bg.Items[0];
-
                 string name = (string)bg.GetValue(product, nameof(product.ProductName));
-                double? price = (double?)bg.GetValue(product, nameof(product.Price));
-                int? quantity = (int?)bg.GetValue(product, nameof(product.Quantity));
+                string price = (string)bg.GetValue(product, nameof(product.Price));
+                string quantity = (string)bg.GetValue(product, nameof(product.Quantity));
 
                 if (string.IsNullOrEmpty(name) || name.Length < 3)
                 {
-                    errorMsg += "Produktname darf nicht weniger als drei Zeichen oder leer sein.\n";
+                    errorMsg += "\nProduktname darf nicht weniger als drei Zeichen oder leer sein.";
                 }
 
-                if (price < 0 || price == null)
+                if (double.TryParse(price, out double convPrice))
                 {
-                    errorMsg += "Der Preis darf keinen negativen Wert haben.\n";
+                    if (convPrice < 0)
+                    {
+                        errorMsg += "\nDer Preis darf keinen negativen Wert haben.";
+                    }
+                }
+                else
+                {
+                    errorMsg += "\nUngültiges Format";
                 }
 
-                if (quantity < 0 || quantity == null)
+                if (int.TryParse(quantity, out int convQuantity))
                 {
-                    errorMsg += "Die Menge darf keinen negativen Wert haben.";
+                    if (convQuantity < 0)
+                    {
+                        errorMsg += "\nDie Menge darf keinen negativen Wert haben.";
+                    }
+                }
+                else
+                {
+                    errorMsg += "\nUngültiges Format";
                 }
             }
             else
             {
-                errorMsg += "Es wurden keine Daten übergeben.";
+                return new ValidationResult(false, "\nEs wurde kein Produkt ausgewählt.");
             }
 
-            return string.IsNullOrEmpty(errorMsg) ? ValidationResult.ValidResult : new ValidationResult(false, errorMsg);
+            if (string.IsNullOrEmpty(errorMsg))
+            {
+                return ValidationResult.ValidResult;
+            }
+            else
+            {
+                return new ValidationResult(false, errorMsg);
+            }
         }
     }
 }

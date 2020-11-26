@@ -66,11 +66,11 @@ namespace ProductManager.ViewModels
                     {
                         categoryData = new CategoryData(
                             DatabaseClientCast.DBToValue<int>(reader["CategoryID"]),
-                            reader[nameof(product.CategoryData.CategoryName)].ToString()
+                            reader[nameof(product.Category.CategoryName)].ToString()
                             );
                         supplierData = new SupplierData(
                             DatabaseClientCast.DBToValue<int>(reader["SupplierID"]),
-                            reader[nameof(product.SupplierData.SupplierName)].ToString()
+                            reader[nameof(product.Supplier.SupplierName)].ToString()
                             );
 
                         product = new ProductFullDetail(
@@ -126,8 +126,8 @@ namespace ProductManager.ViewModels
             cmd.Parameters.Add("@price", SqlDbType.Money).Value = product.Price;
             cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
             cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
-            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryData.DataID.ValueToDb<int>();
-            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierData.DataID.ValueToDb<int>();
+            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.Category.DataID.ValueToDb<int>();
+            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.Supplier.DataID.ValueToDb<int>();
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -152,8 +152,8 @@ namespace ProductManager.ViewModels
             cmd.Parameters.Add("@price", SqlDbType.Money).Value = product.Price;
             cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
             cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
-            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryData.DataID.ValueToDb<int>();
-            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierData.DataID.ValueToDb<int>();
+            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.Category.DataID.ValueToDb<int>();
+            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.Supplier.DataID.ValueToDb<int>();
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {

@@ -8,58 +8,45 @@ namespace ProductManager.Models
         private string _ProductName;
         private string _Description;
         private double _Price;
-        private int? _Quantity;
+        private int _Quantity;
 
-        public SupplierData SupplierData
+        private SupplierData _Supplier;
+        private CategoryData _Category;
+
+        public SupplierData Supplier
         {
-            get;
-            set;
+            get => _Supplier;
+            set => SetProperty(ref _Supplier, value);
         }
 
-        public CategoryData CategoryData
+        public CategoryData Category
         {
-            get;
-            set;
+            get => _Category;
+            set => SetProperty(ref _Category, value);
         }
 
         public virtual double Price
         {
             get => _Price;
-            set
-            {
-                _Price = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _Price, value);
         }
 
-        public virtual int? Quantity
+        public virtual int Quantity
         {
             get => _Quantity;
-            set
-            {
-                _Quantity = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _Quantity, value);
         }
 
         public string Description
         {
             get => _Description;
-            set
-            {
-                _Description = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _Description, value);
         }
 
         public string ProductName
         {
             get => _ProductName;
-            set
-            {
-                _ProductName = value;
-                OnPropertyChanged();
-            }
+            set => SetProperty(ref _ProductName, value);
         }
 
         public ProductFullDetail() : base()
@@ -72,8 +59,8 @@ namespace ProductManager.Models
             _Price = price;
             _Quantity = quantity;
             _Description = description;
-            CategoryData = category;
-            SupplierData = supplier;
+            _Category = category;
+            _Supplier = supplier;
         }
 
         public string Error => null;
@@ -86,7 +73,7 @@ namespace ProductManager.Models
                 {
                     if (_Price < 0)
                     {
-                        return "INDEX: Preis darf nicht Negativ sein";
+                        return "Preis darf nicht Negativ sein";
                     }
                 }
 
@@ -94,7 +81,7 @@ namespace ProductManager.Models
                 {
                     if (_Price < 0)
                     {
-                        return "INDEX: Menge darf nicht Negativ sein";
+                        return "Menge darf nicht Negativ sein";
                     }
                 }
 
@@ -102,7 +89,7 @@ namespace ProductManager.Models
                 {
                     if (string.IsNullOrEmpty(_ProductName) || _ProductName.Length < 3)
                     {
-                        return "INDEX: Produktname darf nicht leer oder weniger als drei Zeichen sein.";
+                        return "Produktname darf nicht leer oder weniger als drei Zeichen sein.";
                     }
                 }
 

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace ProductManager.Models
 {
-    public class ProductBase : INotifyPropertyChanged
+    public class ProductBase : PropertyObservable
     {
         private int _ProductID;
         protected bool _isDirty;
@@ -16,11 +16,7 @@ namespace ProductManager.Models
         public bool isDirty
         {
             get => _isDirty;
-            private set
-            {
-                _isDirty = value;
-                OnPropertyChanged();
-            }
+            private set => SetProperty(ref _isDirty, value);
         }
 
         protected ProductBase()
@@ -40,10 +36,6 @@ namespace ProductManager.Models
         {
             _isDirty = false;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "Unknown") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         protected virtual void Value_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {

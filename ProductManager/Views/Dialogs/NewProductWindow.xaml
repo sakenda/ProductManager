@@ -8,7 +8,7 @@
         x:Name="_Window"
         WindowStartupLocation="CenterScreen"
         Title="Neues Produkt anlegen"
-        Icon="\Shared\Icons\add_black.png"
+        Icon="/Views/Shared/Icons/add_black.png"
         Height="500"
         Width="450"
         ResizeMode="NoResize">
@@ -120,7 +120,7 @@
                            FontSize="14"
                            VerticalAlignment="Center" />
                 <ComboBox Name="cb_Category"
-                          SelectedItem="{Binding CategoryData}"
+                          SelectedItem="{Binding Category}"
                           Width="280"
                           Padding="5"
                           Margin="5" />
@@ -135,7 +135,7 @@
                            FontSize="14"
                            VerticalAlignment="Center" />
                 <ComboBox Name="cb_Supplier"
-                          SelectedItem="{Binding SupplierData}"
+                          SelectedItem="{Binding Supplier}"
                           Width="280"
                           Padding="5"
                           Margin="5" />

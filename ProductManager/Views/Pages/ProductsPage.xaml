@@ -5,7 +5,6 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:ProductManager"
       xmlns:validation="clr-namespace:ProductManager.Views.Validation"
-      xmlns:vm="clr-namespace:ProductManager.ViewModels"
       mc:Ignorable="d"
       d:DesignHeight="1080"
       d:DesignWidth="1920"
@@ -17,18 +16,41 @@
     <Page.Resources>
 
         <Style TargetType="ListView">
-            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="-3" />
             <Setter Property="Background" Value="{StaticResource dGrau}" />
-            <Setter Property="Effect">
+            <Setter Property="ItemContainerStyle">
                 <Setter.Value>
-                    <DropShadowEffect ShadowDepth="3" Direction="330" Color="Black" Opacity="0.5" BlurRadius="4" />
+
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Background" Value="{StaticResource hGrau}" />
+                        <Setter Property="Foreground" Value="{StaticResource dSchriftv1}" />
+                        <Setter Property="Margin" Value="1 -1" />
+                        <Setter Property="BorderBrush" Value="{StaticResource dGrau}" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Style.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                <Setter Property="Background" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{StaticResource dBlau}" />
+                                <Setter Property="Foreground" Value="{StaticResource hSchriftv1}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource dGrau}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource hBlau}" />
+                                <Setter Property="Foreground" Value="{StaticResource hSchriftv1}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource dGrau}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
                 </Setter.Value>
             </Setter>
         </Style>
 
         <Style TargetType="GridViewColumnHeader">
-            <Setter Property="Background" Value="{StaticResource hGrau}" />
-            <Setter Property="Foreground" Value="{StaticResource dSchriftv1}" />
+            <Setter Property="Background" Value="{StaticResource dGrau}" />
+            <Setter Property="Foreground" Value="{StaticResource hSchriftv1}" />
             <Setter Property="Height" Value="50" />
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="FontSize" Value="14" />
@@ -38,7 +60,8 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="GridViewColumnHeader">
 
-                        <Grid Background="{StaticResource hGrau}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <Border BorderBrush="Black" BorderThickness="0 1 0 1" Margin="-1 1" />
                             <Label Content="{TemplateBinding Content}"
                                    Foreground="{TemplateBinding Foreground}"
                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -47,18 +70,6 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
-
-        <Style TargetType="ListViewItem">
-            <Setter Property="Background" Value="{StaticResource hGrau}" />
-            <Setter Property="Foreground" Value="{StaticResource dSchriftv1}" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="VerticalContentAlignment" Value="Stretch" />
-
-            <Setter Property="BorderBrush" Value="{StaticResource hSchriftv2}" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Margin" Value="0" />
-            <Setter Property="Padding" Value="0" />
         </Style>
     </Page.Resources>
 
@@ -80,7 +91,7 @@
                     Orientation="Horizontal"
                     Background="#01579B"
                     Height="45">
-            <Image Source="/Shared/Icons/products_white.png"
+            <Image Source="/Views/Shared/Icons/products_white.png"
                    Height="30"
                    Margin="10 0 10 0"
                    VerticalAlignment="Center" />
@@ -113,16 +124,20 @@
                 </Style>
             </StackPanel.Style>
 
+            <Image DockPanel.Dock="Left" Source="/Views/Shared/Icons/search_black.png" Width="30" Margin="10 0 -5 0" />
             <TextBox Text="Suchen..."
                      Name="txtSearch"
+                     GotFocus="txtSearch_GotFocus"
+                     LostFocus="txtSearch_LostFocus"
                      Foreground="{StaticResource hSchriftv2}"
                      Width="400"
-                     Margin="10 10 5 10" />
+                     Margin="10 10 5 10">
+            </TextBox>
 
             <Button Name="btnNew" Width="150" Margin="5 10 5 10" Click="btnNew_Click">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/Shared/Icons/add_white.png" Height="24" />
+                        <Image Source="/Views/Shared/Icons/add_white.png" Height="24" />
                         <Label Content="Neu" Foreground="{StaticResource hSchriftv1}" />
                     </StackPanel>
                 </Button.Content>
@@ -130,7 +145,7 @@
             <Button Name="btnDelete" Width="150" Margin="5 10 5 10" Click="btnDelete_Click">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/Shared/Icons/delete_white.png" Height="24" />
+                        <Image Source="/Views/Shared/Icons/delete_white.png" Height="24" />
                         <Label Content="Löschen" Foreground="{StaticResource hSchriftv1}" />
                     </StackPanel>
                 </Button.Content>
@@ -138,7 +153,7 @@
             <Button Name="btnSave" Width="170" Margin="5 10 5 10" Click="btnSave_Click">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/Shared/Icons/save_white.png" Height="24" />
+                        <Image Source="/Views/Shared/Icons/save_white.png" Height="24" />
                         <Label Content="Speichern in DB" Foreground="{StaticResource hSchriftv1}" />
                     </StackPanel>
                 </Button.Content>
@@ -152,9 +167,9 @@
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto"
                       CanContentScroll="True">
-            <ListView x:Name="ListView_ProductList"
-                      SelectionChanged="ListView_SelectionChanged"
-                      Background="White">
+            <ListView Name="ListView_ProductList"
+                      Background="White"
+                      AlternationCount="2">
 
                 <ListView.View>
                     <GridView>
@@ -162,12 +177,12 @@
                         <!-- CheckBox isDirty -->
                         <GridViewColumn Width="60">
                             <GridViewColumn.Header>
-                                <Image Source="/Shared/Icons/save_black.png" Height="25" />
+                                <Image Source="/Views/Shared/Icons/save_white.png" Height="25" />
                             </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
 
-                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <StackPanel>
                                         <CheckBox IsEnabled="False"
                                                   IsChecked="{Binding isDirty, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
                                     </StackPanel>
@@ -180,7 +195,7 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
 
-                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="10 10 0 10">
+                                    <StackPanel Orientation="Vertical" Margin="10 10 0 10">
                                         <TextBlock d:Text="Produktname" Text="{Binding ProductName}"
                                                    FontSize="16"
                                                    FontWeight="Bold" />
@@ -241,7 +256,7 @@
                                     <StackPanel Orientation="Vertical" Margin="10 10 0 10" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock d:Text="Obst"
-                                                       Text="{Binding CategoryData.CategoryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                       Text="{Binding Category.CategoryName}"
                                                        FontSize="12"
                                                        FontWeight="Bold"
                                                        HorizontalAlignment="Center"
@@ -260,7 +275,7 @@
                                     <StackPanel Orientation="Vertical" Margin="10 10 0 10" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                             <TextBlock d:Text="Firma Mohr"
-                                                       Text="{Binding SupplierData.SupplierName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                       Text="{Binding Supplier.SupplierName}"
                                                        FontSize="16"
                                                        FontWeight="Bold" />
                                         </StackPanel>
@@ -276,7 +291,7 @@
                         </GridViewColumn>
                     </GridView>
                 </ListView.View>
-                <d:ListViewItem></d:ListViewItem>
+                <d:ListViewItem d:IsSelected="True"></d:ListViewItem>
                 <d:ListViewItem></d:ListViewItem>
                 <d:ListViewItem></d:ListViewItem>
                 <d:ListViewItem></d:ListViewItem>
@@ -288,8 +303,10 @@
         <Grid Grid.Row="2"
               Grid.Column="1"
               Name="ProductDetailsRoot"
+              DataContext="{Binding ElementName=ListView_ProductList, Path=SelectedItem}"
               Background="{StaticResource hGrau}"
               Margin="10 10 0 10">
+
             <Grid.RowDefinitions>
                 <RowDefinition MaxHeight="400" />
                 <RowDefinition Height="*" />
@@ -297,30 +314,31 @@
             </Grid.RowDefinitions>
 
             <Grid.BindingGroup>
-                <BindingGroup x:Name="ProdBindGroup">
+                <BindingGroup>
                     <BindingGroup.ValidationRules>
-                        <validation:ProductValidationRule ValidationStep="CommittedValue" />
+                        <validation:ProductValidationRule />
                     </BindingGroup.ValidationRules>
                 </BindingGroup>
             </Grid.BindingGroup>
 
-            <Grid Grid.Column="0" Grid.Row="0">
+            <!-- Produktbild -->
+            <Grid Grid.Row="0">
 
                 <Border BorderBrush="{StaticResource dGrau}" BorderThickness="1" Margin="10">
                     <Grid>
                         <ScrollViewer>
-                            <Image Source="/Shared/Images/testImage.png" Stretch="UniformToFill" />
+                            <Image Source="/Views/Shared/Images/testImage.png" Stretch="UniformToFill" />
                         </ScrollViewer>
 
                         <Button Width="35" Height="35" HorizontalAlignment="Left" VerticalAlignment="Top">
-                            <Image Source="/Shared/Icons/add_white.png" Height="30" />
+                            <Image Source="/Views/Shared/Icons/add_white.png" Height="30" />
                         </Button>
                     </Grid>
                 </Border>
             </Grid>
 
             <!-- Produktfelder -->
-            <ScrollViewer Grid.Column="0" Grid.Row="1">
+            <ScrollViewer Grid.Row="1">
                 <StackPanel Orientation="Vertical" Name="ProductDetailsPanel" Margin="10 0 0 10">
 
                     <StackPanel Orientation="Horizontal">
@@ -331,14 +349,8 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <TextBox Text="{Binding ElementName=ListView_ProductList,
-                                                Path=SelectedItem.ProductName,
-                                                BindingGroupName=ProdBindGroup,
-                                                ValidatesOnDataErrors=True,
-                                                Mode=TwoWay,
-                                                UpdateSourceTrigger=PropertyChanged}"
+                        <TextBox Text="{Binding ProductName, ValidatesOnDataErrors=True}"
                                  d:Text="Produktname"
-                                 Validation.ErrorTemplate="{StaticResource errorTemplate}"
                                  Width="280"
                                  Padding="5"
                                  Margin="5" />
@@ -352,14 +364,8 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <TextBox Text="{Binding ElementName=ListView_ProductList,
-                                                Path=SelectedItem.Price,
-                                                BindingGroupName=ProdBindGroup,
-                                                ValidatesOnDataErrors=True,
-                                                Mode=TwoWay,
-                                                UpdateSourceTrigger=PropertyChanged}"
+                        <TextBox Text="{Binding Price, ValidatesOnDataErrors=True}"
                                  d:Text="2,99"
-                                 Validation.ErrorTemplate="{StaticResource errorTemplate}"
                                  Width="80"
                                  Padding="5"
                                  Margin="5 5 15 5" />
@@ -385,14 +391,8 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <TextBox Text="{Binding ElementName=ListView_ProductList,
-                                                Path=SelectedItem.Quantity,
-                                                BindingGroupName=ProdBindGroup,
-                                                ValidatesOnDataErrors=True,
-                                                Mode=TwoWay,
-                                                UpdateSourceTrigger=PropertyChanged}"
+                        <TextBox Text="{Binding Quantity, ValidatesOnDataErrors=True}"
                                  d:Text="48"
-                                 Validation.ErrorTemplate="{StaticResource errorTemplate}"
                                  Width="80"
                                  Padding="5"
                                  Margin="5 5 15 5" />
@@ -417,11 +417,7 @@
                                    FontWeight="Bold"
                                    Margin="5 10 0 0"
                                    FontSize="14" />
-                        <TextBox Text="{Binding ElementName=ListView_ProductList,
-                                                Path=SelectedItem.Description,
-                                                BindingGroupName=ProdBindGroup,
-                                                Mode=TwoWay,
-                                                UpdateSourceTrigger=PropertyChanged}"
+                        <TextBox Text="{Binding Description}"
                                  d:Text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,"
                                  Padding="5"
                                  Margin="5"
@@ -445,7 +441,9 @@
                                    VerticalAlignment="Center" />
                         <ComboBox Name="cb_Category"
                                   Width="280"
-                                  SelectionChanged="cb_Category_SelectionChanged"
+                                  SelectedValue="{Binding Category.DataID}"
+                                  DisplayMemberPath="{Binding Category.CategoryName}"
+                                  SelectedItem="{Binding Category}"
                                   Padding="5"
                                   Margin="5" />
                     </StackPanel>
@@ -460,7 +458,9 @@
                                    VerticalAlignment="Center" />
                         <ComboBox Name="cb_Supplier"
                                   Width="280"
-                                  SelectionChanged="cb_Supplier_SelectionChanged"
+                                  SelectedValue="{Binding Supplier.DataID}"
+                                  DisplayMemberPath="{Binding Supplier.SupplierName}"
+                                  SelectedItem="{Binding Supplier}"
                                   Padding="5"
                                   Margin="5" />
                     </StackPanel>
@@ -471,11 +471,10 @@
             <StackPanel Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom">
 
                 <TextBlock d:Text="Fehler: Werte sind falsch."
-                           Text="{Binding ElementName=ProductDetailsRoot, Path=(Validation.Errors)[0].ErrorContent}"
-                           Name="errorInfo"
+                           Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=ProductDetailsRoot}"
+                           x:Name="errorInfo"
                            TextWrapping="WrapWithOverflow"
                            FontSize="14"
-                           FontStyle="Italic"
                            Foreground="Red"
                            Margin="10 5 10 -5"
                            Padding="0" />
@@ -487,7 +486,7 @@
                         Grid.Column="3">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Shared/Icons/save_white.png" Height="24" Margin="0 0 5 0" />
+                            <Image Source="/Views/Shared/Icons/save_white.png" Height="24" Margin="0 0 5 0" />
                             <TextBlock Text="Produkt aktualisieren"
                                        TextWrapping="WrapWithOverflow"
                                        Foreground="{StaticResource hSchriftv1}"
@@ -503,7 +502,7 @@
                         Grid.Column="3">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/Shared/Icons/add_white.png" Height="24">
+                            <Image Source="/Views/Shared/Icons/add_white.png" Height="24">
                                 <Image.LayoutTransform>
                                     <RotateTransform Angle="45" />
                                 </Image.LayoutTransform>

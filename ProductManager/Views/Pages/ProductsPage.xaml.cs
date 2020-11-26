@@ -17,57 +17,11 @@ namespace ProductManager
             InitializeComboBoxMetaData();
             Database.Instance.GetFullDetailProducts();
             ListView_ProductList.ItemsSource = Database.Instance.CurrentProducts;
-
-            btnDelete.IsEnabled = false;
         }
 
         #region Events
 
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ProductDetailsRoot.DataContext = ListView_ProductList.SelectedItem;
-
-            if (ListView_ProductList.SelectedItem is ProductFullDetail selectedProduct)
-            {
-                cb_Supplier.SelectedValue = selectedProduct.SupplierData.DataID;
-                cb_Category.SelectedValue = selectedProduct.CategoryData.DataID;
-
-                btnDelete.IsEnabled = true;
-            }
-            else
-            {
-                cb_Supplier.SelectedValue = -1;
-                cb_Category.SelectedValue = -1;
-
-                btnDelete.IsEnabled = false;
-            }
-        }
-
-        private void cb_Category_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var selectedProduct = ListView_ProductList.SelectedItem as ProductFullDetail;
-            var selectedCategory = cb_Category.SelectedItem as CategoryData;
-
-            if (selectedProduct != null && selectedCategory != null && selectedProduct.CategoryData.DataID != selectedCategory.DataID)
-            {
-                selectedProduct.CategoryData.DataID = selectedCategory.DataID;
-                selectedProduct.CategoryData.CategoryName = selectedCategory.CategoryName;
-            }
-        }
-
-        private void cb_Supplier_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var selectedProduct = ListView_ProductList.SelectedItem as ProductFullDetail;
-            var selectedSupplier = cb_Supplier.SelectedItem as SupplierData;
-
-            if (selectedProduct != null && selectedSupplier != null && selectedProduct.SupplierData.DataID != selectedSupplier.DataID)
-            {
-                selectedProduct.SupplierData.DataID = selectedSupplier.DataID;
-                selectedProduct.SupplierData.SupplierName = selectedSupplier.SupplierName;
-            }
-        }
-
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        private void txtSearch_GotFocus(object sender, RoutedEventArgs e)
         {
             var searchTextBox = sender as TextBox;
             if (searchTextBox != null && searchTextBox.Text == "Suchen...")
@@ -77,7 +31,7 @@ namespace ProductManager
             }
         }
 
-        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        private void txtSearch_LostFocus(object sender, RoutedEventArgs e)
         {
             var searchTextBox = sender as TextBox;
             if (searchTextBox != null && searchTextBox.Text == "")
@@ -93,7 +47,6 @@ namespace ProductManager
 
         private void btnUpdate_Click(object sender, RoutedEventArgs e)
         {
-            //ProductDetailsRoot.DataContext = ListView_ProductList.SelectedItem;
             ProductDetailsRoot.BindingGroup.CommitEdit();
         }
 
