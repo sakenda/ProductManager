@@ -1,11 +1,10 @@
-﻿using ProductManager.Models;
-using ProductManager.Models.Database;
+﻿using ProductManager.Models.Product;
 using System;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace ProductManager.ViewModels
+namespace ProductManager.ViewModels.DatabaseData
 {
     public class Database : DatabaseProperties
     {
@@ -23,6 +22,7 @@ namespace ProductManager.ViewModels
                 if (_instance == null)
                 {
                     _instance = new Database();
+                    _instance.GetFullDetailProducts();
                 }
                 return _instance;
             }
@@ -39,8 +39,6 @@ namespace ProductManager.ViewModels
         public void GetFullDetailProducts()
         {
             ProductFullDetail product;
-            CategoryData categoryData;
-            SupplierData supplierData;
 
             this.CurrentProducts.Clear();
             this.DeletedProducts.Clear();
@@ -64,23 +62,15 @@ namespace ProductManager.ViewModels
                 {
                     while (reader.Read())
                     {
-                        categoryData = new CategoryData(
-                            DatabaseClientCast.DBToValue<int>(reader["CategoryID"]),
-                            reader[nameof(product.Category.CategoryName)].ToString()
-                            );
-                        supplierData = new SupplierData(
-                            DatabaseClientCast.DBToValue<int>(reader["SupplierID"]),
-                            reader[nameof(product.Supplier.SupplierName)].ToString()
-                            );
-
                         product = new ProductFullDetail(
-                            reader[nameof(product.ProductName)].ToString(),
-                            Convert.ToDouble(reader[nameof(product.Price)]),
-                            Convert.ToInt32(reader[nameof(product.Quantity)]),
-                            reader[nameof(product.Description)].ToString(),
-                            categoryData,
-                            supplierData
-                            );
+                                  reader[nameof(product.ProductName)].ToString(),
+                                  Convert.ToDouble(reader[nameof(product.Price)]),
+                                  Convert.ToInt32(reader[nameof(product.Quantity)]),
+                                  reader[nameof(product.Description)].ToString(),
+                                  DatabaseClientCast.DBToValue<int>(reader["CategoryID"]),
+                                  DatabaseClientCast.DBToValue<int>(reader["SupplierID"])
+                                  );
+
                         product.SetProductID((int)reader[nameof(product.ProductID)]);
 
                         CurrentProducts.Add(product);
@@ -126,8 +116,8 @@ namespace ProductManager.ViewModels
             cmd.Parameters.Add("@price", SqlDbType.Money).Value = product.Price;
             cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
             cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
-            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.Category.DataID.ValueToDb<int>();
-            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.Supplier.DataID.ValueToDb<int>();
+            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryID.ValueToDb<int>();
+            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierID.ValueToDb<int>();
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -152,8 +142,8 @@ namespace ProductManager.ViewModels
             cmd.Parameters.Add("@price", SqlDbType.Money).Value = product.Price;
             cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
             cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
-            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.Category.DataID.ValueToDb<int>();
-            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.Supplier.DataID.ValueToDb<int>();
+            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryID.ValueToDb<int>();
+            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierID.ValueToDb<int>();
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {

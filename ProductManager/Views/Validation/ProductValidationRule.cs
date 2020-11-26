@@ -1,4 +1,4 @@
-﻿using ProductManager.Models;
+﻿using ProductManager.Models.Product;
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,36 +15,22 @@ namespace ProductManager.Views.Validation
             if (bg.Items[0] is ProductFullDetail product)
             {
                 string name = (string)bg.GetValue(product, nameof(product.ProductName));
-                string price = (string)bg.GetValue(product, nameof(product.Price));
-                string quantity = (string)bg.GetValue(product, nameof(product.Quantity));
+                double price = (double)bg.GetValue(product, nameof(product.Price));
+                int quantity = (int)bg.GetValue(product, nameof(product.Quantity));
 
                 if (string.IsNullOrEmpty(name) || name.Length < 3)
                 {
                     errorMsg += "\nProduktname darf nicht weniger als drei Zeichen oder leer sein.";
                 }
 
-                if (double.TryParse(price, out double convPrice))
+                if (price < 0)
                 {
-                    if (convPrice < 0)
-                    {
-                        errorMsg += "\nDer Preis darf keinen negativen Wert haben.";
-                    }
-                }
-                else
-                {
-                    errorMsg += "\nUngültiges Format";
+                    errorMsg += "\nDer Preis darf keinen negativen Wert haben.";
                 }
 
-                if (int.TryParse(quantity, out int convQuantity))
+                if (quantity < 0)
                 {
-                    if (convQuantity < 0)
-                    {
-                        errorMsg += "\nDie Menge darf keinen negativen Wert haben.";
-                    }
-                }
-                else
-                {
-                    errorMsg += "\nUngültiges Format";
+                    errorMsg += "\nDie Menge darf keinen negativen Wert haben.";
                 }
             }
             else

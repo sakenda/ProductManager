@@ -1,9 +1,8 @@
-﻿using ProductManager.Models;
-using ProductManager.Models.Database;
+﻿using ProductManager.Models.Product.Metadata;
 using System.Collections.ObjectModel;
 using System.Data.SqlClient;
 
-namespace ProductManager.ViewModels
+namespace ProductManager.ViewModels.DatabaseData
 {
     public class DatabaseMetaData : DatabaseProperties
     {
@@ -29,15 +28,15 @@ namespace ProductManager.ViewModels
         private DatabaseMetaData()
         {
             CategoryList = new ObservableCollection<CategoryData>();
-            GetProductCategory();
+            GetCategoryFromDB();
 
             SupplierList = new ObservableCollection<SupplierData>();
-            GetProductSupplier();
+            GetSupplierFromDB();
         }
 
         #endregion Singleton
 
-        private void GetProductSupplier()
+        private void GetSupplierFromDB()
         {
             SqlCommand cmd = new SqlCommand("")
             {
@@ -65,7 +64,7 @@ namespace ProductManager.ViewModels
             }
         }
 
-        private void GetProductCategory()
+        private void GetCategoryFromDB()
         {
             SqlCommand cmd = new SqlCommand("")
             {

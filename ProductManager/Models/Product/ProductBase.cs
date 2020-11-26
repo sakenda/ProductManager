@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
-namespace ProductManager.Models
+namespace ProductManager.Models.Product
 {
     public class ProductBase : PropertyObservable
     {

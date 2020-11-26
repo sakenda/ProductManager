@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:ProductManager"
       xmlns:validation="clr-namespace:ProductManager.Views.Validation"
+      xmlns:database="clr-namespace:ProductManager.ViewModels.DatabaseData"
       mc:Ignorable="d"
       d:DesignHeight="1080"
       d:DesignWidth="1920"
@@ -15,8 +16,11 @@
     <!-- Ressources -->
     <Page.Resources>
 
+        <validation:CategoryValueConverter x:Key="CategoryConv" />
+        <validation:SupplierValueConverter x:Key="SupplierConv" />
+
         <Style TargetType="ListView">
-            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="-3" />
             <Setter Property="Background" Value="{StaticResource dGrau}" />
             <Setter Property="ItemContainerStyle">
@@ -49,8 +53,8 @@
         </Style>
 
         <Style TargetType="GridViewColumnHeader">
-            <Setter Property="Background" Value="{StaticResource dGrau}" />
-            <Setter Property="Foreground" Value="{StaticResource hSchriftv1}" />
+            <Setter Property="Background" Value="{StaticResource hGrau}" />
+            <Setter Property="Foreground" Value="{StaticResource dSchriftv1}" />
             <Setter Property="Height" Value="50" />
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="FontSize" Value="14" />
@@ -101,6 +105,7 @@
                    FontWeight="Light"
                    FontSize="24"
                    Foreground="White" />
+            <TextBox Width="250" />
         </StackPanel>
 
         <!-- SUCHFELD -->
@@ -142,7 +147,7 @@
                     </StackPanel>
                 </Button.Content>
             </Button>
-            <Button Name="btnDelete" Width="150" Margin="5 10 5 10" Click="btnDelete_Click">
+            <Button Name="btnDelete" Width="150" Margin="5 10 5 10" Click="btnDelete_Click" Background="{StaticResource Orange}">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Views/Shared/Icons/delete_white.png" Height="24" />
@@ -168,6 +173,7 @@
                       VerticalScrollBarVisibility="Auto"
                       CanContentScroll="True">
             <ListView Name="ListView_ProductList"
+                      ItemsSource="{Binding Source={x:Static database:Database.Instance}, Path=CurrentProducts}"
                       Background="White"
                       AlternationCount="2">
 
@@ -177,7 +183,7 @@
                         <!-- CheckBox isDirty -->
                         <GridViewColumn Width="60">
                             <GridViewColumn.Header>
-                                <Image Source="/Views/Shared/Icons/save_white.png" Height="25" />
+                                <Image Source="/Views/Shared/Icons/save_black.png" Height="25" />
                             </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
@@ -256,7 +262,7 @@
                                     <StackPanel Orientation="Vertical" Margin="10 10 0 10" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock d:Text="Obst"
-                                                       Text="{Binding Category.CategoryName}"
+                                                       Text="{Binding CategoryID, Converter={StaticResource CategoryConv}}"
                                                        FontSize="12"
                                                        FontWeight="Bold"
                                                        HorizontalAlignment="Center"
@@ -275,7 +281,7 @@
                                     <StackPanel Orientation="Vertical" Margin="10 10 0 10" HorizontalAlignment="Center" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                             <TextBlock d:Text="Firma Mohr"
-                                                       Text="{Binding Supplier.SupplierName}"
+                                                       Text="{Binding SupplierID, Converter={StaticResource SupplierConv}}"
                                                        FontSize="16"
                                                        FontWeight="Bold" />
                                         </StackPanel>
@@ -291,10 +297,6 @@
                         </GridViewColumn>
                     </GridView>
                 </ListView.View>
-                <d:ListViewItem d:IsSelected="True"></d:ListViewItem>
-                <d:ListViewItem></d:ListViewItem>
-                <d:ListViewItem></d:ListViewItem>
-                <d:ListViewItem></d:ListViewItem>
             </ListView>
         </ScrollViewer>
 
@@ -439,11 +441,19 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <ComboBox Name="cb_Category"
+                        <!--<ComboBox Name="cb_Category"
                                   Width="280"
                                   SelectedValue="{Binding Category.DataID}"
                                   DisplayMemberPath="{Binding Category.CategoryName}"
                                   SelectedItem="{Binding Category}"
+                                  Padding="5"
+                                  Margin="5" ></ComboBox>-->
+                        <ComboBox Name="cb_Category"
+                                  ItemsSource="{Binding Source={x:Static database:DatabaseMetaData.Instance}, Path=CategoryList}"
+                                  SelectedValue="{Binding CategoryID}"
+                                  SelectedValuePath="ID_Category"
+                                  DisplayMemberPath="Name_Category"
+                                  Width="280"
                                   Padding="5"
                                   Margin="5" />
                     </StackPanel>
@@ -456,11 +466,19 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <ComboBox Name="cb_Supplier"
+                        <!--<ComboBox Name="cb_Supplier"
                                   Width="280"
                                   SelectedValue="{Binding Supplier.DataID}"
                                   DisplayMemberPath="{Binding Supplier.SupplierName}"
                                   SelectedItem="{Binding Supplier}"
+                                  Padding="5"
+                                  Margin="5" />-->
+                        <ComboBox Name="cb_Supplier"
+                                  ItemsSource="{Binding Source={x:Static database:DatabaseMetaData.Instance}, Path=SupplierList}"
+                                  SelectedValue="{Binding SupplierID}"
+                                  SelectedValuePath="ID_Supplier"
+                                  DisplayMemberPath="Name_Supplier"
+                                  Width="280"
                                   Padding="5"
                                   Margin="5" />
                     </StackPanel>
@@ -497,6 +515,7 @@
 
                 <Button Name="btnCancel"
                         Click="btnCancel_Click"
+                        Background="{StaticResource Orange}"
                         Height="35"
                         Margin="10 5 10 10"
                         Grid.Column="3">

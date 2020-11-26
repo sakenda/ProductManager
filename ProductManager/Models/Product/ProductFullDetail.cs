@@ -1,7 +1,6 @@
-﻿using ProductManager.Models.Database;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
-namespace ProductManager.Models
+namespace ProductManager.Models.Product
 {
     public class ProductFullDetail : ProductBase, IDataErrorInfo
     {
@@ -9,20 +8,19 @@ namespace ProductManager.Models
         private string _Description;
         private double _Price;
         private int _Quantity;
+        private int? _CategoryID;
+        private int? _SupplierID;
 
-        private SupplierData _Supplier;
-        private CategoryData _Category;
-
-        public SupplierData Supplier
+        public int? SupplierID
         {
-            get => _Supplier;
-            set => SetProperty(ref _Supplier, value);
+            get => _SupplierID;
+            set => SetProperty(ref _SupplierID, value);
         }
 
-        public CategoryData Category
+        public int? CategoryID
         {
-            get => _Category;
-            set => SetProperty(ref _Category, value);
+            get => _CategoryID;
+            set => SetProperty(ref _CategoryID, value);
         }
 
         public virtual double Price
@@ -53,14 +51,14 @@ namespace ProductManager.Models
         {
         }
 
-        public ProductFullDetail(string name, double price, int quantity, string description, CategoryData category, SupplierData supplier) : base()
+        public ProductFullDetail(string name, double price, int quantity, string description, int? categoryID, int? supplierID) : base()
         {
             _ProductName = name;
             _Price = price;
             _Quantity = quantity;
             _Description = description;
-            _Category = category;
-            _Supplier = supplier;
+            _CategoryID = categoryID;
+            _SupplierID = supplierID;
         }
 
         public string Error => null;

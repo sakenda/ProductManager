@@ -1,6 +1,5 @@
-﻿using ProductManager.Models;
-using ProductManager.Models.Database;
-using ProductManager.ViewModels;
+﻿using ProductManager.Models.Product;
+using ProductManager.ViewModels.DatabaseData;
 using ProductManager.Views;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,10 +12,6 @@ namespace ProductManager
         public ProductsPage()
         {
             InitializeComponent();
-
-            InitializeComboBoxMetaData();
-            Database.Instance.GetFullDetailProducts();
-            ListView_ProductList.ItemsSource = Database.Instance.CurrentProducts;
         }
 
         #region Events
@@ -90,30 +85,5 @@ namespace ProductManager
         }
 
         #endregion Clicks
-
-        #region Methoden
-
-        private void InitializeComboBoxMetaData()
-        {
-            cb_Category.ItemsSource = DatabaseMetaData.Instance.CategoryList;
-            cb_Category.DisplayMemberPath = nameof(CategoryData.CategoryName);
-            cb_Category.SelectedValuePath = nameof(CategoryData.DataID);
-
-            cb_Supplier.ItemsSource = DatabaseMetaData.Instance.SupplierList;
-            cb_Supplier.DisplayMemberPath = nameof(SupplierData.SupplierName);
-            cb_Supplier.SelectedValuePath = nameof(SupplierData.DataID);
-
-            if (cb_Category.Items.Count > 0)
-            {
-                cb_Category.SelectedIndex = -1;
-            }
-
-            if (cb_Supplier.Items.Count > 0)
-            {
-                cb_Supplier.SelectedIndex = -1;
-            }
-        }
-
-        #endregion Methoden
     }
 }

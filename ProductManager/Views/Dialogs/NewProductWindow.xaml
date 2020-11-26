@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:validation="clr-namespace:ProductManager.Views.Validation"
+        xmlns:database="clr-namespace:ProductManager.ViewModels.DatabaseData"
+        xmlns:product="clr-namespace:ProductManager.Models.Product"
         mc:Ignorable="d"
         x:Name="_Window"
         WindowStartupLocation="CenterScreen"
@@ -12,15 +14,20 @@
         Height="500"
         Width="450"
         ResizeMode="NoResize">
-    <Window.BindingGroup>
-        <BindingGroup>
-            <BindingGroup.ValidationRules>
-                <validation:ProductValidationRule ValidationStep="CommittedValue" />
-            </BindingGroup.ValidationRules>
-        </BindingGroup>
-    </Window.BindingGroup>
+    <Window.Resources>
+        <validation:CategoryValueConverter x:Key="CategoryConv" />
+        <validation:SupplierValueConverter x:Key="SupplierConv" />
+        <product:ProductFullDetail x:Key="pers" />
+    </Window.Resources>
 
-    <Grid>
+    <Grid DataContext="{StaticResource pers}">
+        <Grid.BindingGroup>
+            <BindingGroup>
+                <BindingGroup.ValidationRules>
+                    <validation:ProductValidationRule />
+                </BindingGroup.ValidationRules>
+            </BindingGroup>
+        </Grid.BindingGroup>
 
         <StackPanel Orientation="Vertical"
                     Name="Context"
@@ -36,8 +43,7 @@
                            Margin="5 5 0 0"
                            FontSize="14"
                            VerticalAlignment="Center" />
-                <TextBox Text="{Binding ProductName}"
-                         x:Name="txt_Name"
+                <TextBox Text="{Binding Source={StaticResource pers}, Path=ProductName}"
                          d:Text="Produktname"
                          Width="280"
                          Padding="5"
@@ -52,8 +58,7 @@
                            Margin="5 5 0 0"
                            FontSize="14"
                            VerticalAlignment="Center" />
-                <TextBox Text="{Binding Price}"
-                         x:Name="txt_Price"
+                <TextBox Text="{Binding Source={StaticResource pers}, Path=Price}"
                          d:Text="2,99"
                          Width="80"
                          Padding="5"
@@ -67,7 +72,6 @@
                            FontSize="14"
                            VerticalAlignment="Center" />
                 <TextBox d:Text="20%"
-                         x:Name="txt_Marge"
                          Width="85"
                          Padding="5"
                          Margin="5" />
@@ -81,8 +85,7 @@
                            Margin="5 5 0 0"
                            FontSize="14"
                            VerticalAlignment="Center" />
-                <TextBox Text="{Binding Quantity}"
-                         x:Name="txt_Quantity"
+                <TextBox Text="{Binding Source={StaticResource pers}, Path=Quantity}"
                          d:Text="48"
                          Width="80"
                          Padding="5"
@@ -96,8 +99,7 @@
                            FontWeight="Bold"
                            Margin="5 10 0 0"
                            FontSize="14" />
-                <TextBox Text="{Binding Description}"
-                         x:Name="txt_Description"
+                <TextBox Text="{Binding Source={StaticResource pers}, Path=Description}"
                          d:Text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,"
                          Padding="5"
                          Margin="5"
@@ -120,7 +122,10 @@
                            FontSize="14"
                            VerticalAlignment="Center" />
                 <ComboBox Name="cb_Category"
-                          SelectedItem="{Binding Category}"
+                          ItemsSource="{Binding Source={x:Static database:DatabaseMetaData.Instance}, Path=CategoryList}"
+                          SelectedValue="{Binding Source={StaticResource pers}, Path=CategoryID}"
+                          SelectedValuePath="ID_Category"
+                          DisplayMemberPath="Name_Category"
                           Width="280"
                           Padding="5"
                           Margin="5" />
@@ -135,7 +140,10 @@
                            FontSize="14"
                            VerticalAlignment="Center" />
                 <ComboBox Name="cb_Supplier"
-                          SelectedItem="{Binding Supplier}"
+                          ItemsSource="{Binding Source={x:Static database:DatabaseMetaData.Instance}, Path=SupplierList}"
+                          SelectedValue="{Binding Source={StaticResource pers}, Path=SupplierID}"
+                          SelectedValuePath="ID_Supplier"
+                          DisplayMemberPath="Name_Supplier"
                           Width="280"
                           Padding="5"
                           Margin="5" />
@@ -154,7 +162,7 @@
                            TextWrapping="WrapWithOverflow" />
 
                 <StackPanel Orientation="Horizontal" Margin="0">
-                    <Button x:Name="btnCreate" Content="Erstellen" Width="190" Height="35" Click="btnCreate_Click" />
+                    <Button x:Name="btnCreate" Content="Erstellen" Width="190" Click="btnCreate_Click" Height="35" />
                     <Button x:Name="btnCancel" Content="Abbrechen" Width="190" Click="btnCancel_Click" Background="{StaticResource Orange}" />
                 </StackPanel>
             </StackPanel>
