@@ -6,6 +6,7 @@
       xmlns:local="clr-namespace:ProductManager"
       xmlns:validation="clr-namespace:ProductManager.Views.Validation"
       xmlns:database="clr-namespace:ProductManager.ViewModels.DatabaseData"
+      xmlns:product="clr-namespace:ProductManager.Models.Product"
       mc:Ignorable="d"
       d:DesignHeight="1080"
       d:DesignWidth="1920"
@@ -18,63 +19,8 @@
 
         <validation:CategoryValueConverter x:Key="CategoryConv" />
         <validation:SupplierValueConverter x:Key="SupplierConv" />
-
-        <Style TargetType="ListView">
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="Padding" Value="-3" />
-            <Setter Property="Background" Value="{StaticResource dGrau}" />
-            <Setter Property="ItemContainerStyle">
-                <Setter.Value>
-
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Background" Value="{StaticResource hGrau}" />
-                        <Setter Property="Foreground" Value="{StaticResource dSchriftv1}" />
-                        <Setter Property="Margin" Value="1 -1" />
-                        <Setter Property="BorderBrush" Value="{StaticResource dGrau}" />
-                        <Setter Property="VerticalContentAlignment" Value="Center" />
-                        <Style.Triggers>
-                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                <Setter Property="Background" Value="White" />
-                            </Trigger>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="{StaticResource dBlau}" />
-                                <Setter Property="Foreground" Value="{StaticResource hSchriftv1}" />
-                                <Setter Property="BorderBrush" Value="{StaticResource dGrau}" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource hBlau}" />
-                                <Setter Property="Foreground" Value="{StaticResource hSchriftv1}" />
-                                <Setter Property="BorderBrush" Value="{StaticResource dGrau}" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style TargetType="GridViewColumnHeader">
-            <Setter Property="Background" Value="{StaticResource hGrau}" />
-            <Setter Property="Foreground" Value="{StaticResource dSchriftv1}" />
-            <Setter Property="Height" Value="50" />
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="HorizontalContentAlignment" Value="Center" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="GridViewColumnHeader">
-
-                        <Grid Background="{TemplateBinding Background}">
-                            <Border BorderBrush="Black" BorderThickness="0 1 0 1" Margin="-1 1" />
-                            <Label Content="{TemplateBinding Content}"
-                                   Foreground="{TemplateBinding Foreground}"
-                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <validation:DoubleValueConverter x:Key="DoubleConv" />
+        <validation:IntegerValueConverter x:Key="IntegerConv" />
     </Page.Resources>
 
     <Grid>
@@ -105,7 +51,6 @@
                    FontWeight="Light"
                    FontSize="24"
                    Foreground="White" />
-            <TextBox Width="250" />
         </StackPanel>
 
         <!-- SUCHFELD -->
@@ -115,19 +60,6 @@
                     Orientation="Horizontal"
                     Background="{StaticResource hGrau}"
                     Height="50">
-            <StackPanel.Style>
-                <Style>
-                    <Setter Property="Border.Effect">
-                        <Setter.Value>
-                            <DropShadowEffect ShadowDepth="3"
-                                      Direction="330"
-                                      Color="Black"
-                                      Opacity="0.5"
-                                      BlurRadius="4" />
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </StackPanel.Style>
 
             <Image DockPanel.Dock="Left" Source="/Views/Shared/Icons/search_black.png" Width="30" Margin="10 0 -5 0" />
             <TextBox Text="Suchen..."
@@ -165,139 +97,180 @@
             </Button>
         </StackPanel>
 
-        <!-- LISTVIEW -->
-        <ScrollViewer Grid.Row="2"
-                      Grid.Column="0"
-                      Margin="10"
-                      HorizontalScrollBarVisibility="Auto"
-                      VerticalScrollBarVisibility="Auto"
-                      CanContentScroll="True">
-            <ListView Name="ListView_ProductList"
-                      ItemsSource="{Binding Source={x:Static database:Database.Instance}, Path=CurrentProducts}"
-                      Background="White"
-                      AlternationCount="2">
+        <!-- PRODUKTLISTE -->
 
-                <ListView.View>
-                    <GridView>
+        <!-- Custom ColumnHeader -->
+        <DockPanel Grid.Row="2" Grid.Column="0">
+            <Grid DockPanel.Dock="Top" Background="{StaticResource hGrau}" VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Name="prodColumn1" Width="60" />
+                    <ColumnDefinition Name="prodColumn2" Width="300" />
+                    <ColumnDefinition Name="prodColumn3" Width="160" />
+                    <ColumnDefinition Name="prodColumn4" Width="170" />
+                    <ColumnDefinition Name="prodColumn5" Width="120" />
+                    <ColumnDefinition Name="prodColumn6" Width="200" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="41" />
+                    <RowDefinition Height="2" />
+                </Grid.RowDefinitions>
 
-                        <!-- CheckBox isDirty -->
-                        <GridViewColumn Width="60">
-                            <GridViewColumn.Header>
-                                <Image Source="/Views/Shared/Icons/save_black.png" Height="25" />
-                            </GridViewColumn.Header>
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
+                <Image Grid.Row="0" Grid.Column="0" Source="/Views/Shared/Icons/save_black.png" Height="25" />
+                <Border Grid.Row="1" Grid.Column="0" Background="{StaticResource dGrau}" Margin="10 0 10 0" />
 
-                                    <StackPanel>
-                                        <CheckBox IsEnabled="False"
-                                                  IsChecked="{Binding isDirty, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
+                <TextBlock Grid.Row="0" Grid.Column="1"
+                           Text="PRODUKT"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           FontWeight="Bold" />
+                <Border Grid.Row="1" Grid.Column="1" Background="{StaticResource dGrau}" Margin="10 0 10 0" />
+
+                <TextBlock Grid.Row="0" Grid.Column="2"
+                           Text="PREIS"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           FontWeight="Bold" />
+                <Border Grid.Row="1" Grid.Column="2" Background="{StaticResource dGrau}" Margin="10 0 10 0" />
+
+                <TextBlock Grid.Row="0" Grid.Column="3"
+                           Text="BESTAND"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           FontWeight="Bold" />
+                <Border Grid.Row="1" Grid.Column="3" Background="{StaticResource dGrau}" Margin="10 0 10 0" />
+
+                <TextBlock Grid.Row="0" Grid.Column="4"
+                           Text="KATEGORIE"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           FontWeight="Bold" />
+                <Border Grid.Row="1" Grid.Column="4" Background="{StaticResource dGrau}" Margin="10 0 10 0" />
+
+                <TextBlock Grid.Row="0" Grid.Column="5"
+                           Text="HERSTELLER"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           FontWeight="Bold" />
+                <Border Grid.Row="1" Grid.Column="5" Background="{StaticResource dGrau}" Margin="10 0 10 0" />
+            </Grid>
+            <Border BorderBrush="{StaticResource dGrau}" BorderThickness="0 0 0 1" Background="{StaticResource hGrau}" />
+        </DockPanel>
+
+        <!-- Liste -->
+        <ScrollViewer Grid.Row="2" Grid.Column="0"
+                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" CanContentScroll="False"
+                      Margin="0, 50, 0, 0">
+
+            <ListBox Name="lbProducts"
+                         ItemsSource="{Binding Source={x:Static database:Database.Instance}, Path=CurrentProducts}"
+                         AlternationCount="2">
+
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="Foreground" Value="{StaticResource dSchriftv1}" />
+                        <Style.Triggers>
+                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                <Setter Property="Background" Value="{StaticResource hGrau}" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource dSchriftv1}" />
+                                <Setter Property="Background" Value="{StaticResource dBlau}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource dSchriftv1}" />
+                                <Setter Property="Background" Value="{StaticResource hBlau}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type product:ProductFullDetail}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding ElementName=prodColumn1, Path=Width}" />
+                                <ColumnDefinition Width="{Binding ElementName=prodColumn2, Path=Width}" />
+                                <ColumnDefinition Width="{Binding ElementName=prodColumn3, Path=Width}" />
+                                <ColumnDefinition Width="{Binding ElementName=prodColumn4, Path=Width}" />
+                                <ColumnDefinition Width="{Binding ElementName=prodColumn5, Path=Width}" />
+                                <ColumnDefinition Width="{Binding ElementName=prodColumn6, Path=Width}" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- IsDirty -->
+                            <Grid Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <StackPanel>
+                                    <CheckBox IsChecked="{Binding isDirty, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- ProductName, Description -->
+                            <Grid Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <StackPanel Orientation="Vertical" Margin="10">
+                                    <TextBlock Text="{Binding ProductName, ValidatesOnDataErrors=True}"
+                                               FontSize="16"
+                                               FontWeight="Bold" />
+                                    <TextBlock Text="{Binding Description, ValidatesOnDataErrors=True}"
+                                               FontSize="12"
+                                               TextWrapping="WrapWithOverflow"
+                                               TextTrimming="WordEllipsis"
+                                               MaxHeight="60" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Price -->
+                            <Grid Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center">
+
+                                <StackPanel Orientation="Horizontal" Margin="10">
+                                    <TextBlock Text="EK-Preis:    "
+                                               FontWeight="Bold" />
+                                    <TextBlock Text="{Binding Price, ValidatesOnDataErrors=True}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Quantity -->
+                            <Grid Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0" Name="gridQuantity" />
+
+                                    <StackPanel Grid.Column="1" Margin="10" Orientation="Horizontal">
+                                        <TextBlock Text="Lager:    " FontWeight="Bold" />
+                                        <TextBlock Text="{Binding Quantity}" />
                                     </StackPanel>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
+                                </Grid>
+                            </Grid>
 
-                        <!-- Produkt -->
-                        <GridViewColumn Width="300" Header="PRODUKT">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
+                            <!-- Category -->
+                            <Grid Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock d:Text="Obst"
+                                           Text="{Binding CategoryID, Converter={StaticResource CategoryConv}}"
+                                           FontWeight="Bold"
+                                           FontSize="16" />
+                            </Grid>
 
-                                    <StackPanel Orientation="Vertical" Margin="10 10 0 10">
-                                        <TextBlock d:Text="Produktname" Text="{Binding ProductName}"
-                                                   FontSize="16"
-                                                   FontWeight="Bold" />
-                                        <TextBlock d:Text="Beschreibung"
-                                                   Text="{Binding Description}"
-                                                   FontSize="12"
-                                                   TextWrapping="WrapWithOverflow"
-                                                   TextTrimming="WordEllipsis"
-                                                   MaxHeight="60" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
+                            <!-- Supplier -->
+                            <Grid Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock d:Text="Firma 1"
+                                           Text="{Binding SupplierID, Converter={StaticResource SupplierConv}}"
+                                           FontWeight="Bold"
+                                           FontSize="16" />
+                            </Grid>
+                        </Grid>
 
-                        <!-- Preis -->
-                        <GridViewColumn Width="160" Header="PREIS">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-
-                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="10 10 0 10">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="EK-Preis: " FontSize="16" FontWeight="Bold" />
-                                            <TextBlock d:Text="5,99" Text="{Binding Price}" FontSize="16" />
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="Marge: " FontSize="12" />
-                                            <TextBlock d:Text="12%" FontSize="12" FontWeight="Bold" />
-                                        </StackPanel>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-
-                        <!-- Bestand -->
-                        <GridViewColumn Width="120" Header="BESTAND">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-
-                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="10 10 0 10">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="Lager: " FontSize="16" FontWeight="Bold" />
-                                            <TextBlock d:Text="99" Text="{Binding Quantity}" FontSize="16" />
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="Bestellt: " FontSize="12" />
-                                            <TextBlock d:Text="10" FontSize="12" FontWeight="Bold" />
-                                        </StackPanel>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-
-                        <!-- Kategorie -->
-                        <GridViewColumn Width="200" Header="KATEGORIE">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-
-                                    <StackPanel Orientation="Vertical" Margin="10 10 0 10" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock d:Text="Obst"
-                                                       Text="{Binding CategoryID, Converter={StaticResource CategoryConv}}"
-                                                       FontSize="12"
-                                                       FontWeight="Bold"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center" />
-                                        </StackPanel>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-
-                        <!-- Hersteller -->
-                        <GridViewColumn Width="200" Header="HERSTELLER">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-
-                                    <StackPanel Orientation="Vertical" Margin="10 10 0 10" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <TextBlock d:Text="Firma Mohr"
-                                                       Text="{Binding SupplierID, Converter={StaticResource SupplierConv}}"
-                                                       FontSize="16"
-                                                       FontWeight="Bold" />
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <TextBlock d:Text="Straße 134, 66386 St. Ingbert"
-                                                       TextWrapping="WrapWithOverflow"
-                                                       FontSize="12"
-                                                       FontWeight="Bold" />
-                                        </StackPanel>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding OutOfStock}" Value="True">
+                                <Setter Property="Background" Value="Red" TargetName="gridQuantity" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding RestockThreshold}" Value="True">
+                                <Setter Property="Background" Value="Orange" TargetName="gridQuantity" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </ScrollViewer>
 
         <!-- PRODUKTFELD -->
@@ -305,14 +278,13 @@
         <Grid Grid.Row="2"
               Grid.Column="1"
               Name="ProductDetailsRoot"
-              DataContext="{Binding ElementName=ListView_ProductList, Path=SelectedItem}"
-              Background="{StaticResource hGrau}"
-              Margin="10 10 0 10">
+              DataContext="{Binding ElementName=lbProducts, Path=SelectedItem}"
+              Background="White"
+              Margin="0">
 
             <Grid.RowDefinitions>
-                <RowDefinition MaxHeight="400" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <Grid.BindingGroup>
@@ -323,25 +295,30 @@
                 </BindingGroup>
             </Grid.BindingGroup>
 
-            <!-- Produktbild -->
-            <Grid Grid.Row="0">
-
-                <Border BorderBrush="{StaticResource dGrau}" BorderThickness="1" Margin="10">
-                    <Grid>
-                        <ScrollViewer>
-                            <Image Source="/Views/Shared/Images/testImage.png" Stretch="UniformToFill" />
-                        </ScrollViewer>
-
-                        <Button Width="35" Height="35" HorizontalAlignment="Left" VerticalAlignment="Top">
-                            <Image Source="/Views/Shared/Icons/add_white.png" Height="30" />
-                        </Button>
-                    </Grid>
-                </Border>
-            </Grid>
-
             <!-- Produktfelder -->
-            <ScrollViewer Grid.Row="1">
-                <StackPanel Orientation="Vertical" Name="ProductDetailsPanel" Margin="10 0 0 10">
+            <ScrollViewer Grid.Row="0">
+                <StackPanel Orientation="Vertical" Name="ProductDetailsPanel" Margin="10 3 10 10">
+
+                    <Border BorderBrush="{StaticResource dGrau}" BorderThickness="1" Margin="5 10 10 5">
+                        <Border.Style>
+                            <Style>
+                                <Setter Property="TextBox.Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect ShadowDepth="3" Direction="330" Color="Black" Opacity="0.5" BlurRadius="4" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Border.Style>
+                        <Grid>
+                            <ScrollViewer>
+                                <Image Source="/Views/Shared/Images/testImage.png" Stretch="UniformToFill" />
+                            </ScrollViewer>
+
+                            <Button Width="35" Height="35" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <Image Source="/Views/Shared/Icons/add_white.png" Height="30" />
+                            </Button>
+                        </Grid>
+                    </Border>
 
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="PRODUKTNAME"
@@ -366,7 +343,7 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <TextBox Text="{Binding Price, ValidatesOnDataErrors=True}"
+                        <TextBox Text="{Binding Price, ValidatesOnDataErrors=True, Converter={StaticResource DoubleConv}}"
                                  d:Text="2,99"
                                  Width="80"
                                  Padding="5"
@@ -393,7 +370,7 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <TextBox Text="{Binding Quantity, ValidatesOnDataErrors=True}"
+                        <TextBox Text="{Binding Quantity, ValidatesOnDataErrors=True, Converter={StaticResource IntegerConv}}"
                                  d:Text="48"
                                  Width="80"
                                  Padding="5"
@@ -441,13 +418,6 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <!--<ComboBox Name="cb_Category"
-                                  Width="280"
-                                  SelectedValue="{Binding Category.DataID}"
-                                  DisplayMemberPath="{Binding Category.CategoryName}"
-                                  SelectedItem="{Binding Category}"
-                                  Padding="5"
-                                  Margin="5" ></ComboBox>-->
                         <ComboBox Name="cb_Category"
                                   ItemsSource="{Binding Source={x:Static database:DatabaseMetaData.Instance}, Path=CategoryList}"
                                   SelectedValue="{Binding CategoryID}"
@@ -466,13 +436,6 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <!--<ComboBox Name="cb_Supplier"
-                                  Width="280"
-                                  SelectedValue="{Binding Supplier.DataID}"
-                                  DisplayMemberPath="{Binding Supplier.SupplierName}"
-                                  SelectedItem="{Binding Supplier}"
-                                  Padding="5"
-                                  Margin="5" />-->
                         <ComboBox Name="cb_Supplier"
                                   ItemsSource="{Binding Source={x:Static database:DatabaseMetaData.Instance}, Path=SupplierList}"
                                   SelectedValue="{Binding SupplierID}"

@@ -7,7 +7,6 @@
         xmlns:database="clr-namespace:ProductManager.ViewModels.DatabaseData"
         xmlns:product="clr-namespace:ProductManager.Models.Product"
         mc:Ignorable="d"
-        x:Name="_Window"
         WindowStartupLocation="CenterScreen"
         Title="Neues Produkt anlegen"
         Icon="/Views/Shared/Icons/add_black.png"
@@ -20,7 +19,7 @@
         <product:ProductFullDetail x:Key="pers" />
     </Window.Resources>
 
-    <Grid DataContext="{StaticResource pers}">
+    <Grid Name="grid" DataContext="{StaticResource pers}">
         <Grid.BindingGroup>
             <BindingGroup>
                 <BindingGroup.ValidationRules>
@@ -43,7 +42,7 @@
                            Margin="5 5 0 0"
                            FontSize="14"
                            VerticalAlignment="Center" />
-                <TextBox Text="{Binding Source={StaticResource pers}, Path=ProductName}"
+                <TextBox Text="{Binding ProductName, ValidatesOnDataErrors=True}"
                          d:Text="Produktname"
                          Width="280"
                          Padding="5"
@@ -58,7 +57,7 @@
                            Margin="5 5 0 0"
                            FontSize="14"
                            VerticalAlignment="Center" />
-                <TextBox Text="{Binding Source={StaticResource pers}, Path=Price}"
+                <TextBox Text="{Binding Path=Price, ValidatesOnDataErrors=True}"
                          d:Text="2,99"
                          Width="80"
                          Padding="5"
@@ -85,7 +84,7 @@
                            Margin="5 5 0 0"
                            FontSize="14"
                            VerticalAlignment="Center" />
-                <TextBox Text="{Binding Source={StaticResource pers}, Path=Quantity}"
+                <TextBox Text="{Binding Quantity, ValidatesOnDataErrors=True}"
                          d:Text="48"
                          Width="80"
                          Padding="5"
@@ -99,7 +98,7 @@
                            FontWeight="Bold"
                            Margin="5 10 0 0"
                            FontSize="14" />
-                <TextBox Text="{Binding Source={StaticResource pers}, Path=Description}"
+                <TextBox Text="{Binding Description}"
                          d:Text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,"
                          Padding="5"
                          Margin="5"
@@ -123,7 +122,7 @@
                            VerticalAlignment="Center" />
                 <ComboBox Name="cb_Category"
                           ItemsSource="{Binding Source={x:Static database:DatabaseMetaData.Instance}, Path=CategoryList}"
-                          SelectedValue="{Binding Source={StaticResource pers}, Path=CategoryID}"
+                          SelectedValue="{Binding CategoryID}"
                           SelectedValuePath="ID_Category"
                           DisplayMemberPath="Name_Category"
                           Width="280"
@@ -141,7 +140,7 @@
                            VerticalAlignment="Center" />
                 <ComboBox Name="cb_Supplier"
                           ItemsSource="{Binding Source={x:Static database:DatabaseMetaData.Instance}, Path=SupplierList}"
-                          SelectedValue="{Binding Source={StaticResource pers}, Path=SupplierID}"
+                          SelectedValue="{Binding SupplierID}"
                           SelectedValuePath="ID_Supplier"
                           DisplayMemberPath="Name_Supplier"
                           Width="280"
@@ -154,7 +153,7 @@
             <StackPanel Orientation="Vertical">
 
                 <TextBlock x:Name="errorInfo"
-                           Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=_Window}"
+                           Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=grid}"
                            d:Text="Fehler: Werte ungültig"
                            Foreground="Red"
                            FontSize="12"

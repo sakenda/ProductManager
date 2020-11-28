@@ -8,6 +8,9 @@ namespace ProductManager.Models.Product
         private string _Description;
         private double _Price;
         private int _Quantity;
+        private bool _OutOfStock;
+        private bool _RestockThreshold;
+
         private int? _CategoryID;
         private int? _SupplierID;
 
@@ -32,7 +35,24 @@ namespace ProductManager.Models.Product
         public virtual int Quantity
         {
             get => _Quantity;
-            set => SetProperty(ref _Quantity, value);
+            set
+            {
+                SetProperty(ref _Quantity, value);
+                RestockThreshold = Quantity <= 5 && Quantity >= 1;
+                OutOfStock = Quantity == 0;
+            }
+        }
+
+        public bool RestockThreshold
+        {
+            get => _RestockThreshold;
+            private set => SetProperty(ref _RestockThreshold, value);
+        }
+
+        public bool OutOfStock
+        {
+            get => _OutOfStock;
+            private set => SetProperty(ref _OutOfStock, value);
         }
 
         public string Description

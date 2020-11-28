@@ -9,7 +9,7 @@
         Icon="/Views/Shared/Icons/productmanager_black.png"
         Height="1080"
         Width="1920"
-        MinHeight="1000"
+        MinHeight="100"
         MinWidth="1200"
         WindowStartupLocation="CenterScreen"
         Topmost="False">

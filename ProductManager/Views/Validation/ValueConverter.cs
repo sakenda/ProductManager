@@ -33,4 +33,48 @@ namespace ProductManager.Views.Validation
             return DatabaseMetaData.Instance.SupplierList.Where(p => p.Name_Supplier == (string)value).Select(p => p.ID_Supplier).FirstOrDefault();
         }
     }
+
+    [ValueConversion(typeof(double), typeof(string))]
+    public class DoubleValueConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+            else
+            {
+                return ((double)value).ToString();
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string amount = value as string;
+            return System.Convert.ToDouble(amount);
+        }
+    }
+
+    [ValueConversion(typeof(int), typeof(string))]
+    public class IntegerValueConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+            else
+            {
+                return ((int)value).ToString();
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string amount = value as string;
+            return System.Convert.ToInt32(amount);
+        }
+    }
 }

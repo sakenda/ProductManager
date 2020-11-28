@@ -40,25 +40,15 @@ namespace ProductManager
 
         #region Clicks
 
-        private void btnUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            ProductDetailsRoot.BindingGroup.CommitEdit();
-        }
+        private void btnUpdate_Click(object sender, RoutedEventArgs e) => ProductDetailsRoot.BindingGroup.CommitEdit();
 
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
-        {
-            ProductDetailsRoot.BindingGroup.CancelEdit();
-        }
+        private void btnCancel_Click(object sender, RoutedEventArgs e) => ProductDetailsRoot.BindingGroup.CancelEdit();
 
-        private void btnNew_Click(object sender, RoutedEventArgs e)
-        {
-            NewProductWindow newProductWindow = new NewProductWindow();
-            newProductWindow.ShowDialog();
-        }
+        private void btnNew_Click(object sender, RoutedEventArgs e) => new NewProductWindow().ShowDialog();
 
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            if (ListView_ProductList.SelectedItem is ProductFullDetail selectedProduct)
+            if (lbProducts.SelectedItem is ProductFullDetail selectedProduct)
             {
                 Database.Instance.DeletedProducts.Add(selectedProduct);
                 Database.Instance.CurrentProducts.Remove(selectedProduct);
@@ -71,7 +61,6 @@ namespace ProductManager
                                                       "Speichern...",
                                                       MessageBoxButton.YesNo,
                                                       MessageBoxImage.Question);
-
             switch (result)
             {
                 case MessageBoxResult.Yes:

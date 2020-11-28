@@ -24,6 +24,7 @@
                 <Setter Property="FontFamily" Value="Segoe MDL2" />
                 <Setter Property="FontSize" Value="14" />
                 <Setter Property="Foreground" Value="{StaticResource dSchriftv1}" />
+                <Setter Property="Background" Value="White" />
             </Style>
         </ResourceDictionary>
     </Application.Resources>
