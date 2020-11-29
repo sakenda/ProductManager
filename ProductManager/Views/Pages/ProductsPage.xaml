@@ -4,7 +4,8 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:ProductManager"
-      xmlns:validation="clr-namespace:ProductManager.Views.Validation"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:helper="clr-namespace:ProductManager.Views.Helper"
       xmlns:database="clr-namespace:ProductManager.ViewModels.DatabaseData"
       xmlns:product="clr-namespace:ProductManager.Models.Product"
       mc:Ignorable="d"
@@ -16,11 +17,10 @@
 
     <!-- Ressources -->
     <Page.Resources>
-        <validation:CategoryValueConverter x:Key="CategoryConv" />
-        <validation:SupplierValueConverter x:Key="SupplierConv" />
-        <validation:DoubleValueConverter x:Key="DoubleConv" />
-        <validation:IntegerValueConverter x:Key="IntegerConv" />
-        <validation:StringValidationRules x:Key="StringValidation" />
+        <helper:IntegerValueConverter x:Key="IntegerConv" />
+        <helper:DoubleValueConverter x:Key="DoubleConv" />
+        <helper:CategoryValueConverter x:Key="CategoryConv" />
+        <helper:SupplierValueConverter x:Key="SupplierConv" />
     </Page.Resources>
 
     <Grid>
@@ -111,7 +111,7 @@
                     <ColumnDefinition Name="prodColumn6" Width="200" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="41" />
+                    <RowDefinition Height="35" />
                     <RowDefinition Height="2" />
                 </Grid.RowDefinitions>
 
@@ -157,8 +157,8 @@
                       Margin="0, 50, 0, 0">
 
             <ListBox Name="lbProducts"
-                         ItemsSource="{Binding Source={x:Static database:Database.Instance}, Path=CurrentProducts}"
-                         AlternationCount="2">
+                     ItemsSource="{Binding Source={x:Static database:Database.Instance}, Path=CurrentProducts}"
+                     AlternationCount="2">
 
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
@@ -277,7 +277,6 @@
         <!-- Aufklappbares Feld mit Details des selektierten Produktes -->
         <Grid Grid.Row="2"
               Grid.Column="1"
-              Name="ProductDetailsRoot"
               DataContext="{Binding ElementName=lbProducts, Path=SelectedItem}"
               Background="{StaticResource hGrau}"
               Margin="0">
@@ -289,7 +288,7 @@
 
             <!-- Produktbild -->
             <Grid Grid.Row="0">
-                <Border BorderBrush="{StaticResource dGrau}" BorderThickness="1" Margin="10 10 40 5">
+                <Border BorderBrush="{StaticResource dGrau}" BorderThickness="1" Margin="10 50 40 5">
                     <Border.Style>
                         <Style>
                             <Setter Property="TextBox.Effect">
@@ -328,9 +327,10 @@
                                  Width="280"
                                  Padding="5"
                                  Margin="5">
-                            <Binding Path="ProductName" UpdateSourceTrigger="PropertyChanged">
+                            <Binding Path="ProductName"
+                                     UpdateSourceTrigger="LostFocus">
                                 <Binding.ValidationRules>
-                                    <validation:StringValidationRules />
+                                    <helper:StringValidationRule />
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox>
@@ -344,18 +344,21 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <TextBox Width="80"
+                        <TextBox Width="100"
                                  Padding="5"
                                  Margin="5 5 15 5">
-                            <Binding Path="Price" UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource DoubleConv}">
+                            <Binding Path="Price"
+                                     UpdateSourceTrigger="LostFocus"
+                                     Converter="{StaticResource DoubleConv}">
                                 <Binding.ValidationRules>
-                                    <validation:StringValidationRules />
+                                    <helper:NumericValidationRule ValidationType="{x:Type sys:Double}"
+                                                                  ValidatesOnTargetUpdated="True" />
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox>
 
                         <TextBlock Text="MARGE"
-                                   Width="90"
+                                   Width="70"
                                    Padding="0"
                                    FontWeight="Bold"
                                    Margin="5 5 0 0"
@@ -375,18 +378,21 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <TextBox Width="80"
+                        <TextBox Width="100"
                                  Padding="5"
                                  Margin="5 5 15 5">
-                            <Binding Path="Quantity" UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource IntegerConv}">
+                            <Binding Path="Quantity"
+                                     UpdateSourceTrigger="LostFocus"
+                                     Converter="{StaticResource IntegerConv}">
                                 <Binding.ValidationRules>
-                                    <validation:StringValidationRules />
+                                    <helper:NumericValidationRule ValidationType="{x:Type sys:Int32}"
+                                                                  ValidatesOnTargetUpdated="True" />
                                 </Binding.ValidationRules>
                             </Binding>
                         </TextBox>
 
                         <TextBlock Text="BESTELLT"
-                                   Width="90"
+                                   Width="70"
                                    Padding="0"
                                    FontWeight="Bold"
                                    Margin="5 5 0 0"
@@ -414,7 +420,7 @@
                                  TextWrapping="WrapWithOverflow"
                                  MaxLines="20"
                                  VerticalContentAlignment="Top"
-                                 VerticalScrollBarVisibility="Auto" /> " />
+                                 VerticalScrollBarVisibility="Auto" />
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
@@ -454,16 +460,6 @@
                     </StackPanel>
                 </StackPanel>
             </ScrollViewer>
-
-            <!-- ErrorLabel -->
-            <StackPanel Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom">
-                <TextBlock d:Text="Fehler: Werte sind falsch."
-                               Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=tbProductName}"
-                               TextWrapping="WrapWithOverflow"
-                               FontSize="14"
-                               Foreground="{StaticResource Orange}"
-                               Padding="5" />
-            </StackPanel>
         </Grid>
     </Grid>
 </Page>

@@ -20,9 +20,16 @@
         <Setter Property="Validation.ErrorTemplate">
             <Setter.Value>
                 <ControlTemplate>
-                    <Border BorderBrush="Red" BorderThickness="0 0 0 2">
+                    <Grid>
+
+                        <Image Source="/Views/Shared/Icons/announcement_red.png"
+                               ToolTip="{Binding ElementName=adorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
+                               Margin="0 0 5 0"
+                               Height="20"
+                               HorizontalAlignment="Right" />
+                        <Border BorderBrush="Red" BorderThickness="0 0 0 3" />
                         <AdornedElementPlaceholder Name="adorner" />
-                    </Border>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 
-namespace ProductManager.Views.Validation
+namespace ProductManager.Views.Helper
 {
     [ValueConversion(typeof(int?), typeof(string))]
     public class CategoryValueConverter : IValueConverter
