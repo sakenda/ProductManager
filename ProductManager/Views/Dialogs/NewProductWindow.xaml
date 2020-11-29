@@ -19,14 +19,7 @@
         <product:ProductFullDetail x:Key="pers" />
     </Window.Resources>
 
-    <Grid Name="grid" DataContext="{StaticResource pers}">
-        <Grid.BindingGroup>
-            <BindingGroup>
-                <BindingGroup.ValidationRules>
-                    <validation:ProductValidationRule />
-                </BindingGroup.ValidationRules>
-            </BindingGroup>
-        </Grid.BindingGroup>
+    <Grid DataContext="{StaticResource pers}">
 
         <StackPanel Orientation="Vertical"
                     Name="Context"
@@ -42,7 +35,7 @@
                            Margin="5 5 0 0"
                            FontSize="14"
                            VerticalAlignment="Center" />
-                <TextBox Text="{Binding ProductName, ValidatesOnDataErrors=True}"
+                <TextBox Text="{Binding ProductName}"
                          d:Text="Produktname"
                          Width="280"
                          Padding="5"
@@ -57,7 +50,7 @@
                            Margin="5 5 0 0"
                            FontSize="14"
                            VerticalAlignment="Center" />
-                <TextBox Text="{Binding Path=Price, ValidatesOnDataErrors=True}"
+                <TextBox Text="{Binding Path=Price}"
                          d:Text="2,99"
                          Width="80"
                          Padding="5"
@@ -84,7 +77,7 @@
                            Margin="5 5 0 0"
                            FontSize="14"
                            VerticalAlignment="Center" />
-                <TextBox Text="{Binding Quantity, ValidatesOnDataErrors=True}"
+                <TextBox Text="{Binding Quantity}"
                          d:Text="48"
                          Width="80"
                          Padding="5"
@@ -152,8 +145,7 @@
         <DockPanel HorizontalAlignment="Center" VerticalAlignment="Bottom">
             <StackPanel Orientation="Vertical">
 
-                <TextBlock x:Name="errorInfo"
-                           Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=grid}"
+                <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=grid}"
                            d:Text="Fehler: Werte ungültig"
                            Foreground="Red"
                            FontSize="12"

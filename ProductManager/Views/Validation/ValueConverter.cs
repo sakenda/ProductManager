@@ -52,6 +52,12 @@ namespace ProductManager.Views.Validation
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string amount = value as string;
+
+            if (string.IsNullOrEmpty(amount))
+            {
+                return null;
+            }
+
             return System.Convert.ToDouble(amount);
         }
     }
@@ -74,6 +80,12 @@ namespace ProductManager.Views.Validation
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string amount = value as string;
+
+            if (string.IsNullOrEmpty(amount))
+            {
+                return null;
+            }
+
             return System.Convert.ToInt32(amount);
         }
     }

@@ -17,34 +17,14 @@
                 <DropShadowEffect ShadowDepth="3" Direction="330" Color="Black" Opacity="0.5" BlurRadius="4" />
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-
-            <Trigger Property="Validation.HasError" Value="true">
-                <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="BorderBrush" Value="Red" />
-                <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
-            </Trigger>
-
-            <!--<Trigger Property="Validation.ErrorTemplate">
-                        <Trigger.Value>
-                            <ControlTemplate>
-                                <Border BorderBrush="Red" BorderThickness="0 0 0 2">
-                                    <Grid>
-                                        <AdornedElementPlaceholder />
-                                        <TextBlock ToolTip="{Binding ElementName=adorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
-                                                   Foreground="Red"
-                                                   VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 10 0">
-                                            <InlineUIContainer>
-                                                <Image Source="/Shared/Icons/warning_red.png" Height="25" />
-                                            </InlineUIContainer>
-                                        </TextBlock>
-
-                                        <AdornedElementPlaceholder Name="adorner" />
-                                    </Grid>
-                                </Border>
-                            </ControlTemplate>
-                        </Trigger.Value>
-                    </Trigger>-->
-        </Style.Triggers>
+        <Setter Property="Validation.ErrorTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border BorderBrush="Red" BorderThickness="0 0 0 2">
+                        <AdornedElementPlaceholder Name="adorner" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 </ResourceDictionary>

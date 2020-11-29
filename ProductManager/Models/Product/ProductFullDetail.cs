@@ -2,7 +2,7 @@
 
 namespace ProductManager.Models.Product
 {
-    public class ProductFullDetail : ProductBase, IDataErrorInfo
+    public class ProductFullDetail : ProductBase
     {
         private string _ProductName;
         private string _Description;
@@ -79,40 +79,6 @@ namespace ProductManager.Models.Product
             _Description = description;
             _CategoryID = categoryID;
             _SupplierID = supplierID;
-        }
-
-        public string Error => null;
-
-        public string this[string propertyName]
-        {
-            get
-            {
-                if (propertyName == nameof(Price))
-                {
-                    if (_Price < 0)
-                    {
-                        return "Preis darf nicht Negativ sein";
-                    }
-                }
-
-                if (propertyName == nameof(Quantity))
-                {
-                    if (_Price < 0)
-                    {
-                        return "Menge darf nicht Negativ sein";
-                    }
-                }
-
-                if (propertyName == nameof(ProductName))
-                {
-                    if (string.IsNullOrEmpty(_ProductName) || _ProductName.Length < 3)
-                    {
-                        return "Produktname darf nicht leer oder weniger als drei Zeichen sein.";
-                    }
-                }
-
-                return null;
-            }
         }
     }
 }

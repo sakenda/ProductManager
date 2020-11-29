@@ -16,11 +16,11 @@
 
     <!-- Ressources -->
     <Page.Resources>
-
         <validation:CategoryValueConverter x:Key="CategoryConv" />
         <validation:SupplierValueConverter x:Key="SupplierConv" />
         <validation:DoubleValueConverter x:Key="DoubleConv" />
         <validation:IntegerValueConverter x:Key="IntegerConv" />
+        <validation:StringValidationRules x:Key="StringValidation" />
     </Page.Resources>
 
     <Grid>
@@ -279,46 +279,42 @@
               Grid.Column="1"
               Name="ProductDetailsRoot"
               DataContext="{Binding ElementName=lbProducts, Path=SelectedItem}"
-              Background="White"
+              Background="{StaticResource hGrau}"
               Margin="0">
-
             <Grid.RowDefinitions>
+                <RowDefinition MaxHeight="500" MinHeight="150" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid.BindingGroup>
-                <BindingGroup>
-                    <BindingGroup.ValidationRules>
-                        <validation:ProductValidationRule />
-                    </BindingGroup.ValidationRules>
-                </BindingGroup>
-            </Grid.BindingGroup>
+            <!-- Produktbild -->
+            <Grid Grid.Row="0">
+                <Border BorderBrush="{StaticResource dGrau}" BorderThickness="1" Margin="10 10 40 5">
+                    <Border.Style>
+                        <Style>
+                            <Setter Property="TextBox.Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect ShadowDepth="3" Direction="330" Color="Black" Opacity="0.5" BlurRadius="4" />
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Border.Style>
+                    <Grid>
+                        <ScrollViewer>
+                            <Image Source="/Views/Shared/Images/testImage.png" Stretch="UniformToFill" />
+                        </ScrollViewer>
+
+                        <Button Width="35" Height="35" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <Image Source="/Views/Shared/Icons/add_white.png" Height="30" />
+                        </Button>
+                    </Grid>
+                </Border>
+            </Grid>
 
             <!-- Produktfelder -->
-            <ScrollViewer Grid.Row="0">
-                <StackPanel Orientation="Vertical" Name="ProductDetailsPanel" Margin="10 3 10 10">
-
-                    <Border BorderBrush="{StaticResource dGrau}" BorderThickness="1" Margin="5 10 10 5">
-                        <Border.Style>
-                            <Style>
-                                <Setter Property="TextBox.Effect">
-                                    <Setter.Value>
-                                        <DropShadowEffect ShadowDepth="3" Direction="330" Color="Black" Opacity="0.5" BlurRadius="4" />
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Border.Style>
-                        <Grid>
-                            <ScrollViewer>
-                                <Image Source="/Views/Shared/Images/testImage.png" Stretch="UniformToFill" />
-                            </ScrollViewer>
-
-                            <Button Width="35" Height="35" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                <Image Source="/Views/Shared/Icons/add_white.png" Height="30" />
-                            </Button>
-                        </Grid>
-                    </Border>
+            <ScrollViewer Grid.Row="1">
+                <StackPanel Orientation="Vertical"
+                            Margin="10 3 10 10">
 
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="PRODUKTNAME"
@@ -328,11 +324,16 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <TextBox Text="{Binding ProductName, ValidatesOnDataErrors=True}"
-                                 d:Text="Produktname"
+                        <TextBox Name="tbProductName"
                                  Width="280"
                                  Padding="5"
-                                 Margin="5" />
+                                 Margin="5">
+                            <Binding Path="ProductName" UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <validation:StringValidationRules />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
@@ -343,11 +344,15 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <TextBox Text="{Binding Price, ValidatesOnDataErrors=True, Converter={StaticResource DoubleConv}}"
-                                 d:Text="2,99"
-                                 Width="80"
+                        <TextBox Width="80"
                                  Padding="5"
-                                 Margin="5 5 15 5" />
+                                 Margin="5 5 15 5">
+                            <Binding Path="Price" UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource DoubleConv}">
+                                <Binding.ValidationRules>
+                                    <validation:StringValidationRules />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox>
 
                         <TextBlock Text="MARGE"
                                    Width="90"
@@ -370,11 +375,15 @@
                                    Margin="5 5 0 0"
                                    FontSize="14"
                                    VerticalAlignment="Center" />
-                        <TextBox Text="{Binding Quantity, ValidatesOnDataErrors=True, Converter={StaticResource IntegerConv}}"
-                                 d:Text="48"
-                                 Width="80"
+                        <TextBox Width="80"
                                  Padding="5"
-                                 Margin="5 5 15 5" />
+                                 Margin="5 5 15 5">
+                            <Binding Path="Quantity" UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource IntegerConv}">
+                                <Binding.ValidationRules>
+                                    <validation:StringValidationRules />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox>
 
                         <TextBlock Text="BESTELLT"
                                    Width="90"
@@ -404,10 +413,8 @@
                                  Width="280"
                                  TextWrapping="WrapWithOverflow"
                                  MaxLines="20"
-                                 VerticalScrollBarVisibility="Auto"
-                                 HorizontalScrollBarVisibility="Disabled"
                                  VerticalContentAlignment="Top"
-                                 HorizontalContentAlignment="Left" />
+                                 VerticalScrollBarVisibility="Auto" /> " />
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
@@ -448,54 +455,14 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <!-- Buttons Aktualisieren/Abbrechen -->
+            <!-- ErrorLabel -->
             <StackPanel Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom">
-
                 <TextBlock d:Text="Fehler: Werte sind falsch."
-                           Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=ProductDetailsRoot}"
-                           x:Name="errorInfo"
-                           TextWrapping="WrapWithOverflow"
-                           FontSize="14"
-                           Foreground="Red"
-                           Margin="10 5 10 -5"
-                           Padding="0" />
-
-                <Button Name="btnUpdate"
-                        Click="btnUpdate_Click"
-                        Height="35"
-                        Margin="10 10 10 5"
-                        Grid.Column="3">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Views/Shared/Icons/save_white.png" Height="24" Margin="0 0 5 0" />
-                            <TextBlock Text="Produkt aktualisieren"
-                                       TextWrapping="WrapWithOverflow"
-                                       Foreground="{StaticResource hSchriftv1}"
-                                       VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
-
-                <Button Name="btnCancel"
-                        Click="btnCancel_Click"
-                        Background="{StaticResource Orange}"
-                        Height="35"
-                        Margin="10 5 10 10"
-                        Grid.Column="3">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="/Views/Shared/Icons/add_white.png" Height="24">
-                                <Image.LayoutTransform>
-                                    <RotateTransform Angle="45" />
-                                </Image.LayoutTransform>
-                            </Image>
-                            <TextBlock Text="Abbrechen"
-                                   TextWrapping="WrapWithOverflow"
-                                   Foreground="{StaticResource hSchriftv1}"
-                                   VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
+                               Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=tbProductName}"
+                               TextWrapping="WrapWithOverflow"
+                               FontSize="14"
+                               Foreground="{StaticResource Orange}"
+                               Padding="5" />
             </StackPanel>
         </Grid>
     </Grid>

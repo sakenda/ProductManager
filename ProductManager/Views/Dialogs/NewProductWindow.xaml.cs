@@ -13,16 +13,12 @@ namespace ProductManager.Views
 
         private void btnCreate_Click(object sender, RoutedEventArgs e)
         {
-            if (grid.BindingGroup.CommitEdit())
-            {
-                Database.Instance.CurrentProducts.Add((ProductFullDetail)TryFindResource("pers"));
-                this.Close();
-            }
+            Database.Instance.CurrentProducts.Add((ProductFullDetail)TryFindResource("pers"));
+            this.Close();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            grid.BindingGroup.CancelEdit();
             this.DialogResult = false;
             this.Close();
         }

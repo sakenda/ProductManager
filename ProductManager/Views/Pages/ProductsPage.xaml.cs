@@ -40,10 +40,6 @@ namespace ProductManager
 
         #region Clicks
 
-        private void btnUpdate_Click(object sender, RoutedEventArgs e) => ProductDetailsRoot.BindingGroup.CommitEdit();
-
-        private void btnCancel_Click(object sender, RoutedEventArgs e) => ProductDetailsRoot.BindingGroup.CancelEdit();
-
         private void btnNew_Click(object sender, RoutedEventArgs e) => new NewProductWindow().ShowDialog();
 
         private void btnDelete_Click(object sender, RoutedEventArgs e)
