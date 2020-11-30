@@ -49,26 +49,26 @@ namespace ProductManager.ViewModels.DatabaseData
                 bool isCategory = categoryId == null ? false : true;
                 bool isSupplier = supplierId == null ? false : true;
 
-                builder.Append("select p.ProductID, p.ProductName, p.Price, p.Quantity, p.Description, p.CategoryID, p.SupplierID, c.CategoryName, s.SupplierName ");
-                builder.Append("from Products p ");
-                builder.Append("left join Categories c on c.CategoryID = p.CategoryID ");
-                builder.Append("left join Suppliers s on s.SupplierID = p.SupplierID ");
+                builder.Append("select p.product_id, p.product_name, p.product_price, p.product_quantity, p.product_description, p.product_category_id, p.product_supplier_id, c.category_name, s.supplier_name ");
+                builder.Append("from products p ");
+                builder.Append("left join categories c on c.category_id = p.product_category_id ");
+                builder.Append("left join suppliers s on s.supplier_id = p.product_supplier_id ");
 
                 if (isCategory)
                 {
-                    builder.Append($"where p.CategoryID = {categoryId} ");
+                    builder.Append($"where p.product_category_id = {categoryId} ");
 
                     if (isSupplier)
                     {
-                        builder.Append($"and p.SupplierID = { supplierId} ");
+                        builder.Append($"and p.product_supplier_id = { supplierId} ");
                     }
                 }
                 else
                 {
-                    builder.Append($"where p.SupplierID = { supplierId} ");
+                    builder.Append($"where p.product_supplier_id = { supplierId} ");
                 }
 
-                builder.Append("order by p.ProductID ");
+                builder.Append("order by p.product_id ");
 
                 ClearProductLists();
 
@@ -87,15 +87,15 @@ namespace ProductManager.ViewModels.DatabaseData
                         while (reader.Read())
                         {
                             product = new ProductFullDetail(
-                                      reader[nameof(product.ProductName)].ToString(),
-                                      Convert.ToDouble(reader[nameof(product.Price)]),
-                                      Convert.ToInt32(reader[nameof(product.Quantity)]),
-                                      reader[nameof(product.Description)].ToString(),
-                                      DatabaseClientCast.DBToValue<int>(reader["CategoryID"]),
-                                      DatabaseClientCast.DBToValue<int>(reader["SupplierID"])
+                                      reader["product_name"].ToString(),
+                                      Convert.ToDouble(reader["product_price"]),
+                                      Convert.ToInt32(reader["product_quantity"]),
+                                      reader["product_description"].ToString(),
+                                      DatabaseClientCast.DBToValue<int>(reader["product_category_id"]),
+                                      DatabaseClientCast.DBToValue<int>(reader["product_supplier_id"])
                                       );
 
-                            product.SetProductID((int)reader[nameof(product.ProductID)]);
+                            product.SetProductID((int)reader["product_id"]);
 
                             CurrentProducts.Add(product);
                         }
@@ -120,12 +120,19 @@ namespace ProductManager.ViewModels.DatabaseData
 
                 SqlCommand cmd = new SqlCommand("")
                 {
-                    CommandText = "select p.ProductID, p.ProductName, p.Price, p.Quantity, p.Description, "
-                                + "p.CategoryID, c.CategoryName, s.SupplierID, s.SupplierName "
+                    CommandText = "select p.product_id, "
+                                + "p.product_name, "
+                                + "p.product_price, "
+                                + "p.product_quantity, "
+                                + "p.product_description, "
+                                + "p.product_category_id, "
+                                + "p.product_supplier_id, "
+                                + "c.category_name, "
+                                + "s.supplier_name "
                                 + "from Products p "
-                                + "left join Categories c on p.CategoryID = c.CategoryID "
-                                + "left join Suppliers s on p.SupplierID = s.SupplierID "
-                                + "order by p.ProductID"
+                                + "left join categories c on p.product_category_id = c.category_id "
+                                + "left join suppliers s on p.product_supplier_id = s.supplier_id "
+                                + "order by p.product_id "
                 };
 
                 using (SqlConnection conn = new SqlConnection(DBCONNECTION))
@@ -138,15 +145,15 @@ namespace ProductManager.ViewModels.DatabaseData
                         while (reader.Read())
                         {
                             product = new ProductFullDetail(
-                                      reader[nameof(product.ProductName)].ToString(),
-                                      Convert.ToDouble(reader[nameof(product.Price)]),
-                                      Convert.ToInt32(reader[nameof(product.Quantity)]),
-                                      reader[nameof(product.Description)].ToString(),
-                                      DatabaseClientCast.DBToValue<int>(reader["CategoryID"]),
-                                      DatabaseClientCast.DBToValue<int>(reader["SupplierID"])
+                                      reader["product_name"].ToString(),
+                                      Convert.ToDouble(reader["product_price"]),
+                                      Convert.ToInt32(reader["product_quantity"]),
+                                      reader["product_description"].ToString(),
+                                      DatabaseClientCast.DBToValue<int>(reader["product_category_id"]),
+                                      DatabaseClientCast.DBToValue<int>(reader["product_supplier_id"])
                                       );
 
-                            product.SetProductID((int)reader[nameof(product.ProductID)]);
+                            product.SetProductID((int)reader["product_id"]);
 
                             CurrentProducts.Add(product);
                         }
@@ -243,9 +250,9 @@ namespace ProductManager.ViewModels.DatabaseData
             string sql;
             SqlCommand cmd;
 
-            sql = "update Products set ProductName = @productName, Price = @price, Quantity = @quantity, Description = @description, "
-                + "                     CategoryID = @categoryID, SupplierID = @supplierID "
-                + "where ProductID = @id";
+            sql = "update products set product_name = @productName, product_price = @price, product_quantity = @quantity, product_description = @description, "
+                + "                     product_category_id = @categoryID, product_supplier_id = @supplierID "
+                + "where product_id = @id";
 
             cmd = new SqlCommand(sql);
 
@@ -272,8 +279,8 @@ namespace ProductManager.ViewModels.DatabaseData
             string sql;
             SqlCommand cmd;
 
-            sql = "insert into Products(ProductName, Price, Quantity, Description, CategoryID, SupplierID) "
-                + "         values (@productName, @price, @quantity, @description, @categoryID, @supplierID)";
+            sql = "insert into products(product_name, product_price, product_quantity, product_description, product_category_id, product_supplier_id) "
+                + "             values (@productName, @price, @quantity, @description, @categoryID, @supplierID)";
 
             cmd = new SqlCommand(sql);
             cmd.Parameters.Add("@productName", SqlDbType.NVarChar).Value = product.ProductName.StringToDb();

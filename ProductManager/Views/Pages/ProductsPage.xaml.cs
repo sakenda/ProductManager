@@ -3,6 +3,7 @@ using ProductManager.Models.Product.Metadata;
 using ProductManager.ViewModels.DatabaseData;
 using ProductManager.Views;
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -11,9 +12,33 @@ namespace ProductManager
 {
     public partial class ProductsPage : Page
     {
+        public bool isAscending { get; set; } = true;
+
+        private SortDescription sortByName;
+        private SortDescription sortByPrice;
+        private SortDescription sortByQuantity;
+        private SortDescription sortByCategory;
+        private SortDescription sortBySupplier;
+
         public ProductsPage()
         {
             InitializeComponent();
+
+            sortByName = new SortDescription(nameof(ProductFullDetail.ProductName), isAscending == true ? ListSortDirection.Ascending : ListSortDirection.Descending);
+            sortByPrice = new SortDescription(nameof(ProductFullDetail.Price), isAscending == true ? ListSortDirection.Ascending : ListSortDirection.Descending);
+            sortByQuantity = new SortDescription(nameof(ProductFullDetail.Quantity), isAscending == true ? ListSortDirection.Ascending : ListSortDirection.Descending);
+            sortByCategory = new SortDescription(nameof(ProductFullDetail.CategoryID), isAscending == true ? ListSortDirection.Ascending : ListSortDirection.Descending);
+            sortBySupplier = new SortDescription(nameof(ProductFullDetail.SupplierID), isAscending == true ? ListSortDirection.Ascending : ListSortDirection.Descending);
+
+            cbSort.Items.Add("Produktname");
+            cbSort.Items.Add("Preis");
+            cbSort.Items.Add("Bestand");
+            cbSort.Items.Add("Kategorie");
+            cbSort.Items.Add("Hersteller");
+            cbSort.SelectedIndex = 0;
+
+            lbProducts.Items.SortDescriptions.Add(sortByName);
+            lbProducts.SelectedIndex = 0;
         }
 
         #region Events
@@ -152,6 +177,36 @@ namespace ProductManager
                     break;
 
                 case MessageBoxResult.Cancel:
+                    break;
+            }
+        }
+
+        private void cbSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            lbProducts?.Items.SortDescriptions.Clear();
+
+            string choice = cbSort.SelectedItem.ToString();
+
+            switch (choice)
+            {
+                case "Produktname":
+                    lbProducts.Items.SortDescriptions.Add(sortByName);
+                    break;
+
+                case "Preis":
+                    lbProducts.Items.SortDescriptions.Add(sortByPrice);
+                    break;
+
+                case "Bestand":
+                    lbProducts.Items.SortDescriptions.Add(sortByQuantity);
+                    break;
+
+                case "Kategorie":
+                    lbProducts.Items.SortDescriptions.Add(sortByCategory);
+                    break;
+
+                case "Hersteller":
+                    lbProducts.Items.SortDescriptions.Add(sortBySupplier);
                     break;
             }
         }

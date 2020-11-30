@@ -18,6 +18,7 @@
 		<None Remove="Views\Shared\Icons\save_white.png" />
 		<None Remove="Views\Shared\Icons\search_black.png" />
 		<None Remove="Views\Shared\Icons\shipping_white.png" />
+		<None Remove="Views\Shared\Icons\sort_black.png" />
 		<None Remove="Views\Shared\Icons\users_white.png" />
 		<None Remove="Views\Shared\Icons\warning_red.png" />
 		<None Remove="Views\Shared\Images\notavailable.jpg" />
@@ -61,6 +62,9 @@
 		</Resource>
 		<Resource Include="Views\Shared\Icons\shipping_white.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Views\Shared\Icons\sort_black.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Views\Shared\Icons\users_white.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

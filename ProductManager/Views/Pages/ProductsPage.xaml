@@ -28,6 +28,7 @@
             <RowDefinition Height="{Binding ElementName=spHeader, Path=Height}" />
             <RowDefinition Height="{Binding ElementName=spSuchfeld, Path=Height}" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="{Binding ElementName=spInteraktion, Path=Height}" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -58,16 +59,11 @@
                     Grid.ColumnSpan="2"
                     Name="spSuchfeld"
                     Orientation="Horizontal"
-                    Background="{StaticResource hGrau}"
-                    Height="100">
+                    Background="{StaticResource hBlau}">
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="50" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+            <Grid Height="50">
 
-                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
 
                     <Image DockPanel.Dock="Left" Source="/Views/Shared/Icons/search_black.png" Width="30" Margin="10 0 -5 0" />
                     <TextBox Text="Suchen..."
@@ -81,6 +77,7 @@
 
                     <Image Source="/Views/Shared/Icons/filter_black.png" Width="30" Margin="10 0 10 0" VerticalAlignment="Center" />
                     <ComboBox ItemsSource="{Binding Source={x:Static database:DatabaseMetaData.Instance}, Path=CategoryList}"
+                              SelectedIndex="0"
                               SelectedValue="{Binding CategoryID}"
                               SelectedValuePath="ID_Category"
                               DisplayMemberPath="Name_Category"
@@ -90,6 +87,7 @@
                               Height="30"
                               Margin="0 0 20 0" />
                     <ComboBox ItemsSource="{Binding Source={x:Static database:DatabaseMetaData.Instance}, Path=SupplierList}"
+                              SelectedIndex="0"
                               SelectedValue="{Binding SupplierID}"
                               SelectedValuePath="ID_Supplier"
                               DisplayMemberPath="Name_Supplier"
@@ -97,41 +95,24 @@
                               Name="filter_cbSupplier"
                               Width="200"
                               Height="30"
-                              Margin="0">
-                    </ComboBox>
-                </StackPanel>
+                              Margin="0" />
 
-                <StackPanel Grid.Row="1" Orientation="Horizontal">
-                    <Button Name="btnNew" Width="150" Margin="10 10 5 10" Click="btnNew_Click">
-                        <Button.Content>
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="/Views/Shared/Icons/add_white.png" Height="24" />
-                                <Label Content="Neu" Foreground="{StaticResource hSchriftv1}" />
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
-                    <Button Name="btnDelete" Width="150" Margin="5 10 5 10" Click="btnDelete_Click" Background="{StaticResource Orange}">
-                        <Button.Content>
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="/Views/Shared/Icons/delete_white.png" Height="24" />
-                                <Label Content="Löschen" Foreground="{StaticResource hSchriftv1}" />
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
-                    <Button Name="btnSave" Width="170" Margin="5 10 5 10" Click="btnSave_Click">
-                        <Button.Content>
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="/Views/Shared/Icons/save_white.png" Height="24" />
-                                <Label Content="Speichern in DB" Foreground="{StaticResource hSchriftv1}" />
-                            </StackPanel>
-                        </Button.Content>
-                    </Button>
+                    <Image Source="/Views/Shared/Icons/sort_black.png" Width="30" Margin="10 0 10 0" VerticalAlignment="Center" />
+                    <ComboBox Name="cbSort"
+                              SelectedIndex="0"
+                              SelectionChanged="cbSort_SelectionChanged"
+                              Width="200"
+                              Height="30"
+                              Margin="0 0 20 0" />
+                    <!--<CheckBox Name="chbDortOrder"
+                              IsChecked="{Binding Path=isAscending, Mode=TwoWay}"
+                              Content="Aufsteigend"
+                              VerticalAlignment="Center" />-->
                 </StackPanel>
             </Grid>
         </StackPanel>
 
         <!-- PRODUKTLISTE -->
-
         <!-- Custom ColumnHeader -->
         <DockPanel Grid.Row="2" Grid.Column="0">
             <Grid DockPanel.Dock="Top" Background="{StaticResource hGrau}" VerticalAlignment="Stretch">
@@ -183,7 +164,6 @@
             </Grid>
             <Border BorderBrush="{StaticResource dGrau}" BorderThickness="0 0 0 1" Background="{StaticResource hGrau}" />
         </DockPanel>
-
         <!-- Liste -->
         <ScrollViewer Grid.Row="2" Grid.Column="0"
                       HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Visible" CanContentScroll="False"
@@ -306,10 +286,46 @@
             </ListBox>
         </ScrollViewer>
 
+        <!-- PRODUKT INTERAKTION -->
+        <StackPanel Grid.Row="3"
+                    Grid.Column="0"
+                    Name="spInteraktion"
+                    Orientation="Horizontal"
+                    Height="50"
+                    Background="{StaticResource hGrau}">
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <Button Name="btnNew" Width="150" Margin="10 10 5 10" Click="btnNew_Click">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Views/Shared/Icons/add_white.png" Height="24" />
+                            <Label Content="Neu" Foreground="{StaticResource hSchriftv1}" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Name="btnDelete" Width="150" Margin="5 10 5 10" Click="btnDelete_Click" Background="{StaticResource Orange}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Views/Shared/Icons/delete_white.png" Height="24" />
+                            <Label Content="Löschen" Foreground="{StaticResource hSchriftv1}" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Name="btnSave" Width="170" Margin="5 10 5 10" Click="btnSave_Click">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Views/Shared/Icons/save_white.png" Height="24" />
+                            <Label Content="Speichern in DB" Foreground="{StaticResource hSchriftv1}" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+
         <!-- PRODUKTFELD -->
         <!-- Aufklappbares Feld mit Details des selektierten Produktes -->
         <Grid Grid.Row="2"
               Grid.Column="1"
+              Grid.RowSpan="2"
               DataContext="{Binding ElementName=lbProducts, Path=SelectedItem}"
               Background="{StaticResource hGrau}"
               Margin="0">

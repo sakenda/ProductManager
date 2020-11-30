@@ -42,9 +42,9 @@ namespace ProductManager.ViewModels.DatabaseData
         {
             SqlCommand cmd = new SqlCommand("")
             {
-                CommandText = "select s.SupplierID, s.SupplierName "
-                            + "from Suppliers s "
-                            + "order by s.SupplierID"
+                CommandText = "select s.supplier_id, s.supplier_name "
+                            + "from suppliers s "
+                            + "order by s.supplier_id"
             };
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
@@ -58,8 +58,8 @@ namespace ProductManager.ViewModels.DatabaseData
                     {
                         SupplierList.Add(
                             new SupplierData(
-                                (int?)reader["SupplierID"],
-                                (string)reader["SupplierName"]
+                                (int?)reader["supplier_id"],
+                                (string)reader["supplier_name"]
                                 ));
                     }
                 }
@@ -70,9 +70,9 @@ namespace ProductManager.ViewModels.DatabaseData
         {
             SqlCommand cmd = new SqlCommand("")
             {
-                CommandText = "select c.CategoryID, c.CategoryName "
-                            + "from Categories c "
-                            + "order by c.CategoryID"
+                CommandText = "select c.category_id, c.category_name "
+                            + "from categories c "
+                            + "order by c.category_id"
             };
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
@@ -86,8 +86,8 @@ namespace ProductManager.ViewModels.DatabaseData
                     {
                         CategoryList.Add(
                             new CategoryData(
-                                (int?)reader["CategoryID"],
-                                (string)reader["CategoryName"]
+                                (int?)reader["category_id"],
+                                (string)reader["category_name"]
                                 ));
                     }
                 }
