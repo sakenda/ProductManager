@@ -59,42 +59,75 @@
                     Name="spSuchfeld"
                     Orientation="Horizontal"
                     Background="{StaticResource hGrau}"
-                    Height="50">
+                    Height="100">
 
-            <Image DockPanel.Dock="Left" Source="/Views/Shared/Icons/search_black.png" Width="30" Margin="10 0 -5 0" />
-            <TextBox Text="Suchen..."
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+
+                    <Image DockPanel.Dock="Left" Source="/Views/Shared/Icons/search_black.png" Width="30" Margin="10 0 -5 0" />
+                    <TextBox Text="Suchen..."
                      Name="txtSearch"
                      GotFocus="txtSearch_GotFocus"
                      LostFocus="txtSearch_LostFocus"
                      Foreground="{StaticResource hSchriftv2}"
                      Width="400"
                      Margin="10 10 5 10">
-            </TextBox>
+                    </TextBox>
 
-            <Button Name="btnNew" Width="150" Margin="5 10 5 10" Click="btnNew_Click">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="/Views/Shared/Icons/add_white.png" Height="24" />
-                        <Label Content="Neu" Foreground="{StaticResource hSchriftv1}" />
-                    </StackPanel>
-                </Button.Content>
-            </Button>
-            <Button Name="btnDelete" Width="150" Margin="5 10 5 10" Click="btnDelete_Click" Background="{StaticResource Orange}">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="/Views/Shared/Icons/delete_white.png" Height="24" />
-                        <Label Content="Löschen" Foreground="{StaticResource hSchriftv1}" />
-                    </StackPanel>
-                </Button.Content>
-            </Button>
-            <Button Name="btnSave" Width="170" Margin="5 10 5 10" Click="btnSave_Click">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="/Views/Shared/Icons/save_white.png" Height="24" />
-                        <Label Content="Speichern in DB" Foreground="{StaticResource hSchriftv1}" />
-                    </StackPanel>
-                </Button.Content>
-            </Button>
+                    <Image Source="/Views/Shared/Icons/filter_black.png" Width="30" Margin="10 0 10 0" VerticalAlignment="Center" />
+                    <ComboBox ItemsSource="{Binding Source={x:Static database:DatabaseMetaData.Instance}, Path=CategoryList}"
+                              SelectedValue="{Binding CategoryID}"
+                              SelectedValuePath="ID_Category"
+                              DisplayMemberPath="Name_Category"
+                              SelectionChanged="FilterCategory_SelectionChanged"
+                              Name="filter_cbCategory"
+                              Width="200"
+                              Height="30"
+                              Margin="0 0 20 0" />
+                    <ComboBox ItemsSource="{Binding Source={x:Static database:DatabaseMetaData.Instance}, Path=SupplierList}"
+                              SelectedValue="{Binding SupplierID}"
+                              SelectedValuePath="ID_Supplier"
+                              DisplayMemberPath="Name_Supplier"
+                              SelectionChanged="FilterSupplier_SelectionChanged"
+                              Name="filter_cbSupplier"
+                              Width="200"
+                              Height="30"
+                              Margin="0">
+                    </ComboBox>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <Button Name="btnNew" Width="150" Margin="10 10 5 10" Click="btnNew_Click">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Views/Shared/Icons/add_white.png" Height="24" />
+                                <Label Content="Neu" Foreground="{StaticResource hSchriftv1}" />
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                    <Button Name="btnDelete" Width="150" Margin="5 10 5 10" Click="btnDelete_Click" Background="{StaticResource Orange}">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Views/Shared/Icons/delete_white.png" Height="24" />
+                                <Label Content="Löschen" Foreground="{StaticResource hSchriftv1}" />
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                    <Button Name="btnSave" Width="170" Margin="5 10 5 10" Click="btnSave_Click">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/Views/Shared/Icons/save_white.png" Height="24" />
+                                <Label Content="Speichern in DB" Foreground="{StaticResource hSchriftv1}" />
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </Grid>
         </StackPanel>
 
         <!-- PRODUKTLISTE -->

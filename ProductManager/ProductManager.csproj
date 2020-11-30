@@ -11,6 +11,7 @@
 		<None Remove="Views\Shared\Icons\add_white.png" />
 		<None Remove="Views\Shared\Icons\announcement_red.png" />
 		<None Remove="Views\Shared\Icons\delete_white.png" />
+		<None Remove="Views\Shared\Icons\filter_black.png" />
 		<None Remove="Views\Shared\Icons\productmanager_black.png" />
 		<None Remove="Views\Shared\Icons\products_white.png" />
 		<None Remove="Views\Shared\Icons\save_black.png" />
@@ -39,6 +40,9 @@
 		</Resource>
 		<Resource Include="Views\Shared\Icons\delete_white.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Views\Shared\Icons\filter_black.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Views\Shared\Icons\productmanager_black.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

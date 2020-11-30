@@ -28,9 +28,11 @@ namespace ProductManager.ViewModels.DatabaseData
         private DatabaseMetaData()
         {
             CategoryList = new ObservableCollection<CategoryData>();
+            CategoryList.Add(new CategoryData(null, null));
             GetCategoryFromDB();
 
             SupplierList = new ObservableCollection<SupplierData>();
+            SupplierList.Add(new SupplierData(null, null));
             GetSupplierFromDB();
         }
 

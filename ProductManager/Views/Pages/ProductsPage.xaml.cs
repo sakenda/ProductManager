@@ -1,6 +1,8 @@
 ﻿using ProductManager.Models.Product;
+using ProductManager.Models.Product.Metadata;
 using ProductManager.ViewModels.DatabaseData;
 using ProductManager.Views;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -38,8 +40,6 @@ namespace ProductManager
 
         #endregion Events
 
-        #region Clicks
-
         private void btnNew_Click(object sender, RoutedEventArgs e) => new NewProductWindow().ShowDialog();
 
         private void btnDelete_Click(object sender, RoutedEventArgs e)
@@ -69,6 +69,91 @@ namespace ProductManager
             }
         }
 
-        #endregion Clicks
+        private void FilterCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lbProducts != null)
+            {
+                var selectedSupplierID = ((SupplierData)filter_cbSupplier.SelectedItem).ID_Supplier;
+                var selectedCategoryID = ((CategoryData)filter_cbCategory.SelectedItem).ID_Category;
+
+                if (selectedCategoryID == null && selectedSupplierID == null)
+                {
+                    try
+                    {
+                        Database.Instance.GetFullDetailProducts();
+                    }
+                    catch (Exception ex)
+                    {
+                        SaveWarningHandler(ex, selectedCategoryID, selectedSupplierID);
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        Database.Instance.GetFilteredFullDetailProducts(selectedCategoryID, selectedSupplierID);
+                    }
+                    catch (Exception ex)
+                    {
+                        SaveWarningHandler(ex, selectedCategoryID, selectedSupplierID);
+                    }
+                }
+            }
+        }
+
+        private void FilterSupplier_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (lbProducts != null)
+            {
+                var selectedSupplierID = ((SupplierData)filter_cbSupplier.SelectedItem).ID_Supplier;
+                var selectedCategoryID = ((CategoryData)filter_cbCategory.SelectedItem).ID_Category;
+
+                if (selectedSupplierID == null && selectedCategoryID == null)
+                {
+                    try
+                    {
+                        Database.Instance.GetFullDetailProducts();
+                    }
+                    catch (Exception ex)
+                    {
+                        SaveWarningHandler(ex, selectedCategoryID, selectedSupplierID);
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        Database.Instance.GetFilteredFullDetailProducts(selectedCategoryID, selectedSupplierID);
+                    }
+                    catch (Exception ex)
+                    {
+                        SaveWarningHandler(ex, selectedCategoryID, selectedSupplierID);
+                    }
+                }
+            }
+        }
+
+        private void SaveWarningHandler(Exception ex, int? selectedCategoryID, int? selectedSupplierID)
+        {
+            MessageBoxResult result = MessageBox.Show($"{ex.Message} Wollen sie diese Speichern? Ansonsten gehen alle änderungen verloren.",
+                                                      "Warnung",
+                                                      MessageBoxButton.YesNoCancel,
+                                                      MessageBoxImage.Warning);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    Database.Instance.SaveProductList();
+                    Database.Instance.GetFilteredFullDetailProducts(selectedCategoryID, selectedSupplierID);
+                    break;
+
+                case MessageBoxResult.No:
+                    Database.Instance.ClearProductLists();
+                    Database.Instance.GetFilteredFullDetailProducts(selectedCategoryID, selectedSupplierID);
+                    break;
+
+                case MessageBoxResult.Cancel:
+                    break;
+            }
+        }
     }
 }
