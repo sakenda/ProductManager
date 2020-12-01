@@ -8,23 +8,24 @@
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Views/Resource/Colors.xaml" />
-                <ResourceDictionary Source="/Views/Resource/Btn_Blue.xaml" />
-                <ResourceDictionary Source="/Views/Resource/DefaultTextBox.xaml" />
-                <ResourceDictionary Source="/Views/Resource/DefaultComboBox.xaml" />
+                <ResourceDictionary Source="/Views/Resource/Colors.xaml"/>
+                <ResourceDictionary Source="/Views/Resource/Btn_Blue.xaml"/>
+                <ResourceDictionary Source="/Views/Resource/DefaultTextBox.xaml"/>
+                <ResourceDictionary Source="/Views/Resource/DefaultComboBox.xaml"/>
+                <ResourceDictionary Source="/Views/Resource/DefaultItemContainer.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <Style TargetType="Window">
-                <Setter Property="FontFamily" Value="Segoe MDL2" />
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="Foreground" Value="{StaticResource dSchriftv1}" />
+                <Setter Property="FontFamily" Value="Segoe MDL2"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
             </Style>
 
             <Style TargetType="Page">
-                <Setter Property="FontFamily" Value="Segoe MDL2" />
-                <Setter Property="FontSize" Value="14" />
-                <Setter Property="Foreground" Value="{StaticResource dSchriftv1}" />
-                <Setter Property="Background" Value="White" />
+                <Setter Property="FontFamily" Value="Segoe MDL2"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
+                <Setter Property="Background" Value="White"/>
             </Style>
         </ResourceDictionary>
     </Application.Resources>
@@ -33,10 +34,10 @@
 <!-- Mask nutzen um bilder einzufärben
         <Rectangle Width="30" Height="30">
             <Rectangle.Fill>
-                <SolidColorBrush Color="Red" />
+                <SolidColorBrush Color="Red"/>
             </Rectangle.Fill>
             <Rectangle.OpacityMask>
-                <ImageBrush ImageSource="/Shared/Icons/save_black.png" />
+                <ImageBrush ImageSource="/Shared/Icons/save_black.png"/>
             </Rectangle.OpacityMask>
         </Rectangle>
         -->

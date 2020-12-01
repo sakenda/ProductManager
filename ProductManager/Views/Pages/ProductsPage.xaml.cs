@@ -1,47 +1,40 @@
 ﻿using ProductManager.Models.Product;
-using ProductManager.Models.Product.Metadata;
 using ProductManager.ViewModels.DatabaseData;
 using ProductManager.Views;
 using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace ProductManager
 {
     public partial class ProductsPage : Page
     {
-        public bool isAscending { get; set; } = true;
+        private ListCollectionView view;
 
-        private SortDescription sortByName;
-        private SortDescription sortByPrice;
-        private SortDescription sortByQuantity;
-        private SortDescription sortByCategory;
-        private SortDescription sortBySupplier;
+        private SortDescription sortByName = new SortDescription(nameof(ProductFullDetail.ProductName), ListSortDirection.Ascending);
+        private SortDescription sortByPrice = new SortDescription(nameof(ProductFullDetail.Price), ListSortDirection.Ascending);
+        private SortDescription sortByQuantity = new SortDescription(nameof(ProductFullDetail.Quantity), ListSortDirection.Ascending);
+        private SortDescription sortByCategory = new SortDescription(nameof(ProductFullDetail.CategoryID), ListSortDirection.Ascending);
+        private SortDescription sortBySupplier = new SortDescription(nameof(ProductFullDetail.SupplierID), ListSortDirection.Ascending);
 
         public ProductsPage()
         {
             InitializeComponent();
 
-            sortByName = new SortDescription(nameof(ProductFullDetail.ProductName), isAscending == true ? ListSortDirection.Ascending : ListSortDirection.Descending);
-            sortByPrice = new SortDescription(nameof(ProductFullDetail.Price), isAscending == true ? ListSortDirection.Ascending : ListSortDirection.Descending);
-            sortByQuantity = new SortDescription(nameof(ProductFullDetail.Quantity), isAscending == true ? ListSortDirection.Ascending : ListSortDirection.Descending);
-            sortByCategory = new SortDescription(nameof(ProductFullDetail.CategoryID), isAscending == true ? ListSortDirection.Ascending : ListSortDirection.Descending);
-            sortBySupplier = new SortDescription(nameof(ProductFullDetail.SupplierID), isAscending == true ? ListSortDirection.Ascending : ListSortDirection.Descending);
+            view = CollectionViewSource.GetDefaultView(Database.Instance.CurrentProducts) as ListCollectionView;
+            lbProducts.ItemsSource = view;
 
-            cbSort.Items.Add("Produktname");
-            cbSort.Items.Add("Preis");
-            cbSort.Items.Add("Bestand");
-            cbSort.Items.Add("Kategorie");
-            cbSort.Items.Add("Hersteller");
+            view.SortDescriptions.Add(sortByName);
+
+            lbProducts.SelectedIndex = 0;
+            cbFilter.SelectedIndex = 0;
             cbSort.SelectedIndex = 0;
 
-            lbProducts.Items.SortDescriptions.Add(sortByName);
-            lbProducts.SelectedIndex = 0;
+            CollectionViewSource.GetDefaultView(Database.Instance.CurrentProducts).Refresh();
         }
-
-        #region Events
 
         private void txtSearch_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -62,8 +55,6 @@ namespace ProductManager
                 searchTextBox.Foreground = (Brush)TryFindResource("hSchriftv2");
             }
         }
-
-        #endregion Events
 
         private void btnNew_Click(object sender, RoutedEventArgs e) => new NewProductWindow().ShowDialog();
 
@@ -94,120 +85,62 @@ namespace ProductManager
             }
         }
 
-        private void FilterCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (lbProducts != null)
-            {
-                var selectedSupplierID = ((SupplierData)filter_cbSupplier.SelectedItem).ID_Supplier;
-                var selectedCategoryID = ((CategoryData)filter_cbCategory.SelectedItem).ID_Category;
-
-                if (selectedCategoryID == null && selectedSupplierID == null)
-                {
-                    try
-                    {
-                        Database.Instance.GetFullDetailProducts();
-                    }
-                    catch (Exception ex)
-                    {
-                        SaveWarningHandler(ex, selectedCategoryID, selectedSupplierID);
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        Database.Instance.GetFilteredFullDetailProducts(selectedCategoryID, selectedSupplierID);
-                    }
-                    catch (Exception ex)
-                    {
-                        SaveWarningHandler(ex, selectedCategoryID, selectedSupplierID);
-                    }
-                }
-            }
-        }
-
-        private void FilterSupplier_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (lbProducts != null)
-            {
-                var selectedSupplierID = ((SupplierData)filter_cbSupplier.SelectedItem).ID_Supplier;
-                var selectedCategoryID = ((CategoryData)filter_cbCategory.SelectedItem).ID_Category;
-
-                if (selectedSupplierID == null && selectedCategoryID == null)
-                {
-                    try
-                    {
-                        Database.Instance.GetFullDetailProducts();
-                    }
-                    catch (Exception ex)
-                    {
-                        SaveWarningHandler(ex, selectedCategoryID, selectedSupplierID);
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        Database.Instance.GetFilteredFullDetailProducts(selectedCategoryID, selectedSupplierID);
-                    }
-                    catch (Exception ex)
-                    {
-                        SaveWarningHandler(ex, selectedCategoryID, selectedSupplierID);
-                    }
-                }
-            }
-        }
-
-        private void SaveWarningHandler(Exception ex, int? selectedCategoryID, int? selectedSupplierID)
-        {
-            MessageBoxResult result = MessageBox.Show($"{ex.Message} Wollen sie diese Speichern? Ansonsten gehen alle änderungen verloren.",
-                                                      "Warnung",
-                                                      MessageBoxButton.YesNoCancel,
-                                                      MessageBoxImage.Warning);
-            switch (result)
-            {
-                case MessageBoxResult.Yes:
-                    Database.Instance.SaveProductList();
-                    Database.Instance.GetFilteredFullDetailProducts(selectedCategoryID, selectedSupplierID);
-                    break;
-
-                case MessageBoxResult.No:
-                    Database.Instance.ClearProductLists();
-                    Database.Instance.GetFilteredFullDetailProducts(selectedCategoryID, selectedSupplierID);
-                    break;
-
-                case MessageBoxResult.Cancel:
-                    break;
-            }
-        }
-
         private void cbSort_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            lbProducts?.Items.SortDescriptions.Clear();
+            view.SortDescriptions.Clear();
 
-            string choice = cbSort.SelectedItem.ToString();
-
+            string choice = ((ComboBoxItem)cbSort.SelectedItem).Content.ToString();
             switch (choice)
             {
                 case "Produktname":
-                    lbProducts.Items.SortDescriptions.Add(sortByName);
+                    view.SortDescriptions.Add(sortByName);
                     break;
 
                 case "Preis":
-                    lbProducts.Items.SortDescriptions.Add(sortByPrice);
+                    view.SortDescriptions.Add(sortByPrice);
                     break;
 
                 case "Bestand":
-                    lbProducts.Items.SortDescriptions.Add(sortByQuantity);
+                    view.SortDescriptions.Add(sortByQuantity);
                     break;
 
                 case "Kategorie":
-                    lbProducts.Items.SortDescriptions.Add(sortByCategory);
+                    view.SortDescriptions.Add(sortByCategory);
                     break;
 
                 case "Hersteller":
-                    lbProducts.Items.SortDescriptions.Add(sortBySupplier);
+                    view.SortDescriptions.Add(sortBySupplier);
                     break;
+            }
+        }
+
+        private void cbFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            view.Filter = new Predicate<object>(SetFilter);
+        }
+
+        private bool SetFilter(object obj)
+        {
+            ProductFullDetail product = obj as ProductFullDetail;
+
+            if (((ComboBoxItem)cbFilter.SelectedItem).Content.ToString() == "Alle Artikel") return true;
+
+            switch (((ComboBoxItem)cbFilter.SelectedItem).Content.ToString())
+            {
+                case "Preis < 3€":
+                    return product.Price < 3;
+
+                case "Preis > 3€":
+                    return product.Price > 3;
+
+                case "Bestand < 5":
+                    return product.Quantity < 5;
+
+                case "Bestand = 0":
+                    return product.Quantity == 0;
+
+                default:
+                    return false;
             }
         }
     }

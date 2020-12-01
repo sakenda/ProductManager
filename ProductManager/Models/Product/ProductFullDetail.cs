@@ -67,10 +67,7 @@ namespace ProductManager.Models.Product
             set => SetProperty(ref _ProductName, value);
         }
 
-        public ProductFullDetail() : base()
-        {
-        }
-
+        public ProductFullDetail() : base() { }
         public ProductFullDetail(string name, double price, int quantity, string description, int? categoryID, int? supplierID) : base()
         {
             _ProductName = name;
