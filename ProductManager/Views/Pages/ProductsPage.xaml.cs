@@ -28,6 +28,7 @@ namespace ProductManager
             lbProducts.ItemsSource = view;
 
             view.SortDescriptions.Add(sortByName);
+            view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ProductFullDetail.CategoryID)));
 
             lbProducts.SelectedIndex = 0;
             cbFilter.SelectedIndex = 0;

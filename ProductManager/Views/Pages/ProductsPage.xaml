@@ -163,8 +163,20 @@
                       Margin="0, 50, 0, 0">
 
             <ListBox Name="lbProducts"
-                     AlternationCount="2"
-                     SelectedIndex="0">
+                     AlternationCount="2">
+                <ListBox.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name, Converter={StaticResource CategoryConv}}"
+                                           Padding="30 5"
+                                           FontWeight="Bold" FontSize="16"
+                                           Background="{StaticResource dGrau}"
+                                           Foreground="{StaticResource hSchriftv1}"/>
+                            </DataTemplate>
+                        </GroupStyle.HeaderTemplate>
+                    </GroupStyle>
+                </ListBox.GroupStyle>
 
                 <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type product:ProductFullDetail}">
