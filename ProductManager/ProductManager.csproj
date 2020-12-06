@@ -7,22 +7,22 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Views\Shared\Icons\add_black.png" />
-		<None Remove="Views\Shared\Icons\add_white.png" />
-		<None Remove="Views\Shared\Icons\announcement_red.png" />
-		<None Remove="Views\Shared\Icons\delete_white.png" />
-		<None Remove="Views\Shared\Icons\filter_black.png" />
-		<None Remove="Views\Shared\Icons\productmanager_black.png" />
-		<None Remove="Views\Shared\Icons\products_white.png" />
-		<None Remove="Views\Shared\Icons\save_black.png" />
-		<None Remove="Views\Shared\Icons\save_white.png" />
-		<None Remove="Views\Shared\Icons\search_black.png" />
-		<None Remove="Views\Shared\Icons\shipping_white.png" />
-		<None Remove="Views\Shared\Icons\sort_black.png" />
-		<None Remove="Views\Shared\Icons\users_white.png" />
-		<None Remove="Views\Shared\Icons\warning_red.png" />
-		<None Remove="Views\Shared\Images\notavailable.jpg" />
-		<None Remove="Views\Shared\Images\testImage.png" />
+		<None Remove="Shared\Icons\add_black.png" />
+		<None Remove="Shared\Icons\add_white.png" />
+		<None Remove="Shared\Icons\announcement_red.png" />
+		<None Remove="Shared\Icons\delete_white.png" />
+		<None Remove="Shared\Icons\filter_black.png" />
+		<None Remove="Shared\Icons\productmanager_black.png" />
+		<None Remove="Shared\Icons\products_white.png" />
+		<None Remove="Shared\Icons\save_black.png" />
+		<None Remove="Shared\Icons\save_white.png" />
+		<None Remove="Shared\Icons\search_black.png" />
+		<None Remove="Shared\Icons\shipping_white.png" />
+		<None Remove="Shared\Icons\sort_black.png" />
+		<None Remove="Shared\Icons\users_white.png" />
+		<None Remove="Shared\Icons\warning_red.png" />
+		<None Remove="Shared\Images\notavailable.jpg" />
+		<None Remove="Shared\Images\testImage.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -30,54 +30,58 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Resource Include="Views\Shared\Icons\add_black.png">
+		<Resource Include="Shared\Icons\add_black.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Icons\add_white.png">
+		<Resource Include="Shared\Icons\add_white.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Icons\announcement_red.png">
+		<Resource Include="Shared\Icons\announcement_red.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Icons\delete_white.png">
+		<Resource Include="Shared\Icons\delete_white.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Icons\filter_black.png">
+		<Resource Include="Shared\Icons\filter_black.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Icons\productmanager_black.png">
+		<Resource Include="Shared\Icons\productmanager_black.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Icons\products_white.png">
+		<Resource Include="Shared\Icons\products_white.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Icons\save_black.png">
+		<Resource Include="Shared\Icons\save_black.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Icons\save_white.png">
+		<Resource Include="Shared\Icons\save_white.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Icons\search_black.png">
+		<Resource Include="Shared\Icons\search_black.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Icons\shipping_white.png">
+		<Resource Include="Shared\Icons\shipping_white.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Icons\sort_black.png">
+		<Resource Include="Shared\Icons\sort_black.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Icons\users_white.png">
+		<Resource Include="Shared\Icons\users_white.png">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Icons\warning_red.png">
+		<Resource Include="Shared\Icons\warning_red.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Images\notavailable.jpg">
+		<Resource Include="Shared\Images\notavailable.jpg">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-		<Resource Include="Views\Shared\Images\testImage.png">
+		<Resource Include="Shared\Images\testImage.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="1 -Model\Misc\" />
 	</ItemGroup>
 
 </Project>
