@@ -4,7 +4,7 @@ namespace ProductManager.ViewModel
 {
     public class ProductViewModel : ViewModelBase
     {
-        private ProductFullDetail _product;
+        private Product _product;
         private PString _name;
         private PDouble _price;
         private PInteger _quantity;
@@ -25,7 +25,7 @@ namespace ProductManager.ViewModel
             set { SetProperty(ref _changed, value); }
         }
 
-        public ProductViewModel(ProductFullDetail product)
+        public ProductViewModel(Product product)
         {
             if (product != null)
             {
@@ -34,7 +34,7 @@ namespace ProductManager.ViewModel
             }
             else
             {
-                _product = new ProductFullDetail();
+                _product = new Product();
                 InitializeFields();
                 _name.HasChanged = true;
                 _price.HasChanged = true;

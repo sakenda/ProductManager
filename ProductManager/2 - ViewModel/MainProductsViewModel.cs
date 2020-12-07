@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows.Data;
-using System.Windows.Input;
-using ProductManager.Model.Product;
+﻿using ProductManager.Model.Product;
 using ProductManager.Model.Product.Metadata;
 using ProductManager.ViewModel.DatabaseData;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace ProductManager.ViewModel
 {
@@ -60,21 +56,32 @@ namespace ProductManager.ViewModel
         #region "Konstruktor"
         public MainProductsViewModel()
         {
-            _listCollection = CollectionViewSource.GetDefaultView(Database.Instance.CurrentProducts) as ListCollectionView;
+            _listCollection = new ListCollectionView(Database.Instance.CurrentProducts);
 
             _newCommandBinding = new CommandBinding(ApplicationCommands.New, NewExecuted, NewCanExecute);
             _saveCommandBinding = new CommandBinding(ApplicationCommands.Save, SaveExecuted, SaveCanExecute);
             _deleteCommandBinding = new CommandBinding(ApplicationCommands.Delete, DeleteExecuted, DeleteCanExecute);
 
+            _listCollection.CurrentChanging += _listCollection_CurrentChanging;
+
             UpdateSorting();
             _listCollection.MoveCurrentToFirst();
+        }
+
+        private void _listCollection_CurrentChanging(object sender, CurrentChangingEventArgs e)
+        {
+            if (((Product)_listCollection.CurrentItem).isDirty)
+            {
+            }
         }
         #endregion "Konstruktor"
 
         #region "CommandBindings"
         private void NewExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            Product product = new Product();
+            _listCollection.AddNewItem(product);
+            _listCollection.MoveCurrentTo(product);
         }
         private void NewCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -88,7 +95,7 @@ namespace ProductManager.ViewModel
         }
         private void SaveCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            foreach (ProductFullDetail item in Database.Instance.CurrentProducts)
+            foreach (Product item in Database.Instance.CurrentProducts)
             {
                 if (item.isDirty == true)
                 {
@@ -101,7 +108,7 @@ namespace ProductManager.ViewModel
 
         private void DeleteExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            ProductFullDetail product = _listCollection.CurrentItem as ProductFullDetail;
+            Product product = _listCollection.CurrentItem as Product;
             if (product != null)
             {
                 Database.Instance.DeletedProducts.Add(product);

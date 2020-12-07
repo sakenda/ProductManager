@@ -24,7 +24,7 @@ namespace ProductManager.Model.Product
             _ProductID = -1;
             _isDirty = false;
 
-            PropertyChanged += Value_PropertyChanged;
+            this.PropertyChanged += Value_PropertyChanged;
         }
 
         public virtual void SetProductID(int value)

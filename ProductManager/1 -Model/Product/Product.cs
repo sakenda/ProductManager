@@ -2,7 +2,7 @@
 
 namespace ProductManager.Model.Product
 {
-    public class ProductFullDetail : ProductBase
+    public class Product : ProductBase
     {
         private string _ProductName;
         private string _Description;
@@ -67,8 +67,8 @@ namespace ProductManager.Model.Product
             set => SetProperty(ref _ProductName, value);
         }
 
-        public ProductFullDetail() : base() { }
-        public ProductFullDetail(string name, double price, int quantity, string description, int? categoryID, int? supplierID) : base()
+        public Product() : base() { }
+        public Product(string name, double price, int quantity, string description, int? categoryID, int? supplierID) : base()
         {
             _ProductName = name;
             _Price = price;

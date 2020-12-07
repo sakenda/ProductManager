@@ -51,7 +51,7 @@ namespace ProductManager.View
                     binding.UpdateSource();
                 }
 
-                Database.Instance.CurrentProducts.Add((ProductFullDetail)TryFindResource("pers"));
+                Database.Instance.CurrentProducts.Add((Product)TryFindResource("pers"));
                 this.Close();
             }
         }

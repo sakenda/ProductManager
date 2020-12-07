@@ -10,8 +10,8 @@ namespace ProductManager.ViewModel.DatabaseData
 {
     public class Database : DatabaseProperties
     {
-        public ObservableCollection<ProductFullDetail> CurrentProducts { get; private set; }
-        public ObservableCollection<ProductFullDetail> DeletedProducts { get; private set; }
+        public ObservableCollection<Product> CurrentProducts { get; private set; }
+        public ObservableCollection<Product> DeletedProducts { get; private set; }
 
         #region Singleton
 
@@ -32,8 +32,8 @@ namespace ProductManager.ViewModel.DatabaseData
 
         private Database()
         {
-            this.CurrentProducts = new ObservableCollection<ProductFullDetail>();
-            this.DeletedProducts = new ObservableCollection<ProductFullDetail>();
+            this.CurrentProducts = new ObservableCollection<Product>();
+            this.DeletedProducts = new ObservableCollection<Product>();
         }
 
         #endregion Singleton
@@ -44,7 +44,7 @@ namespace ProductManager.ViewModel.DatabaseData
 
             if (!checkIsDirty.needUpdate)
             {
-                ProductFullDetail product;
+                Product product;
                 StringBuilder builder = new StringBuilder();
 
                 bool isCategory = categoryId == null ? false : true;
@@ -87,7 +87,7 @@ namespace ProductManager.ViewModel.DatabaseData
                     {
                         while (reader.Read())
                         {
-                            product = new ProductFullDetail(
+                            product = new Product(
                                       reader["product_name"].ToString(),
                                       Convert.ToDouble(reader["product_price"]),
                                       Convert.ToInt32(reader["product_quantity"]),
@@ -115,7 +115,7 @@ namespace ProductManager.ViewModel.DatabaseData
 
             if (!checkIsDirty.needUpdate)
             {
-                ProductFullDetail product;
+                Product product;
 
                 ClearProductLists();
 
@@ -145,7 +145,7 @@ namespace ProductManager.ViewModel.DatabaseData
                     {
                         while (reader.Read())
                         {
-                            product = new ProductFullDetail(
+                            product = new Product(
                                       reader["product_name"].ToString(),
                                       Convert.ToDouble(reader["product_price"]),
                                       Convert.ToInt32(reader["product_quantity"]),
@@ -175,12 +175,12 @@ namespace ProductManager.ViewModel.DatabaseData
 
         public void SaveProductList()
         {
-            foreach (ProductFullDetail p in this.DeletedProducts)
+            foreach (Product p in this.DeletedProducts)
             {
                 this.DeleteProduct(p);
             }
 
-            foreach (ProductFullDetail p in this.CurrentProducts)
+            foreach (Product p in this.CurrentProducts)
             {
                 if (!p.isDirty)
                 {
@@ -225,7 +225,7 @@ namespace ProductManager.ViewModel.DatabaseData
             return (needUpdate, amountNeedUpdate);
         }
 
-        private void DeleteProduct(ProductFullDetail product)
+        private void DeleteProduct(Product product)
         {
             string sql;
             SqlCommand cmd;
@@ -246,7 +246,7 @@ namespace ProductManager.ViewModel.DatabaseData
             }
         }
 
-        private void UpdateProduct(ProductFullDetail product)
+        private void UpdateProduct(Product product)
         {
             string sql;
             SqlCommand cmd;
@@ -275,7 +275,7 @@ namespace ProductManager.ViewModel.DatabaseData
             }
         }
 
-        private void InsertProduct(ProductFullDetail product)
+        private void InsertProduct(Product product)
         {
             string sql;
             SqlCommand cmd;

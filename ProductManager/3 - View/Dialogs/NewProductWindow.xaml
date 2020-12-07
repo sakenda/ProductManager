@@ -21,7 +21,7 @@
         <helper:IntegerValueConverter x:Key="IntegerConv"/>
         <helper:DoubleValueConverter x:Key="DoubleConv"/>
 
-        <product:ProductFullDetail x:Key="pers"/>
+        <product:Product x:Key="pers"/>
 
         <MultiDataTrigger x:Key="condition">
             <MultiDataTrigger.Conditions>
