@@ -6,6 +6,7 @@
 
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:helper="clr-namespace:ProductManager.View.Helper"
+      xmlns:viewModel="clr-namespace:ProductManager.ViewModel"
 
       DataContext="{StaticResource vmProducts}"
 
@@ -18,10 +19,10 @@
 
     <!-- Ressources -->
     <Page.Resources>
-        <helper:IntegerValueConverter x:Key="IntegerConv"/>
-        <helper:DoubleValueConverter x:Key="DoubleConv"/>
-        <helper:CategoryValueConverter x:Key="CategoryConv"/>
-        <helper:SupplierValueConverter x:Key="SupplierConv"/>
+        <viewModel:DoubleValueConverter x:Key="DoubleConv"/>
+        <viewModel:IntegerValueConverter x:Key="IntegerConv"/>
+        <viewModel:CategoryValueConverter x:Key="CategoryConv"/>
+        <viewModel:SupplierValueConverter x:Key="SupplierConv"/>
     </Page.Resources>
 
     <Grid>
@@ -132,7 +133,7 @@
                                     Width="150"/>
 
                 <DataGridTextColumn Header="KATEGORIE"
-                                    Binding="{Binding CategoryId.Value, Mode=TwoWay, Converter={StaticResource CategoryConv}}"
+                                    Binding="{Binding CategoryId.Value, Converter={StaticResource IntegerConv}}"
                                     Width="200"/>
 
                 <DataGridTextColumn Header="HERSTELLER"
@@ -255,28 +256,29 @@
                                     <!-- Kategorie -->
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="KATEGORIE"
-                                               Width="110" Padding="0" Margin="5 5 0 0"
-                                               FontSize="14" FontWeight="Bold"
-                                               VerticalAlignment="Center"/>
-                                        <ComboBox ItemsSource="{Binding Source={StaticResource vmProducts}, Path=CategoryList}"
-                                              SelectedValue="{Binding CategoryId.Value}"
-                                              SelectedValuePath="ID_Category"
-                                              DisplayMemberPath="Name_Category"
-                                              Width="180" Padding="5" Margin="5"/>
+                                                   Width="110" Padding="0" Margin="5 5 0 0"
+                                                   FontSize="14" FontWeight="Bold"
+                                                   VerticalAlignment="Center"/>
+                                        <ComboBox Name="cbCategory"
+                                                  ItemsSource="{Binding Source={StaticResource vmProducts}, Path=CategoryList}"
+                                                  SelectedValue="{Binding CategoryId.Value}"
+                                                  SelectedValuePath="ID_Category"
+                                                  DisplayMemberPath="Name_Category"
+                                                  Width="180" Padding="5" Margin="5"/>
                                     </StackPanel>
 
                                     <!-- Hersteller -->
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="HERSTELLER"
-                                               Width="110" Padding="0" Margin="5 5 0 0"
-                                               FontSize="14" FontWeight="Bold"
-                                               VerticalAlignment="Center"/>
-                                        <ComboBox Name="cb_Supplier"
-                                              ItemsSource="{Binding Source={StaticResource vmProducts}, Path=SupplierList}"
-                                              SelectedValue="{Binding SupplierId.Value}"
-                                              SelectedValuePath="ID_Supplier"
-                                              DisplayMemberPath="Name_Supplier"
-                                              Width="180" Padding="5" Margin="5"/>
+                                                   Width="110" Padding="0" Margin="5 5 0 0"
+                                                   FontSize="14" FontWeight="Bold"
+                                                   VerticalAlignment="Center"/>
+                                        <ComboBox Name="cbSupplier"
+                                                  ItemsSource="{Binding Source={StaticResource vmProducts}, Path=SupplierList}"
+                                                  SelectedValue="{Binding SupplierId.Value}"
+                                                  SelectedValuePath="ID_Supplier"
+                                                  DisplayMemberPath="Name_Supplier"
+                                                  Width="180" Padding="5" Margin="5"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Grid>

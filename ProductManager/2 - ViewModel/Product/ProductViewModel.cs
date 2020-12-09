@@ -1,5 +1,4 @@
 ﻿using ProductManager.Model.Product;
-using ProductManager.ViewModel.DatabaseData;
 
 namespace ProductManager.ViewModel
 {
@@ -97,17 +96,18 @@ namespace ProductManager.ViewModel
             SupplierId.AcceptChanges();
         }
 
-        public Product ReturnProduct()
+        public Product ConvertToProduct()
         {
-            Product p = new Product();
+            Product p = new Product(
+                this.Name.Value,
+                this.Price.Value,
+                this.Quantity.Value,
+                this.Description.Value,
+                this.CategoryId.Value,
+                this.SupplierId.Value
+                );
 
             p.SetProductID(this._id);
-            p.ProductName = this.Name.Value;
-            p.Price = this.Price.Value;
-            p.Quantity = this.Quantity.Value;
-            p.Description = this.Description.Value;
-            p.CategoryID = this.CategoryId.Value;
-            p.SupplierID = this.SupplierId.Value;
 
             return p;
         }

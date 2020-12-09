@@ -9,14 +9,15 @@ using System.Windows.Input;
 
 namespace ProductManager.ViewModel
 {
-    public class MainProductsViewModel : ViewModelBase
+    public partial class MainProductsViewModel : ViewModelBase
     {
         #region "Private Felder"
-        private ObservableCollection<ProductViewModel> _listCollection;
-        private ListCollectionView _viewCollection;
+        private Database _database;
 
-        private ObservableCollection<CategoryData> _categoryList = DatabaseMetaData.Instance.CategoryList;
-        private ObservableCollection<SupplierData> _supplierList = DatabaseMetaData.Instance.SupplierList;
+        private ObservableCollection<ProductViewModel> _listCollection;
+        private ObservableCollection<CategoryData> _categoryList;
+        private ObservableCollection<SupplierData> _supplierList;
+        private ListCollectionView _viewCollection;
 
         private CommandBinding _newCommandBinding;
         private CommandBinding _saveCommandBinding;
@@ -34,10 +35,9 @@ namespace ProductManager.ViewModel
 
         #region "Öffentliche Eigenschaften"
         public ObservableCollection<ProductViewModel> ListCollection => _listCollection;
-        public ListCollectionView ViewCollection => _viewCollection;
-
         public ObservableCollection<CategoryData> CategoryList => _categoryList;
         public ObservableCollection<SupplierData> SupplierList => _supplierList;
+        public ListCollectionView ViewCollection => _viewCollection;
 
         public CommandBinding NewCommandBinding => _newCommandBinding;
         public CommandBinding SaveCommandBinding => _saveCommandBinding;
@@ -56,13 +56,16 @@ namespace ProductManager.ViewModel
                 }
             }
         }
-
         #endregion "Öffentliche Eigenschaften"
 
         #region "Konstruktor"
         public MainProductsViewModel()
         {
+            _database = new Database();
             GetProductsViewModel(ref _listCollection);
+            _database.GetSupplier(ref _supplierList);
+            _database.GetCategories(ref _categoryList);
+
             _viewCollection = new ListCollectionView(_listCollection);
 
             _newCommandBinding = new CommandBinding(ApplicationCommands.New, NewExecuted, NewCanExecute);
@@ -112,11 +115,11 @@ namespace ProductManager.ViewModel
                 }
                 else
                 {
-                    products.Add(item.ReturnProduct());
+                    products.Add(item.ConvertToProduct());
                 }
             }
 
-            Database.Instance.SaveProductListTest(ref products);
+            _database.SaveProductList(ref products);
             _viewCollection.MoveCurrentToFirst();
             AcceptChanges();
         }
@@ -130,8 +133,7 @@ namespace ProductManager.ViewModel
             Product product = _viewCollection.CurrentItem as Product;
             if (product != null)
             {
-                Database.Instance.DeletedProducts.Add(product);
-                Database.Instance.CurrentProducts.Remove(product);
+                // Produkt löschen implementieren
             }
             _viewCollection.MoveCurrentToFirst();
         }
@@ -156,7 +158,7 @@ namespace ProductManager.ViewModel
         {
             _listCollection = new ObservableCollection<ProductViewModel>();
 
-            ObservableCollection<Product> temp = Database.Instance.GetProductsTest();
+            ObservableCollection<Product> temp = _database.GetProducts();
 
             foreach (Product product in temp)
             {

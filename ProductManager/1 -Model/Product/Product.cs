@@ -1,72 +1,29 @@
 ﻿namespace ProductManager.Model.Product
 {
-    public class Product : ProductBase
+    public class Product
     {
+        private int _ProductID;
         private string _ProductName;
         private string _Description;
         private double _Price;
         private int _Quantity;
-        private bool _OutOfStock;
-        private bool _RestockThreshold;
-
         private int? _CategoryID;
         private int? _SupplierID;
 
-        public int? SupplierID
+        public int ProductID => _ProductID;
+        public string ProductName => _ProductName;
+        public string Description => _Description;
+        public double Price => _Price;
+        public int Quantity => _Quantity;
+        public int? CategoryID => _CategoryID;
+        public int? SupplierID => _SupplierID;
+
+        public Product()
         {
-            get => _SupplierID;
-            set => SetProperty(ref _SupplierID, value);
+            _ProductID = -1;
         }
 
-        public int? CategoryID
-        {
-            get => _CategoryID;
-            set => SetProperty(ref _CategoryID, value);
-        }
-
-        public virtual double Price
-        {
-            get => _Price;
-            set => SetProperty(ref _Price, value);
-        }
-
-        public virtual int Quantity
-        {
-            get => _Quantity;
-            set
-            {
-                SetProperty(ref _Quantity, value);
-                RestockThreshold = Quantity <= 5 && Quantity >= 1;
-                OutOfStock = Quantity == 0;
-            }
-        }
-
-        public bool RestockThreshold
-        {
-            get => _RestockThreshold;
-            private set => SetProperty(ref _RestockThreshold, value);
-        }
-
-        public bool OutOfStock
-        {
-            get => _OutOfStock;
-            private set => SetProperty(ref _OutOfStock, value);
-        }
-
-        public string Description
-        {
-            get => _Description;
-            set => SetProperty(ref _Description, value);
-        }
-
-        public string ProductName
-        {
-            get => _ProductName;
-            set => SetProperty(ref _ProductName, value);
-        }
-
-        public Product() : base() { }
-        public Product(string name, double price, int quantity, string description, int? categoryID, int? supplierID) : base()
+        public Product(string name, double price, int quantity, string description, int? categoryID, int? supplierID)
         {
             _ProductName = name;
             _Price = price;
@@ -74,6 +31,11 @@
             _Description = description;
             _CategoryID = categoryID;
             _SupplierID = supplierID;
+        }
+
+        public virtual void SetProductID(int value)
+        {
+            _ProductID = value;
         }
     }
 }

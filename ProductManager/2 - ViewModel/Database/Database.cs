@@ -1,44 +1,15 @@
 ﻿using ProductManager.Model.Product;
+using ProductManager.Model.Product.Metadata;
 using System;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
-using System.Windows.Data;
 
 namespace ProductManager.ViewModel.DatabaseData
 {
     public class Database : DatabaseProperties
     {
-        public ObservableCollection<Product> CurrentProducts { get; private set; }
-        public ObservableCollection<Product> DeletedProducts { get; private set; }
-
-        #region Singleton
-
-        private static Database _instance = null;
-
-        public static Database Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new Database();
-                    _instance.GetProducts();
-                }
-                return _instance;
-            }
-        }
-
-        private Database()
-        {
-            this.CurrentProducts = new ObservableCollection<Product>();
-            this.DeletedProducts = new ObservableCollection<Product>();
-        }
-
-        #endregion Singleton
-
-        public ObservableCollection<Product> GetProductsTest()
+        public ObservableCollection<Product> GetProducts()
         {
             ObservableCollection<Product> list = new ObservableCollection<Product>();
             Product product;
@@ -88,27 +59,15 @@ namespace ProductManager.ViewModel.DatabaseData
             return list;
         }
 
-        public void GetProducts()
+        public void GetSupplier(ref ObservableCollection<SupplierData> list)
         {
-            Product product;
-
-            ClearProductLists();
+            list = new ObservableCollection<SupplierData>();
 
             SqlCommand cmd = new SqlCommand("")
             {
-                CommandText = "select p.product_id, "
-                            + "p.product_name, "
-                            + "p.product_price, "
-                            + "p.product_quantity, "
-                            + "p.product_description, "
-                            + "p.product_category_id, "
-                            + "p.product_supplier_id, "
-                            + "c.category_name, "
-                            + "s.supplier_name "
-                            + "from Products p "
-                            + "left join categories c on p.product_category_id = c.category_id "
-                            + "left join suppliers s on p.product_supplier_id = s.supplier_id "
-                            + "order by p.product_id "
+                CommandText = "select s.supplier_id, s.supplier_name "
+                            + "from suppliers s "
+                            + "order by s.supplier_id"
             };
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
@@ -120,64 +79,53 @@ namespace ProductManager.ViewModel.DatabaseData
                 {
                     while (reader.Read())
                     {
-                        product = new Product(
-                                  reader["product_name"].ToString(),
-                                  Convert.ToDouble(reader["product_price"]),
-                                  Convert.ToInt32(reader["product_quantity"]),
-                                  reader["product_description"].ToString(),
-                                  DatabaseClientCast.DBToValue<int>(reader["product_category_id"]),
-                                  DatabaseClientCast.DBToValue<int>(reader["product_supplier_id"])
-                                  );
-
-                        product.SetProductID((int)reader["product_id"]);
-
-                        CurrentProducts.Add(product);
+                        list.Add(
+                            new SupplierData(
+                                (int?)reader["supplier_id"],
+                                (string)reader["supplier_name"]
+                                ));
                     }
                 }
             }
         }
 
-        public void ClearProductLists()
+        public void GetCategories(ref ObservableCollection<CategoryData> list)
         {
-            this.CurrentProducts.Clear();
-            this.DeletedProducts.Clear();
+            list = new ObservableCollection<CategoryData>();
+
+            SqlCommand cmd = new SqlCommand("")
+            {
+                CommandText = "select c.category_id, c.category_name "
+                            + "from categories c "
+                            + "order by c.category_id"
+            };
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                cmd.Connection = conn;
+                conn.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(
+                            new CategoryData(
+                                (int?)reader["category_id"],
+                                (string)reader["category_name"]
+                                ));
+                    }
+                }
+            }
         }
 
         #region Speicher Routine
-        public void SaveProductListTest(ref ObservableCollection<Product> products)
+        public void SaveProductList(ref ObservableCollection<Product> products)
         {
-            //foreach (Product p in this.DeletedProducts)
-            //{
-            //    this.DeleteProduct(p);
-            //}
+            // Produkt aus der Datenbank löschen implementieren
 
             foreach (Product p in products)
             {
-                if (p.ProductID > 0)
-                {
-                    this.UpdateProduct(p);
-                }
-                else
-                {
-                    this.InsertProduct(p);
-                }
-            }
-        }
-
-        public void SaveProductList()
-        {
-            foreach (Product p in this.DeletedProducts)
-            {
-                this.DeleteProduct(p);
-            }
-
-            foreach (Product p in this.CurrentProducts)
-            {
-                if (!p.isDirty)
-                {
-                    continue;
-                }
-
                 if (p.ProductID > 0)
                 {
                     this.UpdateProduct(p);
@@ -205,8 +153,6 @@ namespace ProductManager.ViewModel.DatabaseData
                 conn.Open();
                 cmd.Connection = conn;
                 cmd.ExecuteNonQuery();
-
-                product.ResetIsDirty();
             }
         }
 
@@ -234,8 +180,6 @@ namespace ProductManager.ViewModel.DatabaseData
                 conn.Open();
                 cmd.Connection = conn;
                 cmd.ExecuteNonQuery();
-
-                product.ResetIsDirty();
             }
         }
 
@@ -266,7 +210,6 @@ namespace ProductManager.ViewModel.DatabaseData
                 cmd.Connection = conn;
 
                 product.SetProductID(Convert.ToInt32(cmd.ExecuteScalar()));
-                product.ResetIsDirty();
             }
         }
         #endregion Speicher Routine

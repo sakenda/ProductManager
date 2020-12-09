@@ -20,6 +20,10 @@ namespace ProductManager
             }
         }
 
+        private void BindMetadata()
+        {
+        }
+
         private void txtSearch_GotFocus(object sender, RoutedEventArgs e)
         {
             var searchTextBox = sender as TextBox;

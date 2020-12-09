@@ -87,6 +87,7 @@
 
 	<ItemGroup>
 	  <Folder Include="1 -Model\Misc\" />
+	  <Folder Include="3 - View\Dialogs\" />
 	</ItemGroup>
 
 </Project>
