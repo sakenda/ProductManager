@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ProductManager.ViewModel
 {
-    public class PNullableInteger : ViewModelBase
+    public class PNullableInteger : ViewModelBase, IComparable
     {
         private int? _currentValue;
         private int? _originalValue;
@@ -61,12 +62,14 @@ namespace ProductManager.ViewModel
         /// <returns></returns>
         public int CompareTo(object obj)
         {
-            if (obj == null) return 1;
+            PNullableInteger value = obj as PNullableInteger;
+            if (value == null)
+                throw new ArgumentException("Integer erwartet");
 
-            if (ReferenceEquals(this, obj)) return 0;
+            if (_currentValue > value._currentValue) return 1;
+            if (_currentValue == value._currentValue) return 0;
 
-            PNullableInteger item = obj as PNullableInteger;
-            return _currentValue.Value.CompareTo(item._currentValue.Value);
+            return -1;
         }
     }
 }

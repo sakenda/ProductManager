@@ -10,6 +10,7 @@
 		<None Remove="Shared\Icons\add_black.png" />
 		<None Remove="Shared\Icons\add_white.png" />
 		<None Remove="Shared\Icons\announcement_red.png" />
+		<None Remove="Shared\Icons\change_white.png" />
 		<None Remove="Shared\Icons\delete_white.png" />
 		<None Remove="Shared\Icons\filter_black.png" />
 		<None Remove="Shared\Icons\productmanager_black.png" />
@@ -26,6 +27,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Font.Awesome" Version="5.15.1" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
 	</ItemGroup>
 
@@ -37,6 +39,9 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Shared\Icons\announcement_red.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Shared\Icons\change_white.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Shared\Icons\delete_white.png">

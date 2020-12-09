@@ -6,14 +6,14 @@
 
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:helper="clr-namespace:ProductManager.View.Helper"
-      xmlns:database="clr-namespace:ProductManager.ViewModel.DatabaseData"
+
+      DataContext="{StaticResource vmProducts}"
 
       mc:Ignorable="d"
       d:DesignHeight="1080"
       d:DesignWidth="1920"
       FontSize="14"
       Background="White"
-      DataContext="{StaticResource vm}"
       Name="mainPage">
 
     <!-- Ressources -->
@@ -104,174 +104,183 @@
         <!-- Custom ColumnHeader -->
         <DataGrid Grid.Row="2" Grid.Column="0"
                   Name="dgProducts"
-                  ItemsSource="{Binding ListCollection, Mode=OneWay}"
+                  ItemsSource="{Binding ViewCollection, Mode=OneTime}"
                   GridLinesVisibility="None"
+                  SelectionMode="Single"
                   RowHeaderWidth="0"
                   BorderThickness="0 0 0 2"
                   AutoGenerateColumns="False">
 
             <DataGrid.Columns>
 
-                <DataGridCheckBoxColumn Binding="{Binding isDirty, Mode=OneWay}">
+                <DataGridCheckBoxColumn Binding="{Binding Changed, Mode=OneWay}">
                     <DataGridCheckBoxColumn.Header>
                         <Image Source="/Shared/Icons/save_black.png" Width="25"/>
                     </DataGridCheckBoxColumn.Header>
                 </DataGridCheckBoxColumn>
 
                 <DataGridTextColumn Header="PRODUKT"
-                                    Binding="{Binding ProductName}"
+                                    Binding="{Binding Name.Value}"
                                     Width="300"/>
 
                 <DataGridTextColumn Header="PREIS"
-                                    Binding="{Binding Price}"
+                                    Binding="{Binding Price.Value}"
                                     Width="150"/>
 
                 <DataGridTextColumn Header="BESTAND"
-                                    Binding="{Binding Quantity}"
+                                    Binding="{Binding Quantity.Value}"
                                     Width="150"/>
 
                 <DataGridTextColumn Header="KATEGORIE"
-                                    Binding="{Binding CategoryID, Converter={StaticResource CategoryConv}}"
+                                    Binding="{Binding CategoryId.Value, Mode=TwoWay, Converter={StaticResource CategoryConv}}"
                                     Width="200"/>
 
                 <DataGridTextColumn Header="HERSTELLER"
-                                    Binding="{Binding SupplierID, Converter={StaticResource SupplierConv}}"
+                                    Binding="{Binding SupplierId.Value, Converter={StaticResource SupplierConv}}"
                                     Width="*"/>
             </DataGrid.Columns>
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                    <Border MaxHeight="300" BorderBrush="Black" BorderThickness="0" Margin="0">
+                    <Border MaxHeight="300"
+                            BorderBrush="Black"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            Background="White"
+                            Margin="10 10 20 10">
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="350"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
+                        <Expander ExpandDirection="Down">
 
-                            <!-- Produktbild -->
-                            <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" Margin="15">
-                                <Grid>
-                                    <ScrollViewer CanContentScroll="True">
-                                        <Image Source="/Shared/Images/testImage.png" Stretch="UniformToFill" MaxHeight="250"/>
-                                    </ScrollViewer>
-                                    <Button Width="35" Height="35" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <Image Source="/Shared/Icons/add_white.png" Height="30"/>
-                                    </Button>
-                                </Grid>
-                            </Border>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="350"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
-                            <!-- Produktname -->
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="10">
-                                <TextBlock Text="PRODUKTNAME" Foreground="{StaticResource hSchriftv1}"
+                                <!-- Produktbild -->
+                                <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" Margin="15">
+                                    <Grid>
+                                        <ScrollViewer CanContentScroll="True">
+                                            <Image Source="/Shared/Images/testImage.png" Stretch="UniformToFill" MaxHeight="250"/>
+                                        </ScrollViewer>
+                                        <Button Width="35" Height="35" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                                            <Image Source="/Shared/Icons/add_white.png" Height="30"/>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Produktname -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="10">
+                                    <TextBlock Text="PRODUKTNAME"
                                            Width="110" Padding="0" Margin="5 5 0 0"
                                            FontSize="14" FontWeight="Bold"
                                            VerticalAlignment="Center"/>
-                                <TextBox Name="tbProductName"
+                                    <TextBox Name="tbProductName"
                                          Width="280" Padding="5" Margin="5">
-                                    <Binding Path="ProductName" UpdateSourceTrigger="LostFocus">
-                                        <Binding.ValidationRules>
-                                            <helper:StringValidationRule/>
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox>
-                            </StackPanel>
+                                        <Binding Path="Name.Value" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <helper:StringValidationRule/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox>
+                                </StackPanel>
 
-                            <!-- Beschreibung -->
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" Height="150">
-                                <TextBlock Text="BESCHREIBUNG" Foreground="{StaticResource hSchriftv1}"
+                                <!-- Beschreibung -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Height="150">
+                                    <TextBlock Text="BESCHREIBUNG"
                                            Width="110" Padding="0" Margin="15 12 0 0"
                                            FontWeight="Bold" FontSize="14"/>
-                                <TextBox Text="{Binding Description}" VerticalAlignment="Top"
+                                    <TextBox Text="{Binding Description.Value}" VerticalAlignment="Top"
                                          Height="113" Width="280" Padding="5" Margin="5"
                                          TextWrapping="WrapWithOverflow" MaxLines="20"
                                          VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
-                            </StackPanel>
+                                </StackPanel>
 
-                            <StackPanel Orientation="Vertical" VerticalAlignment="Top" Grid.Column="2" Margin="10">
-                                <!-- Preis -->
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="EK-PREIS" Foreground="{StaticResource hSchriftv1}"
+                                <StackPanel Orientation="Vertical" VerticalAlignment="Top" Grid.Column="2" Margin="10">
+                                    <!-- Preis -->
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="EK-PREIS"
                                                Width="80" Padding="0" Margin="5 5 0 0"
                                                FontSize="14" FontWeight="Bold"
                                                VerticalAlignment="Center"/>
-                                    <TextBox Width="100" Padding="5" Margin="5">
-                                        <Binding Path="Price"
+                                        <TextBox Width="100" Padding="5" Margin="5">
+                                            <Binding Path="Price.Value"
                                                  UpdateSourceTrigger="LostFocus"
                                                  Converter="{StaticResource DoubleConv}">
-                                            <Binding.ValidationRules>
-                                                <helper:NumericValidationRule ValidationType="{x:Type sys:Double}" ValidatesOnTargetUpdated="True"/>
-                                            </Binding.ValidationRules>
-                                        </Binding>
-                                    </TextBox>
-                                </StackPanel>
+                                                <Binding.ValidationRules>
+                                                    <helper:NumericValidationRule ValidationType="{x:Type sys:Double}" ValidatesOnTargetUpdated="True"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox>
+                                    </StackPanel>
 
-                                <!-- Marge -->
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="MARGE" Foreground="{StaticResource hSchriftv1}"
+                                    <!-- Marge -->
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="MARGE"
                                                Width="80" Padding="0" Margin="5 5 0 0"
                                                FontSize="14" FontWeight="Bold"
                                                VerticalAlignment="Center"/>
-                                    <TextBox Width="100" Padding="5" Margin="5"/>
-                                </StackPanel>
+                                        <TextBox Width="100" Padding="5" Margin="5"/>
+                                    </StackPanel>
 
-                                <!-- Bestand -->
-                                <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                    <TextBlock Text="BESTAND" Foreground="{StaticResource hSchriftv1}"
+                                    <!-- Bestand -->
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                        <TextBlock Text="BESTAND"
                                                Width="80" Padding="0" Margin="5 5 0 0"
                                                FontSize="14" FontWeight="Bold"
                                                VerticalAlignment="Center"/>
-                                    <TextBox Width="100" Padding="5" Margin="5">
-                                        <Binding Path="Quantity" UpdateSourceTrigger="LostFocus" Converter="{StaticResource IntegerConv}">
-                                            <Binding.ValidationRules>
-                                                <helper:NumericValidationRule ValidationType="{x:Type sys:Int32}"
+                                        <TextBox Width="100" Padding="5" Margin="5">
+                                            <Binding Path="Quantity.Value" UpdateSourceTrigger="LostFocus" Converter="{StaticResource IntegerConv}">
+                                                <Binding.ValidationRules>
+                                                    <helper:NumericValidationRule ValidationType="{x:Type sys:Int32}"
                                                                   ValidatesOnTargetUpdated="True"/>
-                                            </Binding.ValidationRules>
-                                        </Binding>
-                                    </TextBox>
-                                </StackPanel>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox>
+                                    </StackPanel>
 
-                                <!-- Bestellt -->
-                                <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                    <TextBlock Text="BESTELLT" Foreground="{StaticResource hSchriftv1}"
+                                    <!-- Bestellt -->
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                        <TextBlock Text="BESTELLT"
                                                Width="80" Padding="0" Margin="5 5 0 0"
                                                FontSize="14" FontWeight="Bold"
                                                VerticalAlignment="Center"/>
-                                    <TextBox Width="100" Padding="5" Margin="5"/>
+                                        <TextBox Width="100" Padding="5" Margin="5"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
 
-                            <!-- Kategorie -->
-                            <StackPanel Orientation="Vertical" Grid.Column="3" Margin="10">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="KATEGORIE" Foreground="{StaticResource hSchriftv1}"
+                                <StackPanel Orientation="Vertical" Grid.Column="3" Margin="10">
+                                    <!-- Kategorie -->
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="KATEGORIE"
                                                Width="110" Padding="0" Margin="5 5 0 0"
                                                FontSize="14" FontWeight="Bold"
                                                VerticalAlignment="Center"/>
-                                    <ComboBox ItemsSource="{Binding Source={StaticResource vm}, Path=CategoryList}"
-                                              SelectedValue="{Binding CategoryID}"
+                                        <ComboBox ItemsSource="{Binding Source={StaticResource vmProducts}, Path=CategoryList}"
+                                              SelectedValue="{Binding CategoryId.Value}"
                                               SelectedValuePath="ID_Category"
                                               DisplayMemberPath="Name_Category"
                                               Width="180" Padding="5" Margin="5"/>
-                                </StackPanel>
+                                    </StackPanel>
 
-                                <!-- Hersteller -->
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="HERSTELLER" Foreground="{StaticResource hSchriftv1}"
+                                    <!-- Hersteller -->
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="HERSTELLER"
                                                Width="110" Padding="0" Margin="5 5 0 0"
                                                FontSize="14" FontWeight="Bold"
                                                VerticalAlignment="Center"/>
-                                    <ComboBox Name="cb_Supplier"
-                                              ItemsSource="{Binding Source={StaticResource vm}, Path=SupplierList}"
-                                              SelectedValue="{Binding SupplierID}"
+                                        <ComboBox Name="cb_Supplier"
+                                              ItemsSource="{Binding Source={StaticResource vmProducts}, Path=SupplierList}"
+                                              SelectedValue="{Binding SupplierId.Value}"
                                               SelectedValuePath="ID_Supplier"
                                               DisplayMemberPath="Name_Supplier"
                                               Width="180" Padding="5" Margin="5"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
-                        </Grid>
+                            </Grid>
+                        </Expander>
                     </Border>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>

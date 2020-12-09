@@ -2,10 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:viewModel="clr-namespace:ProductManager.ViewModel"
-    StartupUri="MainWindow.xaml">
+             StartupUri="MainWindow.xaml">
 
     <Application.Resources>
-
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
@@ -16,7 +15,7 @@
                 <ResourceDictionary Source="/3 - View/Resource/DefaultItemContainer.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <viewModel:MainProductsViewModel x:Key="vm"/>
+            <viewModel:MainProductsViewModel x:Key="vmProducts"/>
 
             <Style TargetType="Window">
                 <Setter Property="FontFamily" Value="Segoe MDL2"/>

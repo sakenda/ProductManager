@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ProductManager.ViewModel
 {
-    public class PInteger : ViewModelBase
+    public class PInteger : ViewModelBase, IComparable
     {
         private int _currentValue;
         private int _originalValue;
@@ -63,12 +63,14 @@ namespace ProductManager.ViewModel
         /// <returns></returns>
         public int CompareTo(object obj)
         {
-            if (obj == null) return 1;
+            PInteger value = obj as PInteger;
+            if (value == null)
+                throw new ArgumentException("Integer erwartet");
 
-            if (ReferenceEquals(this, obj)) return 0;
+            if (_currentValue > value._currentValue) return 1;
+            if (_currentValue == value._currentValue) return 0;
 
-            PInteger item = obj as PInteger;
-            return _currentValue.CompareTo(item._currentValue);
+            return -1;
         }
     }
 }

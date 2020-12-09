@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace ProductManager.Model.Product
+﻿namespace ProductManager.Model.Product
 {
     public class Product : ProductBase
     {

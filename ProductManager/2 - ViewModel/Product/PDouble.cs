@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ProductManager.ViewModel
 {
-    public class PDouble : ViewModelBase
+    public class PDouble : ViewModelBase, IComparable
     {
         private double _currentValue;
         private double _originalValue;
@@ -63,12 +63,14 @@ namespace ProductManager.ViewModel
         /// <returns></returns>
         public int CompareTo(object obj)
         {
-            if (obj == null) return 1;
+            PDouble value = obj as PDouble;
+            if (value == null)
+                throw new ArgumentException("Double erwartet");
 
-            if (ReferenceEquals(this, obj)) return 0;
+            if (_currentValue > value._currentValue) return 1;
+            if (_currentValue == value._currentValue) return 0;
 
-            PDouble item = obj as PDouble;
-            return _currentValue.CompareTo(item._currentValue);
+            return -1;
         }
     }
 }

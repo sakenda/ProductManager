@@ -1,9 +1,11 @@
 ﻿using ProductManager.Model.Product;
+using ProductManager.ViewModel.DatabaseData;
 
 namespace ProductManager.ViewModel
 {
     public class ProductViewModel : ViewModelBase
     {
+        private int _id;
         private Product _product;
         private PString _name;
         private PDouble _price;
@@ -43,6 +45,7 @@ namespace ProductManager.ViewModel
                 _categoryId.HasChanged = true;
                 _supplierId.HasChanged = true;
             }
+
             _name.PropertyChanged += Product_PropertyChanged;
             _price.PropertyChanged += Product_PropertyChanged;
             _quantity.PropertyChanged += Product_PropertyChanged;
@@ -65,6 +68,7 @@ namespace ProductManager.ViewModel
 
         private void InitializeFields()
         {
+            _id = _product.ProductID;
             _name = new PString(_product.ProductName);
             _price = new PDouble(_product.Price);
             _quantity = new PInteger(_product.Quantity);
@@ -91,6 +95,21 @@ namespace ProductManager.ViewModel
             Description.AcceptChanges();
             CategoryId.AcceptChanges();
             SupplierId.AcceptChanges();
+        }
+
+        public Product ReturnProduct()
+        {
+            Product p = new Product();
+
+            p.SetProductID(this._id);
+            p.ProductName = this.Name.Value;
+            p.Price = this.Price.Value;
+            p.Quantity = this.Quantity.Value;
+            p.Description = this.Description.Value;
+            p.CategoryID = this.CategoryId.Value;
+            p.SupplierID = this.SupplierId.Value;
+
+            return p;
         }
     }
 }

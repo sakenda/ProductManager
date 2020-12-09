@@ -24,7 +24,7 @@ namespace ProductManager.ViewModel.DatabaseData
                 if (_instance == null)
                 {
                     _instance = new Database();
-                    _instance.GetFullDetailProducts();
+                    _instance.GetProducts();
                 }
                 return _instance;
             }
@@ -38,132 +38,102 @@ namespace ProductManager.ViewModel.DatabaseData
 
         #endregion Singleton
 
-        public void GetFilteredFullDetailProducts(int? categoryId = null, int? supplierId = null)
+        public ObservableCollection<Product> GetProductsTest()
         {
-            (bool needUpdate, int amount) checkIsDirty = CheckIsDirty();
+            ObservableCollection<Product> list = new ObservableCollection<Product>();
+            Product product;
 
-            if (!checkIsDirty.needUpdate)
+            SqlCommand cmd = new SqlCommand("")
             {
-                Product product;
-                StringBuilder builder = new StringBuilder();
+                CommandText = "select p.product_id, "
+                            + "p.product_name, "
+                            + "p.product_price, "
+                            + "p.product_quantity, "
+                            + "p.product_description, "
+                            + "p.product_category_id, "
+                            + "p.product_supplier_id, "
+                            + "c.category_name, "
+                            + "s.supplier_name "
+                            + "from Products p "
+                            + "left join categories c on p.product_category_id = c.category_id "
+                            + "left join suppliers s on p.product_supplier_id = s.supplier_id "
+                            + "order by p.product_id "
+            };
 
-                bool isCategory = categoryId == null ? false : true;
-                bool isSupplier = supplierId == null ? false : true;
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                cmd.Connection = conn;
+                conn.Open();
 
-                builder.Append("select p.product_id, p.product_name, p.product_price, p.product_quantity, p.product_description, p.product_category_id, p.product_supplier_id, c.category_name, s.supplier_name ");
-                builder.Append("from products p ");
-                builder.Append("left join categories c on c.category_id = p.product_category_id ");
-                builder.Append("left join suppliers s on s.supplier_id = p.product_supplier_id ");
-
-                if (isCategory)
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    builder.Append($"where p.product_category_id = {categoryId} ");
-
-                    if (isSupplier)
+                    while (reader.Read())
                     {
-                        builder.Append($"and p.product_supplier_id = { supplierId} ");
-                    }
-                }
-                else
-                {
-                    builder.Append($"where p.product_supplier_id = { supplierId} ");
-                }
+                        product = new Product(
+                                  reader["product_name"].ToString(),
+                                  Convert.ToDouble(reader["product_price"]),
+                                  Convert.ToInt32(reader["product_quantity"]),
+                                  reader["product_description"].ToString(),
+                                  DatabaseClientCast.DBToValue<int>(reader["product_category_id"]),
+                                  DatabaseClientCast.DBToValue<int>(reader["product_supplier_id"])
+                                  );
 
-                builder.Append("order by p.product_id ");
+                        product.SetProductID((int)reader["product_id"]);
 
-                ClearProductLists();
-
-                SqlCommand cmd = new SqlCommand()
-                {
-                    CommandText = builder.ToString()
-                };
-
-                using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-                {
-                    cmd.Connection = conn;
-                    conn.Open();
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            product = new Product(
-                                      reader["product_name"].ToString(),
-                                      Convert.ToDouble(reader["product_price"]),
-                                      Convert.ToInt32(reader["product_quantity"]),
-                                      reader["product_description"].ToString(),
-                                      DatabaseClientCast.DBToValue<int>(reader["product_category_id"]),
-                                      DatabaseClientCast.DBToValue<int>(reader["product_supplier_id"])
-                                      );
-
-                            product.SetProductID((int)reader["product_id"]);
-
-                            CurrentProducts.Add(product);
-                        }
+                        list.Add(product);
                     }
                 }
             }
-            else
-            {
-                throw new Exception("Datensätze nicht gespeichert");
-            }
+
+            return list;
         }
 
-        public void GetFullDetailProducts()
+        public void GetProducts()
         {
-            (bool needUpdate, int amount) checkIsDirty = CheckIsDirty();
+            Product product;
 
-            if (!checkIsDirty.needUpdate)
+            ClearProductLists();
+
+            SqlCommand cmd = new SqlCommand("")
             {
-                Product product;
+                CommandText = "select p.product_id, "
+                            + "p.product_name, "
+                            + "p.product_price, "
+                            + "p.product_quantity, "
+                            + "p.product_description, "
+                            + "p.product_category_id, "
+                            + "p.product_supplier_id, "
+                            + "c.category_name, "
+                            + "s.supplier_name "
+                            + "from Products p "
+                            + "left join categories c on p.product_category_id = c.category_id "
+                            + "left join suppliers s on p.product_supplier_id = s.supplier_id "
+                            + "order by p.product_id "
+            };
 
-                ClearProductLists();
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                cmd.Connection = conn;
+                conn.Open();
 
-                SqlCommand cmd = new SqlCommand("")
+                using (SqlDataReader reader = cmd.ExecuteReader())
                 {
-                    CommandText = "select p.product_id, "
-                                + "p.product_name, "
-                                + "p.product_price, "
-                                + "p.product_quantity, "
-                                + "p.product_description, "
-                                + "p.product_category_id, "
-                                + "p.product_supplier_id, "
-                                + "c.category_name, "
-                                + "s.supplier_name "
-                                + "from Products p "
-                                + "left join categories c on p.product_category_id = c.category_id "
-                                + "left join suppliers s on p.product_supplier_id = s.supplier_id "
-                                + "order by p.product_id "
-                };
-
-                using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-                {
-                    cmd.Connection = conn;
-                    conn.Open();
-
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            product = new Product(
-                                      reader["product_name"].ToString(),
-                                      Convert.ToDouble(reader["product_price"]),
-                                      Convert.ToInt32(reader["product_quantity"]),
-                                      reader["product_description"].ToString(),
-                                      DatabaseClientCast.DBToValue<int>(reader["product_category_id"]),
-                                      DatabaseClientCast.DBToValue<int>(reader["product_supplier_id"])
-                                      );
+                        product = new Product(
+                                  reader["product_name"].ToString(),
+                                  Convert.ToDouble(reader["product_price"]),
+                                  Convert.ToInt32(reader["product_quantity"]),
+                                  reader["product_description"].ToString(),
+                                  DatabaseClientCast.DBToValue<int>(reader["product_category_id"]),
+                                  DatabaseClientCast.DBToValue<int>(reader["product_supplier_id"])
+                                  );
 
-                            product.SetProductID((int)reader["product_id"]);
+                        product.SetProductID((int)reader["product_id"]);
 
-                            CurrentProducts.Add(product);
-                        }
+                        CurrentProducts.Add(product);
                     }
                 }
-            }
-            else
-            {
-                throw new Exception("Datensätze nicht gespeichert");
             }
         }
 
@@ -171,6 +141,27 @@ namespace ProductManager.ViewModel.DatabaseData
         {
             this.CurrentProducts.Clear();
             this.DeletedProducts.Clear();
+        }
+
+        #region Speicher Routine
+        public void SaveProductListTest(ref ObservableCollection<Product> products)
+        {
+            //foreach (Product p in this.DeletedProducts)
+            //{
+            //    this.DeleteProduct(p);
+            //}
+
+            foreach (Product p in products)
+            {
+                if (p.ProductID > 0)
+                {
+                    this.UpdateProduct(p);
+                }
+                else
+                {
+                    this.InsertProduct(p);
+                }
+            }
         }
 
         public void SaveProductList()
@@ -196,33 +187,6 @@ namespace ProductManager.ViewModel.DatabaseData
                     this.InsertProduct(p);
                 }
             }
-        }
-
-        private (bool needUpdate, int amountNeedUpdate) CheckIsDirty()
-        {
-            bool needUpdate = false;
-            int amountNeedUpdate = 0;
-
-            foreach (var itemCur in CurrentProducts)
-            {
-                if (DeletedProducts.Count != 0)
-                {
-                    needUpdate = true;
-                    amountNeedUpdate += DeletedProducts.Count;
-                }
-
-                if (itemCur.isDirty == false)
-                {
-                    continue;
-                }
-                else
-                {
-                    needUpdate = true;
-                    amountNeedUpdate++;
-                }
-            }
-
-            return (needUpdate, amountNeedUpdate);
         }
 
         private void DeleteProduct(Product product)
@@ -305,5 +269,6 @@ namespace ProductManager.ViewModel.DatabaseData
                 product.ResetIsDirty();
             }
         }
+        #endregion Speicher Routine
     }
 }

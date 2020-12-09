@@ -11,7 +11,7 @@ namespace ProductManager
 
         public ProductsPage()
         {
-            vm = (MainProductsViewModel)this.TryFindResource("vm");
+            vm = (MainProductsViewModel)this.TryFindResource("vmProducts");
             if (vm != null)
             {
                 this.CommandBindings.Add(vm.NewCommandBinding);
