@@ -48,6 +48,8 @@ namespace ProductManager.ViewModel
         public ObservableCollection<SupplierData> SupplierList => _supplierList;
         public ListCollectionView ViewCollection => _viewCollection;
 
+        public ICommand ExpandCommand { get; private set; }
+
         public CommandBinding NewCommandBinding => _newCommandBinding;
         public CommandBinding SaveCommandBinding => _saveCommandBinding;
         public CommandBinding DeleteCommandBinding => _deleteCommandBinding;
@@ -208,11 +210,15 @@ namespace ProductManager.ViewModel
             ViewCollection.SortDescriptions.Clear();
             ViewCollection.SortDescriptions.Add(new SortDescription(property, ListSortDirection.Ascending));
         }
-
         private void UpdateFilter()
         {
             _viewCollection.Filter = new Predicate<object>(FilterContains);
         }
+        private void UpdateSearch()
+        {
+            _viewCollection.Filter = new Predicate<object>(SearchContains);
+        }
+
         private bool FilterContains(object obj)
         {
             ProductViewModel product = obj as ProductViewModel;
@@ -230,11 +236,6 @@ namespace ProductManager.ViewModel
             }
 
             return true;
-        }
-
-        private void UpdateSearch()
-        {
-            _viewCollection.Filter = new Predicate<object>(SearchContains);
         }
         private bool SearchContains(object obj)
         {

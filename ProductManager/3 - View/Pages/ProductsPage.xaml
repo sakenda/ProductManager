@@ -7,8 +7,6 @@
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:helper="clr-namespace:ProductManager.ViewModel.Helper"
 
-      xmlns:fa="http://schemas.fontawesome.io/icons/"
-
       DataContext="{StaticResource vmProducts}"
 
       mc:Ignorable="d"
@@ -29,27 +27,21 @@
             <RowDefinition Height="{Binding ElementName=spHeader, Path=Height}"/>
             <RowDefinition Height="{Binding ElementName=spSuchfeld, Path=Height}"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="{Binding ElementName=spInteraktion, Path=Height}"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="auto"/>
-        </Grid.ColumnDefinitions>
 
         <!-- HEADER -->
         <StackPanel
             Grid.Row="0"
-            Grid.ColumnSpan="2"
             Name="spHeader"
             Orientation="Horizontal"
-            Background="#01579B"
+            Background="{StaticResource dBlau}"
             Height="45">
-            <fa:ImageAwesome
-                Icon="Archive"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-                Margin="10"
-                Foreground="{StaticResource hSchriftv1}"/>
+            <Label
+                Content="  &#xf54f; "
+                FontFamily="{StaticResource FontAwesomeSolid}"
+                FontSize="25"
+                Foreground="{StaticResource hSchriftv1}"
+                VerticalContentAlignment="Center"/>
             <Label
                 Content="Produkte"
                 Padding="0"
@@ -62,7 +54,6 @@
         <!-- SUCHFELD -->
         <StackPanel
             Grid.Row="1"
-            Grid.ColumnSpan="2"
             Name="spSuchfeld"
             Orientation="Horizontal"
             Background="{StaticResource hBlau}"
@@ -72,26 +63,43 @@
 
                 <StackPanel Orientation="Horizontal">
 
-                    <fa:ImageAwesome Icon="Search" Width="15" Margin="10 0 0 0" Foreground="{StaticResource dSchriftv2}"/>
+                    <Label
+                        Content="{StaticResource Search}"
+                        FontFamily="{StaticResource FontAwesomeSolid}"
+                        FontSize="20"
+                        VerticalContentAlignment="Center"
+                        Foreground="{StaticResource hSchriftv1}"
+                        Margin="10 0 0 0"/>
                     <TextBox
                         Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}"
                         Foreground="{StaticResource dSchriftv1}"
-                        Width="400" Margin="10 10 20 10">
-                    </TextBox>
+                        Width="400" Margin="10 10 10 10"/>
 
-                    <fa:ImageAwesome Icon="Sort" Width="15" Margin="40 0 10 0" Foreground="{StaticResource dSchriftv2}"/>
+                    <Label
+                        Content="{StaticResource Sort}"
+                        FontFamily="{StaticResource FontAwesomeSolid}"
+                        FontSize="20"
+                        VerticalContentAlignment="Center"
+                        Foreground="{StaticResource hSchriftv1}"
+                        Margin="10 0 10 0"/>
                     <ComboBox
                         ItemsSource="{Binding SortCriteria, Mode=OneWay}"
                         SelectedValue="{Binding SortByProperty}"
                         SelectedIndex="0"
-                        Width="200" Height="30" Margin="0 0 20 0"/>
+                        Width="200" Height="30" Margin="0 0 10 0"/>
 
-                    <fa:ImageAwesome Icon="Filter" Width="15" Margin="40 0 10 0" Foreground="{StaticResource dSchriftv2}"/>
+                    <Label
+                        Content="{StaticResource Filter}"
+                        FontFamily="{StaticResource FontAwesomeSolid}"
+                        FontSize="20"
+                        VerticalContentAlignment="Center"
+                        Foreground="{StaticResource hSchriftv1}"
+                        Margin="10 0 10 0"/>
                     <ComboBox
                         ItemsSource="{Binding FilterCriteria, Mode=OneWay}"
                         SelectedValue="{Binding SelectedFilter}"
                         SelectedIndex="0"
-                        Width="200" Height="30" Margin="0 0 20 0"/>
+                        Width="200" Height="30" Margin="0 0 10 0"/>
                 </StackPanel>
             </Grid>
         </StackPanel>
@@ -99,223 +107,222 @@
         <!-- PRODUKTLISTE -->
         <!-- Custom ColumnHeader -->
         <DataGrid
-            Grid.Row="2" Grid.Column="0"
+            Grid.Row="2"
             Name="dgProducts"
             ItemsSource="{Binding ViewCollection, Mode=OneWay}"
             GridLinesVisibility="None"
             SelectionMode="Single"
+            RowDetailsVisibilityMode="Collapsed"
+            d:RowDetailsVisibilityMode="VisibleWhenSelected"
             RowHeaderWidth="0"
-            BorderThickness="0 0 0 2"
             AutoGenerateColumns="False">
 
             <DataGrid.Columns>
 
-                <DataGridCheckBoxColumn Binding="{Binding Changed, Mode=OneWay}" Width="60">
-                    <DataGridCheckBoxColumn.Header>
-                        <fa:ImageAwesome Icon="Save" Foreground="{StaticResource dSchriftv1}" Width="15"/>
-                    </DataGridCheckBoxColumn.Header>
-                </DataGridCheckBoxColumn>
+                <DataGridTemplateColumn Width="160">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
+                                <Button
+                                    Width="50" Height="60"
+                                    Content="&#xf044;"
+                                    Style="{StaticResource btnFontIcon}"
+                                    Click="ChangeVisibility"/>
 
-                <DataGridTextColumn Header="PRODUKT" Binding="{Binding Name.Value}" Width="300"/>
-                <DataGridTextColumn Header="PREIS" Binding="{Binding Price.Value}" Width="150"/>
-                <DataGridTextColumn Header="BESTAND" Binding="{Binding Quantity.Value}" Width="150"/>
-                <DataGridTextColumn Header="KATEGORIE" Binding="{Binding CategoryId.Value, Converter={StaticResource CategoryConv}}" Width="200"/>
-                <DataGridTextColumn Header="HERSTELLER" Binding="{Binding SupplierId.Value, Converter={StaticResource SupplierConv}}" Width="*"/>
+                                <Button
+                                    Width="50" Height="60"
+                                    Content="&#xf2ed;"
+                                    Foreground="{StaticResource Orange}"
+                                    Command="ApplicationCommands.Delete"
+                                    Style="{StaticResource btnFontIcon}"/>
+
+                                <Button
+                                    Width="50" Height="60"
+                                    Content="&#xf0c7;"
+                                    Command="ApplicationCommands.Save"
+                                    Style="{StaticResource btnFontIcon}"
+                                    IsEnabled="{Binding Changed}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn Width="300" Header="PRODUKT"    Binding="{Binding Name.Value}"/>
+                <DataGridTextColumn Width="150" Header="PREIS"      Binding="{Binding Price.Value}"/>
+                <DataGridTextColumn Width="150" Header="BESTAND"    Binding="{Binding Quantity.Value}"/>
+                <DataGridTextColumn Width="200" Header="KATEGORIE"  Binding="{Binding CategoryId.Value, Converter={StaticResource CategoryConv}}"/>
+                <DataGridTextColumn Width="Auto" Header="HERSTELLER" Binding="{Binding SupplierId.Value, Converter={StaticResource SupplierConv}}"/>
             </DataGrid.Columns>
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                    <Border
-                        MaxHeight="300"
-                        BorderBrush="Black"
-                        BorderThickness="1"
-                        CornerRadius="10"
-                        Background="White"
-                        Margin="10 10 20 10">
+                    <Expander>
+                        <Expander.Style>
+                            <Style TargetType="HeaderedContentControl">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type HeaderedContentControl}">
+                                            <StackPanel Orientation="Horizontal">
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="350"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
+                                                <ContentPresenter/>
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Expander.Style>
 
-                            <!-- Produktbild -->
-                            <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" Margin="15">
-                                <Grid>
-                                    <ScrollViewer CanContentScroll="True">
-                                        <Image Source="/Shared/Images/testImage.png" Stretch="UniformToFill" MaxHeight="250"/>
-                                    </ScrollViewer>
-                                    <Button Width="35" Height="35" HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                                        <Image Source="/Shared/Icons/add_white.png" Height="30"/>
-                                    </Button>
-                                </Grid>
-                            </Border>
+                        <Border MaxHeight="300"
+                                BorderBrush="Black"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Background="White"
+                                Margin="10 10 20 10">
 
-                            <!-- Produktname -->
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="10">
-                                <TextBlock
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="350"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Produktbild -->
+                                <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" Margin="15">
+                                    <Grid>
+                                        <ScrollViewer CanContentScroll="True">
+                                            <Image Source="/Shared/Images/notavailable.jpg" Stretch="UniformToFill" MaxHeight="250"/>
+                                        </ScrollViewer>
+                                        <Button Width="35" Height="35" HorizontalAlignment="Left" VerticalAlignment="Bottom" Style="{StaticResource btnBlue}">
+                                        </Button>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Produktname -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="10">
+                                    <TextBlock
                                     Text="PRODUKTNAME"
                                     Width="110" Padding="0" Margin="5 5 0 0"
                                     FontSize="14" FontWeight="Bold"
                                     VerticalAlignment="Center"/>
-                                <TextBox
+                                    <TextBox
                                     Name="tbProductName"
                                     Width="280" Padding="5" Margin="5">
-                                    <Binding Path="Name.Value" UpdateSourceTrigger="LostFocus">
-                                        <Binding.ValidationRules>
-                                            <helper:StringValidationRule/>
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox>
-                            </StackPanel>
+                                        <Binding Path="Name.Value" UpdateSourceTrigger="LostFocus">
+                                            <Binding.ValidationRules>
+                                                <helper:StringValidationRule/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox>
+                                </StackPanel>
 
-                            <!-- Beschreibung -->
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" Height="150">
-                                <TextBlock
+                                <!-- Beschreibung -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Height="150">
+                                    <TextBlock
                                     Text="BESCHREIBUNG"
                                     Width="110" Padding="0" Margin="15 12 0 0"
                                     FontWeight="Bold" FontSize="14"/>
-                                <TextBox
+                                    <TextBox
                                     Text="{Binding Description.Value}" VerticalAlignment="Top"
                                     Height="113" Width="280" Padding="5" Margin="5"
                                     TextWrapping="WrapWithOverflow" MaxLines="20"
                                     VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
-                            </StackPanel>
+                                </StackPanel>
 
-                            <StackPanel Orientation="Vertical" VerticalAlignment="Top" Grid.Column="2" Margin="10">
-                                <!-- Preis -->
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock
+                                <StackPanel Orientation="Vertical" VerticalAlignment="Top" Grid.Column="2" Margin="10">
+                                    <!-- Preis -->
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
                                         Text="EK-PREIS"
                                         Width="80" Padding="0" Margin="5 5 0 0"
                                         FontSize="14" FontWeight="Bold"
                                         VerticalAlignment="Center"/>
-                                    <TextBox Width="100" Padding="5" Margin="5">
-                                        <Binding
+                                        <TextBox Width="100" Padding="5" Margin="5">
+                                            <Binding
                                             Path="Price.Value"
                                             UpdateSourceTrigger="LostFocus">
-                                            <Binding.ValidationRules>
-                                                <helper:NumericValidationRule ValidationType="{x:Type sys:Double}" ValidatesOnTargetUpdated="True"/>
-                                            </Binding.ValidationRules>
-                                        </Binding>
-                                    </TextBox>
-                                </StackPanel>
+                                                <Binding.ValidationRules>
+                                                    <helper:NumericValidationRule ValidationType="{x:Type sys:Double}" ValidatesOnTargetUpdated="True"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox>
+                                    </StackPanel>
 
-                                <!-- Marge -->
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock
+                                    <!-- Marge -->
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
                                         Text="MARGE"
                                         Width="80" Padding="0" Margin="5 5 0 0"
                                         FontSize="14" FontWeight="Bold"
                                         VerticalAlignment="Center"/>
-                                    <TextBox Width="100" Padding="5" Margin="5"/>
-                                </StackPanel>
+                                        <TextBox Width="100" Padding="5" Margin="5"/>
+                                    </StackPanel>
 
-                                <!-- Bestand -->
-                                <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                    <TextBlock
+                                    <!-- Bestand -->
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                        <TextBlock
                                         Text="BESTAND"
                                         Width="80" Padding="0" Margin="5 5 0 0"
                                         FontSize="14" FontWeight="Bold"
                                         VerticalAlignment="Center"/>
-                                    <TextBox Width="100" Padding="5" Margin="5">
-                                        <Binding
+                                        <TextBox Width="100" Padding="5" Margin="5">
+                                            <Binding
                                             Path="Quantity.Value"
                                             UpdateSourceTrigger="LostFocus">
-                                            <Binding.ValidationRules>
-                                                <helper:NumericValidationRule ValidationType="{x:Type sys:Int32}" ValidatesOnTargetUpdated="True"/>
-                                            </Binding.ValidationRules>
-                                        </Binding>
-                                    </TextBox>
-                                </StackPanel>
+                                                <Binding.ValidationRules>
+                                                    <helper:NumericValidationRule ValidationType="{x:Type sys:Int32}" ValidatesOnTargetUpdated="True"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox>
+                                    </StackPanel>
 
-                                <!-- Bestellt -->
-                                <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                    <TextBlock
+                                    <!-- Bestellt -->
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                        <TextBlock
                                         Text="BESTELLT"
                                         Width="80" Padding="0" Margin="5 5 0 0"
                                         FontSize="14" FontWeight="Bold"
                                         VerticalAlignment="Center"/>
-                                    <TextBox Width="100" Padding="5" Margin="5"/>
+                                        <TextBox Width="100" Padding="5" Margin="5"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
 
-                            <StackPanel Orientation="Vertical" Grid.Column="3" Margin="10">
-                                <!-- Kategorie -->
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock
+                                <StackPanel Orientation="Vertical" Grid.Column="3" Margin="10">
+                                    <!-- Kategorie -->
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
                                         Text="KATEGORIE"
                                         Width="110" Padding="0" Margin="5 5 0 0"
                                         FontSize="14" FontWeight="Bold"
                                         VerticalAlignment="Center"/>
-                                    <ComboBox
+                                        <ComboBox
                                         ItemsSource="{Binding Source={StaticResource vmProducts}, Path=CategoryList}"
                                         SelectedValue="{Binding Path=SelectedItem.CategoryId.Value, ElementName=dgProducts}"
                                         SelectedValuePath="ID_Category"
                                         DisplayMemberPath="Name_Category"
                                         Width="180" Padding="5" Margin="5"/>
-                                </StackPanel>
+                                    </StackPanel>
 
-                                <!-- Hersteller -->
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock
+                                    <!-- Hersteller -->
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
                                         Text="HERSTELLER"
                                         Width="110" Padding="0" Margin="5 5 0 0"
                                         FontSize="14" FontWeight="Bold"
                                         VerticalAlignment="Center"/>
-                                    <ComboBox
+                                        <ComboBox
                                         ItemsSource="{Binding Source={StaticResource vmProducts}, Path=SupplierList}"
                                         SelectedValue="{Binding Path=SelectedItem.SupplierId.Value, ElementName=dgProducts}"
                                         SelectedValuePath="ID_Supplier"
                                         DisplayMemberPath="Name_Supplier"
                                         Width="180" Padding="5" Margin="5"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
+                            </Grid>
+                        </Border>
+                    </Expander>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
         </DataGrid>
-
-        <!-- PRODUKT INTERAKTION -->
-        <StackPanel
-            Grid.Row="3"
-            Grid.Column="0"
-            Name="spInteraktion"
-            Orientation="Horizontal"
-            Height="50"
-            Background="{StaticResource hGrau}">
-            <StackPanel Grid.Row="1" Orientation="Horizontal">
-                <Button Command="ApplicationCommands.New"
-                        Width="150" Margin="10 10 5 10">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <fa:ImageAwesome Icon="PlusSquareOutline" Width="14" Foreground="{StaticResource hSchriftv1}"/>
-                            <Label Content="{Binding Text, Source={x:Static ApplicationCommands.New}}" Foreground="{StaticResource hSchriftv1}"/>
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
-                <Button Command="ApplicationCommands.Delete"
-                        Width="150" Margin="5 10 5 10" Background="{StaticResource Orange}">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <fa:ImageAwesome Icon="MinusSquareOutline" Width="14" Foreground="{StaticResource hSchriftv1}"/>
-                            <Label Content="{Binding Text, Source={x:Static ApplicationCommands.Delete}}" Foreground="{StaticResource hSchriftv1}"/>
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
-                <Button Command="ApplicationCommands.Save"
-                        Width="170" Margin="5 10 5 10">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <fa:ImageAwesome Icon="Save" Width="14" Foreground="{StaticResource hSchriftv1}"/>
-                            <Label Content="{Binding Text, Source={x:Static ApplicationCommands.Save}}" Foreground="{StaticResource hSchriftv1}"/>
-                        </StackPanel>
-                    </Button.Content>
-                </Button>
-            </StackPanel>
-        </StackPanel>
     </Grid>
 </Page>

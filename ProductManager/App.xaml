@@ -9,10 +9,11 @@
 
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/3 - View/Resource/Colors.xaml"/>
-                <ResourceDictionary Source="/3 - View/Resource/Btn_Blue.xaml"/>
+                <ResourceDictionary Source="/3 - View/Resource/DefaultButtons.xaml"/>
                 <ResourceDictionary Source="/3 - View/Resource/DefaultTextBox.xaml"/>
                 <ResourceDictionary Source="/3 - View/Resource/DefaultComboBox.xaml"/>
-                <ResourceDictionary Source="/3 - View/Resource/DefaultItemContainer.xaml"/>
+                <ResourceDictionary Source="/3 - View/Resource/DefaultIListCollection.xaml"/>
+                <ResourceDictionary Source="/3 - View/Resource/FontIcons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <viewModel:MainProductsViewModel x:Key="vmProducts"/>

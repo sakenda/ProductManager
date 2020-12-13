@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <FontFamily x:Key="FontAwesomeRegular">/Shared/Fonts/FontAwesome5Regular.otf#Font Awesome 5 Free Regular</FontFamily>
+    <TextBlock x:Key="Trash" Text="&#xf2ed;" TextAlignment="Center" VerticalAlignment="Center"/>
+    <TextBlock x:Key="Save" Text="&#xf0c7;" TextAlignment="Center" VerticalAlignment="Center"/>
+    <TextBlock x:Key="New" Text="&#xf0fe;" TextAlignment="Center" VerticalAlignment="Center"/>
+
+    <FontFamily x:Key="FontAwesomeSolid">/Shared/Fonts/FontAwesome5Solid.otf#Font Awesome 5 Free Solid</FontFamily>
+    <TextBlock x:Key="Search" Text="&#xf002;" TextAlignment="Center"/>
+    <TextBlock x:Key="Sort" Text="&#xf160;" TextAlignment="Center"/>
+    <TextBlock x:Key="Filter" Text="&#xf0b0;" TextAlignment="Center"/>
+</ResourceDictionary>

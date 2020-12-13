@@ -1,7 +1,6 @@
-﻿using System.Windows;
+﻿using ProductManager.ViewModel;
+using System;
 using System.Windows.Controls;
-using System.Windows.Media;
-using ProductManager.ViewModel;
 
 namespace ProductManager
 {
@@ -17,27 +16,22 @@ namespace ProductManager
                 this.CommandBindings.Add(vm.NewCommandBinding);
                 this.CommandBindings.Add(vm.SaveCommandBinding);
                 this.CommandBindings.Add(vm.DeleteCommandBinding);
+
+                vm.ViewCollection.CurrentChanged += ResetVisibility;
             }
         }
 
-        //private void txtSearch_GotFocus(object sender, RoutedEventArgs e)
-        //{
-        //    var searchTextBox = sender as TextBox;
-        //    if (searchTextBox != null && searchTextBox.Text == "Suchen...")
-        //    {
-        //        searchTextBox.Text = "";
-        //        searchTextBox.Foreground = (Brush)TryFindResource("dSchriftv2");
-        //    }
-        //}
+        private void ResetVisibility(object sender, EventArgs e)
+        {
+            dgProducts.RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.Collapsed;
+        }
 
-        //private void txtSearch_LostFocus(object sender, RoutedEventArgs e)
-        //{
-        //    var searchTextBox = sender as TextBox;
-        //    if (searchTextBox != null && searchTextBox.Text == "")
-        //    {
-        //        searchTextBox.Text = "Suchen...";
-        //        searchTextBox.Foreground = (Brush)TryFindResource("hSchriftv2");
-        //    }
-        //}
+        private void ChangeVisibility(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (dgProducts.RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.Collapsed)
+                dgProducts.RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
+            else
+                dgProducts.RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.Collapsed;
+        }
     }
 }
