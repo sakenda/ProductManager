@@ -18,12 +18,12 @@ namespace ProductManager.ViewModel
         public PDouble Price => _price;
         public PInteger Quantity => _quantity;
         public PString Description => _description;
-        public PNullableInteger CategoryId => _categoryId;
-        public PNullableInteger SupplierId => _supplierId;
+        public PNullableInteger CategoryId { get => _categoryId; set => _categoryId = value; }
+        public PNullableInteger SupplierId { get => _supplierId; set => _supplierId = value; }
         public bool Changed
         {
-            get { return _changed; }
-            set { SetProperty(ref _changed, value); }
+            get => _changed;
+            set => SetProperty(ref _changed, value);
         }
 
         public ProductViewModel(Product product)

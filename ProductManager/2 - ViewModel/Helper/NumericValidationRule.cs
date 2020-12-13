@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Controls;
 
-namespace ProductManager.View.Helper
+namespace ProductManager.ViewModel.Helper
 {
     public class NumericValidationRule : ValidationRule
     {

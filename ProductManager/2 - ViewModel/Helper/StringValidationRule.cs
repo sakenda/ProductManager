@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 
-namespace ProductManager.View.Helper
+namespace ProductManager.ViewModel.Helper
 {
     public class StringValidationRule : ValidationRule
     {

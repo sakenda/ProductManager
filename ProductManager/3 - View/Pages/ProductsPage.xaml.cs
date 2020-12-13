@@ -20,28 +20,24 @@ namespace ProductManager
             }
         }
 
-        private void BindMetadata()
-        {
-        }
+        //private void txtSearch_GotFocus(object sender, RoutedEventArgs e)
+        //{
+        //    var searchTextBox = sender as TextBox;
+        //    if (searchTextBox != null && searchTextBox.Text == "Suchen...")
+        //    {
+        //        searchTextBox.Text = "";
+        //        searchTextBox.Foreground = (Brush)TryFindResource("dSchriftv2");
+        //    }
+        //}
 
-        private void txtSearch_GotFocus(object sender, RoutedEventArgs e)
-        {
-            var searchTextBox = sender as TextBox;
-            if (searchTextBox != null && searchTextBox.Text == "Suchen...")
-            {
-                searchTextBox.Text = "";
-                searchTextBox.Foreground = (Brush)TryFindResource("dSchriftv2");
-            }
-        }
-
-        private void txtSearch_LostFocus(object sender, RoutedEventArgs e)
-        {
-            var searchTextBox = sender as TextBox;
-            if (searchTextBox != null && searchTextBox.Text == "")
-            {
-                searchTextBox.Text = "Suchen...";
-                searchTextBox.Foreground = (Brush)TryFindResource("hSchriftv2");
-            }
-        }
+        //private void txtSearch_LostFocus(object sender, RoutedEventArgs e)
+        //{
+        //    var searchTextBox = sender as TextBox;
+        //    if (searchTextBox != null && searchTextBox.Text == "")
+        //    {
+        //        searchTextBox.Text = "Suchen...";
+        //        searchTextBox.Foreground = (Brush)TryFindResource("hSchriftv2");
+        //    }
+        //}
     }
 }

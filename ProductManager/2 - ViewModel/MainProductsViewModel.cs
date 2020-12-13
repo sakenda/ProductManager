@@ -25,12 +25,21 @@ namespace ProductManager.ViewModel
 
         private string _sortByProperty = _sortCriteria[0];
         private static string[] _sortCriteria = {
-            nameof(ProductViewModel.Name),
-            nameof(ProductViewModel.Price),
-            nameof(ProductViewModel.Quantity),
-            nameof(ProductViewModel.CategoryId),
-            nameof(ProductViewModel.SupplierId)
+            "Produktname",
+            "Preis",
+            "Menge",
+            "Kategorie",
+            "Hersteller"
         };
+
+        private string _selectedFilter = _filterCriteria[0];
+        private static string[] _filterCriteria = {
+            "Alle Artikel",
+            "Bestand unter Mindestmenge",
+            "Kein Bestand"
+        };
+
+        private string _searchString;
         #endregion "Private Felder"
 
         #region "Öffentliche Eigenschaften"
@@ -56,23 +65,45 @@ namespace ProductManager.ViewModel
                 }
             }
         }
+
+        public string[] FilterCriteria => _filterCriteria;
+        public string SelectedFilter
+        {
+            get { return _selectedFilter; }
+            set
+            {
+                if (value != _selectedFilter)
+                {
+                    SetProperty(ref _selectedFilter, value);
+                    UpdateFilter();
+                }
+            }
+        }
+
+        public string SearchString
+        {
+            get { return _searchString; }
+            set
+            {
+                SetProperty(ref _searchString, value);
+                UpdateSearch();
+            }
+        }
         #endregion "Öffentliche Eigenschaften"
 
         #region "Konstruktor"
         public MainProductsViewModel()
         {
             _database = new Database();
-            GetProductsViewModel(ref _listCollection);
             _database.GetSupplier(ref _supplierList);
             _database.GetCategories(ref _categoryList);
 
+            GetProductsViewModel(ref _listCollection);
             _viewCollection = new ListCollectionView(_listCollection);
 
             _newCommandBinding = new CommandBinding(ApplicationCommands.New, NewExecuted, NewCanExecute);
             _saveCommandBinding = new CommandBinding(ApplicationCommands.Save, SaveExecuted, SaveCanExecute);
             _deleteCommandBinding = new CommandBinding(ApplicationCommands.Delete, DeleteExecuted, DeleteCanExecute);
-
-            CommandManager.InvalidateRequerySuggested();
 
             UpdateSorting();
             _viewCollection.MoveCurrentToFirst();
@@ -150,8 +181,67 @@ namespace ProductManager.ViewModel
 
         private void UpdateSorting()
         {
+            string property;
+
+            switch (SortByProperty)
+            {
+                case "Produktname":
+                    property = nameof(ProductViewModel.Name);
+                    break;
+                case "Preis":
+                    property = nameof(ProductViewModel.Price);
+                    break;
+                case "Menge":
+                    property = nameof(ProductViewModel.Quantity);
+                    break;
+                case "Kategorie":
+                    property = nameof(ProductViewModel.CategoryId);
+                    break;
+                case "Hersteller":
+                    property = nameof(ProductViewModel.SupplierId);
+                    break;
+                default:
+                    property = null;
+                    break;
+            }
+
             ViewCollection.SortDescriptions.Clear();
-            ViewCollection.SortDescriptions.Add(new SortDescription(this.SortByProperty, ListSortDirection.Ascending));
+            ViewCollection.SortDescriptions.Add(new SortDescription(property, ListSortDirection.Ascending));
+        }
+
+        private void UpdateFilter()
+        {
+            _viewCollection.Filter = new Predicate<object>(FilterContains);
+        }
+        private bool FilterContains(object obj)
+        {
+            ProductViewModel product = obj as ProductViewModel;
+
+            if (SelectedFilter.Contains("Alle Artikel")) return true;
+            if (SelectedFilter.Contains("Kein Bestand"))
+            {
+                if (product.Quantity.Value == 0) return true;
+                else return false;
+            }
+            if (SelectedFilter.Contains("Bestand unter Mindestmenge"))
+            {
+                if (product.Quantity.Value <= 5 && product.Quantity.Value >= 1) return true;
+                else return false;
+            }
+
+            return true;
+        }
+
+        private void UpdateSearch()
+        {
+            _viewCollection.Filter = new Predicate<object>(SearchContains);
+        }
+        private bool SearchContains(object obj)
+        {
+            ProductViewModel product = obj as ProductViewModel;
+
+            if (product.Name.Value.ToLower().Contains(_searchString.ToLower())) return true;
+            else return false;
         }
 
         private void GetProductsViewModel(ref ObservableCollection<ProductViewModel> liste)

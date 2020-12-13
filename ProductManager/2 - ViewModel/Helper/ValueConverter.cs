@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 
-namespace ProductManager.ViewModel
+namespace ProductManager.ViewModel.Helper
 {
     [ValueConversion(typeof(int?), typeof(string))]
     public class CategoryValueConverter : IValueConverter
@@ -30,62 +30,6 @@ namespace ProductManager.ViewModel
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return new MainProductsViewModel().SupplierList.Where(p => p.Name_Supplier == (string)value).Select(p => p.ID_Supplier).FirstOrDefault();
-        }
-    }
-
-    [ValueConversion(typeof(double), typeof(string))]
-    public class DoubleValueConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null)
-            {
-                return null;
-            }
-            else
-            {
-                return ((double)value).ToString();
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            string amount = value as string;
-
-            if (string.IsNullOrEmpty(amount))
-            {
-                return null;
-            }
-
-            return System.Convert.ToDouble(amount);
-        }
-    }
-
-    [ValueConversion(typeof(int), typeof(string))]
-    public class IntegerValueConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null)
-            {
-                return null;
-            }
-            else
-            {
-                return ((int)value).ToString();
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            string amount = value as string;
-
-            if (string.IsNullOrEmpty(amount))
-            {
-                return null;
-            }
-
-            return System.Convert.ToInt32(amount);
         }
     }
 }

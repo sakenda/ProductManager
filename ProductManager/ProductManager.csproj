@@ -7,6 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Shared\Fonts\flaticon.ttf" />
 		<None Remove="Shared\Icons\add_black.png" />
 		<None Remove="Shared\Icons\add_white.png" />
 		<None Remove="Shared\Icons\announcement_red.png" />
@@ -27,11 +28,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Font.Awesome" Version="5.15.1" />
+		<PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<Resource Include="Shared\Fonts\flaticon.ttf">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Shared\Icons\add_black.png">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
