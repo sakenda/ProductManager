@@ -1,7 +1,9 @@
 ﻿using ProductManager.Model.Product;
 using ProductManager.Model.Product.Metadata;
 using ProductManager.ViewModel.DatabaseData;
+using ProductManager.ViewModel.Helper;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
@@ -18,10 +20,6 @@ namespace ProductManager.ViewModel
         private ObservableCollection<CategoryData> _categoryList;
         private ObservableCollection<SupplierData> _supplierList;
         private ListCollectionView _viewCollection;
-
-        private CommandBinding _newCommandBinding;
-        private CommandBinding _saveCommandBinding;
-        private CommandBinding _deleteCommandBinding;
 
         private string _sortByProperty = _sortCriteria[0];
         private static string[] _sortCriteria = {
@@ -48,11 +46,9 @@ namespace ProductManager.ViewModel
         public ObservableCollection<SupplierData> SupplierList => _supplierList;
         public ListCollectionView ViewCollection => _viewCollection;
 
-        public ICommand ExpandCommand { get; private set; }
-
-        public CommandBinding NewCommandBinding => _newCommandBinding;
-        public CommandBinding SaveCommandBinding => _saveCommandBinding;
-        public CommandBinding DeleteCommandBinding => _deleteCommandBinding;
+        public ICommand DeleteCommand { get; private set; }
+        public ICommand SaveCommand { get; private set; }
+        public ICommand NewCommand { get; private set; }
 
         public string[] SortCriteria => _sortCriteria;
         public string SortByProperty
@@ -103,42 +99,43 @@ namespace ProductManager.ViewModel
             GetProductsViewModel(ref _listCollection);
             _viewCollection = new ListCollectionView(_listCollection);
 
-            _newCommandBinding = new CommandBinding(ApplicationCommands.New, NewExecuted, NewCanExecute);
-            _saveCommandBinding = new CommandBinding(ApplicationCommands.Save, SaveExecuted, SaveCanExecute);
-            _deleteCommandBinding = new CommandBinding(ApplicationCommands.Delete, DeleteExecuted, DeleteCanExecute);
+            DeleteCommand = new RelayCommand(DeleteExecuted, DeleteCanExecute);
+            SaveCommand = new RelayCommand(SaveExecuted, SaveCanExecute);
+            NewCommand = new RelayCommand(NewExecuted, NewCanExecute);
 
             UpdateSorting();
             _viewCollection.MoveCurrentToFirst();
         }
         #endregion "Konstruktor"
 
-        #region "CommandBindings"
-        private void NewCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        #region "Commands"
+        private bool NewCanExecute(object sender)
         {
-            e.CanExecute = true;
+            return true;
         }
-        private void NewExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void NewExecuted(object sender)
         {
             ProductViewModel product = new ProductViewModel(null);
             _listCollection.Add(product);
             _viewCollection.MoveCurrentTo(product);
         }
 
-        private void SaveCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private bool SaveCanExecute(object sender)
         {
             foreach (ProductViewModel item in _listCollection)
             {
                 if (item.Changed)
                 {
-                    e.CanExecute = true;
-                    return;
+                    return true;
                 }
-                e.CanExecute = false;
             }
+            return false;
         }
-        private void SaveExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void SaveExecuted(object sender)
         {
-            ObservableCollection<Product> products = new ObservableCollection<Product>();
+            List<Product> changedProducts = new List<Product>();
+            List<Product> deletedProducts = new List<Product>();
+            List<ProductViewModel> deletedViewList = new List<ProductViewModel>();
 
             foreach (ProductViewModel item in _listCollection)
             {
@@ -146,31 +143,50 @@ namespace ProductManager.ViewModel
                 {
                     continue;
                 }
+                else if (item.IsDeleted)
+                {
+                    deletedProducts.Add(item.ConvertToProduct());
+                    deletedViewList.Add(item);
+                    continue;
+                }
                 else
                 {
-                    products.Add(item.ConvertToProduct());
+                    changedProducts.Add(item.ConvertToProduct());
                 }
             }
 
-            _database.SaveProductList(ref products);
+            _database.SaveProductList(ref changedProducts, ref deletedProducts);
+
+            if (deletedViewList.Count != 0)
+            {
+                foreach (ProductViewModel item in deletedViewList)
+                {
+                    _listCollection.Remove(item);
+                }
+            }
+
+            if (changedProducts.Count != 0)
+            {
+                AcceptChanges();
+            }
+
+            _viewCollection.Refresh();
             _viewCollection.MoveCurrentToFirst();
-            AcceptChanges();
         }
 
-        private void DeleteCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private bool DeleteCanExecute(object sender)
         {
-            e.CanExecute = _viewCollection.Count > 0;
+            return ViewCollection.Count > 0;
         }
-        private void DeleteExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void DeleteExecuted(object sender)
         {
-            Product product = _viewCollection.CurrentItem as Product;
+            ProductViewModel product = _viewCollection.CurrentItem as ProductViewModel;
             if (product != null)
             {
-                // Produkt löschen implementieren
+                product.DeleteProduct();
             }
-            _viewCollection.MoveCurrentToFirst();
         }
-        #endregion "CommandBindings"
+        #endregion "Commands"
 
         #region "Private Methoden"
         private void AcceptChanges()

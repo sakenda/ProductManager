@@ -43,7 +43,6 @@
     </Style>
 
     <Style x:Key="btnFontIcon" TargetType="Button">
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="Template">
@@ -68,5 +67,42 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style TargetType="Button" x:Key="btnAdd">
+        <Setter Property="FontFamily" Value="{StaticResource FontAwesomeSolid}"/>
+        <Setter Property="FontSize" Value="60"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource hBlau}"/>
+        <Setter Property="Width" Value="80"/>
+        <Setter Property="Height" Value="80"/>
+        <Setter Property="Margin" Value="10"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid Width="{TemplateBinding Width}"
+                          Height="{TemplateBinding Height}">
+                        <Label Content="{TemplateBinding Content}"
+                               Foreground="{TemplateBinding Foreground}"
+                               Background="{TemplateBinding Background}"
+                               FontSize="{TemplateBinding FontSize}"
+                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource dBlau}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource Orange}"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

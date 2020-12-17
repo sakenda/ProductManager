@@ -1,28 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ProductManager.Model.Product.Metadata
+﻿namespace ProductManager.Model.Product.Metadata
 {
     public class SupplierData
     {
-        private string _Name_Supplier;
-        private int? _ID_Supplier;
+        private int? _id;
+        private string _name;
+        private string _address;
+        private string _email;
 
-        public int? ID_Supplier
-        {
-            get { return _ID_Supplier; }
-        }
-
-        public string Name_Supplier
-        {
-            get => _Name_Supplier;
-        }
+        public int? ID => _id;
+        public string Name => _name;
+        public string Address => _address;
+        public string EMail => _email;
 
         public SupplierData(int? id, string name)
         {
-            _ID_Supplier = id;
-            _Name_Supplier = name;
+            _id = id;
+            _name = name;
         }
     }
 }

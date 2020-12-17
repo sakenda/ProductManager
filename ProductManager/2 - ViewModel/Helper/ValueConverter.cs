@@ -10,12 +10,12 @@ namespace ProductManager.ViewModel.Helper
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return new MainProductsViewModel().CategoryList.Where(p => p.ID_Category == (int?)value).Select(p => p.Name_Category).FirstOrDefault();
+            return new MainProductsViewModel().CategoryList.Where(p => p.ID == (int?)value).Select(p => p.Name).FirstOrDefault();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return new MainProductsViewModel().CategoryList.Where(p => p.Name_Category == (string)value).Select(p => p.ID_Category).FirstOrDefault();
+            return new MainProductsViewModel().CategoryList.Where(p => p.Name == (string)value).Select(p => p.ID).FirstOrDefault();
         }
     }
 
@@ -24,12 +24,12 @@ namespace ProductManager.ViewModel.Helper
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return new MainProductsViewModel().SupplierList.Where(p => p.ID_Supplier == (int?)value).Select(p => p.Name_Supplier).FirstOrDefault();
+            return new MainProductsViewModel().SupplierList.Where(p => p.ID == (int?)value).Select(p => p.Name).FirstOrDefault();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return new MainProductsViewModel().SupplierList.Where(p => p.Name_Supplier == (string)value).Select(p => p.ID_Supplier).FirstOrDefault();
+            return new MainProductsViewModel().SupplierList.Where(p => p.Name == (string)value).Select(p => p.ID).FirstOrDefault();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ProductManager.Model.Product;
 using ProductManager.Model.Product.Metadata;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
@@ -13,21 +14,26 @@ namespace ProductManager.ViewModel.DatabaseData
         {
             ObservableCollection<Product> list = new ObservableCollection<Product>();
             Product product;
+            Price price;
 
             SqlCommand cmd = new SqlCommand("")
             {
                 CommandText = "select p.product_id, "
                             + "p.product_name, "
-                            + "p.product_price, "
                             + "p.product_quantity, "
                             + "p.product_description, "
                             + "p.product_category_id, "
                             + "p.product_supplier_id, "
                             + "c.category_name, "
-                            + "s.supplier_name "
+                            + "s.supplier_name, "
+                            + "pri.price_id, "
+                            + "pri.price_base, "
+                            + "pri.price_shipping, "
+                            + "pri.price_profit "
                             + "from Products p "
                             + "left join categories c on p.product_category_id = c.category_id "
                             + "left join suppliers s on p.product_supplier_id = s.supplier_id "
+                            + "left join prices pri on p.product_id = pri.price_id "
                             + "order by p.product_id "
             };
 
@@ -40,9 +46,16 @@ namespace ProductManager.ViewModel.DatabaseData
                 {
                     while (reader.Read())
                     {
+                        price = new Price(
+                            DatabaseClientCast.DBToValue<int>(reader["price_id"]),
+                            Convert.ToDecimal(DatabaseClientCast.DBToValue<decimal>(reader["price_base"])),
+                            Convert.ToDecimal(DatabaseClientCast.DBToValue<decimal>(reader["price_shipping"])),
+                            Convert.ToDecimal(DatabaseClientCast.DBToValue<decimal>(reader["price_base"]))
+                            );
+
                         product = new Product(
                                   reader["product_name"].ToString(),
-                                  Convert.ToDouble(reader["product_price"]),
+                                  price,
                                   Convert.ToInt32(reader["product_quantity"]),
                                   reader["product_description"].ToString(),
                                   DatabaseClientCast.DBToValue<int>(reader["product_category_id"]),
@@ -120,9 +133,15 @@ namespace ProductManager.ViewModel.DatabaseData
         }
 
         #region Speicher Routine
-        public void SaveProductList(ref ObservableCollection<Product> products)
+        public void SaveProductList(ref List<Product> products, ref List<Product> deletedProducts)
         {
-            // Produkt aus der Datenbank löschen implementieren
+            if (deletedProducts.Count > 0)
+            {
+                foreach (Product product in deletedProducts)
+                {
+                    this.DeleteProduct(product);
+                }
+            }
 
             foreach (Product p in products)
             {
@@ -142,8 +161,9 @@ namespace ProductManager.ViewModel.DatabaseData
             string sql;
             SqlCommand cmd;
 
-            sql = "delete from Products "
-                + "where ProductID = @id";
+            #region Delete Produkt
+            sql = "delete from products "
+                + "where product_id = @id";
 
             cmd = new SqlCommand(sql);
             cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ProductID;
@@ -154,6 +174,22 @@ namespace ProductManager.ViewModel.DatabaseData
                 cmd.Connection = conn;
                 cmd.ExecuteNonQuery();
             }
+            #endregion Delete Produkt
+
+            #region Delete Preis
+            sql = "delete from prices "
+                + "where price_id = @id";
+
+            cmd = new SqlCommand(sql);
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.Price.ID;
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+            #endregion Delete Preis
         }
 
         private void UpdateProduct(Product product)
@@ -161,15 +197,19 @@ namespace ProductManager.ViewModel.DatabaseData
             string sql;
             SqlCommand cmd;
 
-            sql = "update products set product_name = @productName, product_price = @price, product_quantity = @quantity, product_description = @description, "
-                + "                     product_category_id = @categoryID, product_supplier_id = @supplierID "
-                + "where product_id = @id";
+            #region Update Produkt
+            sql = "UPDATE products set "
+                + "product_name = @productName, "
+                + "product_quantity = @quantity, "
+                + "product_description = @description, "
+                + "product_category_id = @categoryID, "
+                + "product_supplier_id = @supplierID "
+                + "WHERE product_id = @id";
 
             cmd = new SqlCommand(sql);
 
             cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ProductID;
             cmd.Parameters.Add("@productName", SqlDbType.NVarChar).Value = product.ProductName.StringToDb();
-            cmd.Parameters.Add("@price", SqlDbType.Money).Value = product.Price;
             cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
             cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
             cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryID.ValueToDb<int>();
@@ -181,19 +221,43 @@ namespace ProductManager.ViewModel.DatabaseData
                 cmd.Connection = conn;
                 cmd.ExecuteNonQuery();
             }
+            #endregion Update Produkt
+
+            #region Update Price
+            sql = "UPDATE prices set "
+                + "price_base = @priceBase, "
+                + "price_shipping = @priceShipping, "
+                + "price_profit = @priceProfit"
+                + "WHERE price_id = @priceID";
+
+            cmd = new SqlCommand(sql);
+
+            cmd.Parameters.Add("@priceID", SqlDbType.Int).Value = product.Price.ID;
+            cmd.Parameters.Add("@priceBase", SqlDbType.Money).Value = product.Price.BasePrice.ValueToDb<decimal>();
+            cmd.Parameters.Add("@priceShipping", SqlDbType.Money).Value = product.Price.ShippingPrice.ValueToDb<decimal>();
+            cmd.Parameters.Add("@priceProfit", SqlDbType.Decimal).Value = product.Price.Profit.ValueToDb<decimal>();
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+            #endregion Update Price
         }
 
         private void InsertProduct(Product product)
         {
             string sql;
+            int id;
             SqlCommand cmd;
 
-            sql = "insert into products(product_name, product_price, product_quantity, product_description, product_category_id, product_supplier_id) "
-                + "             values (@productName, @price, @quantity, @description, @categoryID, @supplierID)";
+            #region Insert Produkt
+            sql = "INSERT into products(product_name, product_quantity, product_description, product_category_id, product_supplier_id) "
+                + "              values(@productName, @quantity, @description, @categoryID, @supplierID) ";
 
             cmd = new SqlCommand(sql);
             cmd.Parameters.Add("@productName", SqlDbType.NVarChar).Value = product.ProductName.StringToDb();
-            cmd.Parameters.Add("@price", SqlDbType.Money).Value = product.Price;
             cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
             cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
             cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryID.ValueToDb<int>();
@@ -209,8 +273,30 @@ namespace ProductManager.ViewModel.DatabaseData
                 cmd.CommandText = "select @@IDENTITY";
                 cmd.Connection = conn;
 
-                product.SetProductID(Convert.ToInt32(cmd.ExecuteScalar()));
+                id = Convert.ToInt32(cmd.ExecuteScalar());
+                product.SetProductID(id);
             }
+            #endregion Insert Produkt
+
+            #region Insert Preis
+            sql = "INSERT into prices(price_id, price_base, price_shipping, price_profit) "
+                + "            values(@priceID, @priceBase, @priceShipping, @priceProfit)";
+
+            cmd = new SqlCommand(sql);
+            cmd.Parameters.Add("@priceID", SqlDbType.Int).Value = id;
+            cmd.Parameters.Add("@priceBase", SqlDbType.Decimal).Value = product.Price.BasePrice.ValueToDb<decimal>();
+            cmd.Parameters.Add("@priceShipping", SqlDbType.Decimal).Value = product.Price.ShippingPrice.ValueToDb<decimal>();
+            cmd.Parameters.Add("@priceProfit", SqlDbType.Decimal).Value = product.Price.Profit.ValueToDb<decimal>();
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+
+                product.Price.SetID(id);
+            }
+            #endregion Insert Preis
         }
         #endregion Speicher Routine
     }

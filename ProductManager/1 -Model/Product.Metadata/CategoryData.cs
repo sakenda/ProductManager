@@ -2,23 +2,16 @@
 {
     public class CategoryData
     {
-        private string _Name_Category;
-        private int? _ID_Category;
+        private int? _id;
+        private string _name;
 
-        public int? ID_Category
-        {
-            get { return _ID_Category; }
-        }
-
-        public string Name_Category
-        {
-            get => _Name_Category;
-        }
+        public int? ID => _id;
+        public string Name => _name;
 
         public CategoryData(int? id, string name)
         {
-            _ID_Category = id;
-            _Name_Category = name;
+            _id = id;
+            _name = name;
         }
     }
 }

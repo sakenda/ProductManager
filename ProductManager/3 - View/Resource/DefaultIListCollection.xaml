@@ -26,33 +26,78 @@
     </Style>
 
     <Style TargetType="DataGridRow">
-        <Setter Property="Margin" Value="13 0 6 0"/>
+        <Setter Property="Margin" Value="10 0 10 0"/>
+        <Setter Property="Background" Value="{StaticResource hGrau}"/>
+        <Setter Property="IsHitTestVisible" Value="True"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource hSchriftv1}"/>
-                <Setter Property="Background" Value="{StaticResource dBlau}"/>
+                <Setter Property="Background" Value="{StaticResource hBlau}"/>
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="BorderBrush" Value="Black"/>
-                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Background" Value="{StaticResource dBlau}"/>
                 <Setter Property="Foreground" Value="{StaticResource hSchriftv1}"/>
-                <Setter Property="Background" Value="{StaticResource hBlau}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style TargetType="DataGridCell">
         <Setter Property="FontSize" Value="14"/>
-        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource dSchriftv2}"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridCell">
                     <Grid IsHitTestVisible="True">
-                        <ContentPresenter Margin="0"/>
+                        <ContentPresenter VerticalAlignment="Center"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource dBlau}"/>
+                <Setter Property="Foreground" Value="{StaticResource hSchriftv1}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="QuantityDataGridCell" TargetType="DataGridCell">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource dSchriftv2}"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridCell">
+                    <Border IsHitTestVisible="True" BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                Margin="0 20 0 20">
+                        <ContentPresenter VerticalAlignment="Center" Margin="10 0 0 0"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource dBlau}"/>
+                <Setter Property="Foreground" Value="{StaticResource hSchriftv1}"/>
+            </Trigger>
+            <DataTrigger Binding="{Binding IsEmpty}" Value="True">
+                <Setter Property="BorderBrush" Value="OrangeRed"/>
+                <Setter Property="BorderThickness" Value="5 0 0 0"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding NeedRestock}" Value="True">
+                <Setter Property="BorderBrush" Value="Orange"/>
+                <Setter Property="BorderThickness" Value="5 0 0 0"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding IsDeleted}" Value="true">
+                <Setter Property="Background" Value="PaleVioletRed"/>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

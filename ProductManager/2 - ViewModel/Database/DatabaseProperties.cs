@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ProductManager.ViewModel.DatabaseData
+﻿namespace ProductManager.ViewModel.DatabaseData
 {
     public class DatabaseProperties
     {

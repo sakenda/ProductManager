@@ -1,5 +1,6 @@
 ﻿using ProductManager.ViewModel;
 using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace ProductManager
@@ -13,10 +14,6 @@ namespace ProductManager
             vm = (MainProductsViewModel)this.TryFindResource("vmProducts");
             if (vm != null)
             {
-                this.CommandBindings.Add(vm.NewCommandBinding);
-                this.CommandBindings.Add(vm.SaveCommandBinding);
-                this.CommandBindings.Add(vm.DeleteCommandBinding);
-
                 vm.ViewCollection.CurrentChanged += ResetVisibility;
             }
         }
@@ -26,7 +23,7 @@ namespace ProductManager
             dgProducts.RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.Collapsed;
         }
 
-        private void ChangeVisibility(object sender, System.Windows.RoutedEventArgs e)
+        private void ChangeVisibility(object sender, RoutedEventArgs e)
         {
             if (dgProducts.RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.Collapsed)
                 dgProducts.RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
