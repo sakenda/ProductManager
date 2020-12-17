@@ -7,15 +7,10 @@ namespace ProductManager
 {
     public partial class ProductsPage : Page
     {
-        private MainProductsViewModel vm;
-
         public ProductsPage()
         {
-            vm = (MainProductsViewModel)this.TryFindResource("vmProducts");
-            if (vm != null)
-            {
-                vm.ViewCollection.CurrentChanged += ResetVisibility;
-            }
+            InitializeComponent();
+            dgProducts.SelectionChanged += ResetVisibility;
         }
 
         private void ResetVisibility(object sender, EventArgs e)

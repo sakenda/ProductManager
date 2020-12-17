@@ -43,13 +43,19 @@
     </Style>
 
     <Style x:Key="btnFontIcon" TargetType="Button">
-        <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
         <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
+        <Setter Property="Background" Value="{StaticResource hGrau}"/>
+        <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
 
-                    <Border Name="border" Margin="2 7 2 7" CornerRadius="4">
+                    <Border Margin="3 7 3 7"
+                            CornerRadius="4"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{StaticResource dSchriftv1}"
+                            BorderThickness="1">
                         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                             <ContentPresenter/>
                         </Grid>
@@ -58,7 +64,7 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Foreground" Value="{StaticResource hSchriftv1}"/>
-                            <Setter TargetName="border" Property="Background" Value="{StaticResource dBlau}"/>
+                            <Setter Property="Background" Value="{StaticResource hBlau}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Foreground" Value="Transparent"/>
@@ -69,7 +75,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="Button" x:Key="btnAdd">
+    <Style TargetType="Button" x:Key="btnInteract">
         <Setter Property="FontFamily" Value="{StaticResource FontAwesomeSolid}"/>
         <Setter Property="FontSize" Value="60"/>
         <Setter Property="Background" Value="Transparent"/>
@@ -102,6 +108,9 @@
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Orange}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource hSchriftv2}"/>
             </Trigger>
         </Style.Triggers>
     </Style>

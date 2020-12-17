@@ -16,6 +16,16 @@
 
     <DockPanel LastChildFill="True" Background="{StaticResource dBlau}">
 
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Datenbank">
+                <MenuItem Header="Datenbank Pfad..." ToolTip="Pfad zum Datenbank Server"/>
+                <MenuItem Header="Daten lokal speichern" IsCheckable="True" ToolTip="Wenn lokal gespeichert wird, wird keine externe Datenbank benötigt."/>
+            </MenuItem>
+            <MenuItem Header="Info">
+                <MenuItem Header="Über..."/>
+            </MenuItem>
+        </Menu>
+
         <StackPanel DockPanel.Dock="Left" Width="100" Orientation="Vertical" VerticalAlignment="Top">
 
             <Border Height="80" Background="{StaticResource Orange}">

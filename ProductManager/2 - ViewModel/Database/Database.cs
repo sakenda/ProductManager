@@ -227,7 +227,7 @@ namespace ProductManager.ViewModel.DatabaseData
             sql = "UPDATE prices set "
                 + "price_base = @priceBase, "
                 + "price_shipping = @priceShipping, "
-                + "price_profit = @priceProfit"
+                + "price_profit = @priceProfit "
                 + "WHERE price_id = @priceID";
 
             cmd = new SqlCommand(sql);

@@ -36,9 +36,9 @@
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="BorderBrush" Value="Black"/>
-                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="BorderThickness" Value="2"/>
                 <Setter Property="FontWeight" Value="Bold"/>
-                <Setter Property="Background" Value="{StaticResource dBlau}"/>
+                <Setter Property="Background" Value="{StaticResource hBlau}"/>
                 <Setter Property="Foreground" Value="{StaticResource hSchriftv1}"/>
             </Trigger>
         </Style.Triggers>
