@@ -9,6 +9,7 @@
         private int _Quantity;
         private int? _CategoryID;
         private int? _SupplierID;
+        private string _imagePath;
 
         public int ProductID => _ProductID;
         public string ProductName => _ProductName;
@@ -17,13 +18,14 @@
         public int Quantity => _Quantity;
         public int? CategoryID => _CategoryID;
         public int? SupplierID => _SupplierID;
+        public string ImagePath => _imagePath;
 
         public Product()
         {
             _ProductID = -1;
         }
 
-        public Product(string name, Price price, int quantity, string description, int? categoryID, int? supplierID)
+        public Product(string name, Price price, int quantity, string description, int? categoryID, int? supplierID, string imagePath)
         {
             _ProductName = name;
             _price = price;
@@ -31,6 +33,7 @@
             _Description = description;
             _CategoryID = categoryID;
             _SupplierID = supplierID;
+            _imagePath = imagePath;
         }
 
         public virtual void SetProductID(int value)

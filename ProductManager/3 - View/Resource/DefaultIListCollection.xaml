@@ -53,7 +53,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridCell">
                     <Grid IsHitTestVisible="True">
-                        <ContentPresenter VerticalAlignment="Center"/>
+                        <ContentPresenter Margin="20 0" VerticalAlignment="Center"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

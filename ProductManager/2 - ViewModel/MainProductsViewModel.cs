@@ -49,6 +49,8 @@ namespace ProductManager.ViewModel
         public ICommand DeleteCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
         public ICommand NewCommand { get; private set; }
+        public ICommand UndoCommand { get; private set; }
+        public ICommand SetImageCommand { get; private set; }
 
         public string[] SortCriteria => _sortCriteria;
         public string SortByProperty
@@ -101,7 +103,9 @@ namespace ProductManager.ViewModel
 
             DeleteCommand = new RelayCommand(DeleteExecuted, DeleteCanExecute);
             SaveCommand = new RelayCommand(SaveExecuted, SaveCanExecute);
-            NewCommand = new RelayCommand(NewExecuted, NewCanExecute);
+            NewCommand = new RelayCommand(NewExecuted);
+            UndoCommand = new RelayCommand(UndoExecuted, UndoCanExecute);
+            SetImageCommand = new RelayCommand(SetImageExecuted);
 
             UpdateSorting();
             _viewCollection.MoveCurrentToFirst();
@@ -109,10 +113,6 @@ namespace ProductManager.ViewModel
         #endregion "Konstruktor"
 
         #region "Commands"
-        private bool NewCanExecute(object sender)
-        {
-            return true;
-        }
         private void NewExecuted(object sender)
         {
             ProductViewModel product = new ProductViewModel(null);
@@ -155,8 +155,6 @@ namespace ProductManager.ViewModel
                 }
             }
 
-            _database.SaveProductList(ref changedProducts, ref deletedProducts);
-
             if (deletedViewList.Count != 0)
             {
                 foreach (ProductViewModel item in deletedViewList)
@@ -165,10 +163,9 @@ namespace ProductManager.ViewModel
                 }
             }
 
-            if (changedProducts.Count != 0)
-            {
-                AcceptChanges();
-            }
+            _database.SaveProductList(ref changedProducts, ref deletedProducts);
+
+            AcceptChanges();
 
             _viewCollection.Refresh();
             _viewCollection.MoveCurrentToFirst();
@@ -184,6 +181,29 @@ namespace ProductManager.ViewModel
             if (product != null)
             {
                 product.DeleteProduct();
+            }
+        }
+
+        private bool UndoCanExecute(object sender)
+        {
+            if (((ProductViewModel)_viewCollection.CurrentItem).Changed)
+            {
+                return true;
+            }
+            return false;
+        }
+        private void UndoExecuted(object sender)
+        {
+            ((ProductViewModel)_viewCollection.CurrentItem).UndoChanges();
+        }
+
+        private void SetImageExecuted(object obj)
+        {
+            string path = obj as string;
+
+            if (path != null)
+            {
+                ((ProductViewModel)_viewCollection.CurrentItem).SaveImage(path);
             }
         }
         #endregion "Commands"

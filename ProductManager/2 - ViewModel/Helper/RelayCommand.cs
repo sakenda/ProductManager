@@ -8,7 +8,7 @@ namespace ProductManager.ViewModel.Helper
         private readonly Action<object> _executeHandler;
         private readonly Predicate<object> _canExecuteHandler;
 
-        public RelayCommand(Action<object> execute, object deleteCanExecute) : this(execute, null) { }
+        public RelayCommand(Action<object> execute) : this(execute, null) { }
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
             if (execute == null)

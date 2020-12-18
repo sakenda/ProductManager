@@ -18,23 +18,24 @@ namespace ProductManager.ViewModel.DatabaseData
 
             SqlCommand cmd = new SqlCommand("")
             {
-                CommandText = "select p.product_id, "
-                            + "p.product_name, "
-                            + "p.product_quantity, "
-                            + "p.product_description, "
-                            + "p.product_category_id, "
-                            + "p.product_supplier_id, "
-                            + "c.category_name, "
-                            + "s.supplier_name, "
-                            + "pri.price_id, "
-                            + "pri.price_base, "
-                            + "pri.price_shipping, "
-                            + "pri.price_profit "
-                            + "from Products p "
-                            + "left join categories c on p.product_category_id = c.category_id "
-                            + "left join suppliers s on p.product_supplier_id = s.supplier_id "
-                            + "left join prices pri on p.product_id = pri.price_id "
-                            + "order by p.product_id "
+                CommandText = "select product.product_id, "
+                            + "product.product_name, "
+                            + "product.product_quantity, "
+                            + "product.product_description, "
+                            + "product.product_category_id, "
+                            + "product.product_supplier_id, "
+                            + "category.category_name, "
+                            + "supplier.supplier_name, "
+                            + "price.price_id, "
+                            + "price.price_base, "
+                            + "price.price_shipping, "
+                            + "price.price_profit, "
+                            + "p_image.image_path "
+                            + "from Products product "
+                            + "left join categories category on product.product_category_id = category.category_id "
+                            + "left join suppliers supplier on product.product_supplier_id = supplier.supplier_id "
+                            + "left join prices price on product.product_id = price.price_id "
+                            + "left join product_images p_image on product.product_id = p_image.image_id"
             };
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
@@ -59,7 +60,8 @@ namespace ProductManager.ViewModel.DatabaseData
                                   Convert.ToInt32(reader["product_quantity"]),
                                   reader["product_description"].ToString(),
                                   DatabaseClientCast.DBToValue<int>(reader["product_category_id"]),
-                                  DatabaseClientCast.DBToValue<int>(reader["product_supplier_id"])
+                                  DatabaseClientCast.DBToValue<int>(reader["product_supplier_id"]),
+                                  reader["image_path"].ToString()
                                   );
 
                         product.SetProductID((int)reader["product_id"]);
@@ -190,6 +192,21 @@ namespace ProductManager.ViewModel.DatabaseData
                 cmd.ExecuteNonQuery();
             }
             #endregion Delete Preis
+
+            #region Delete Image
+            sql = "delete from product_images "
+                + "where image_id = @id";
+
+            cmd = new SqlCommand(sql);
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ProductID;
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+            #endregion Delete Image
         }
 
         private void UpdateProduct(Product product)
@@ -244,6 +261,26 @@ namespace ProductManager.ViewModel.DatabaseData
                 cmd.ExecuteNonQuery();
             }
             #endregion Update Price
+
+            #region Update Image
+            sql = "UPDATE product_images set image_path = @imagePath "
+                + "WHERE image_id = @productID "
+                + "IF @@ROWCOUNT = 0 "
+                + "INSERT into product_images(image_id, image_path) "
+                + "                    values(@productID, @imagePath) ";
+
+            cmd = new SqlCommand(sql);
+
+            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ProductID;
+            cmd.Parameters.Add("@imagePath", SqlDbType.Text).Value = product.ImagePath.StringToDb();
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+            #endregion Update Image
         }
 
         private void InsertProduct(Product product)
@@ -297,6 +334,22 @@ namespace ProductManager.ViewModel.DatabaseData
                 product.Price.SetID(id);
             }
             #endregion Insert Preis
+
+            #region Insert Image
+            sql = "INSERT into product_images(image_id, image_path) "
+                + "                    values(@productID, @imagePath)";
+
+            cmd = new SqlCommand(sql);
+            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = id;
+            cmd.Parameters.Add("@imagePath", SqlDbType.Text).Value = product.ImagePath;
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+            #endregion Insert Image
         }
         #endregion Speicher Routine
     }

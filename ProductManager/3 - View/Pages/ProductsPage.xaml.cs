@@ -1,4 +1,5 @@
-﻿using ProductManager.ViewModel;
+﻿using Microsoft.Win32;
+using ProductManager.ViewModel;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,23 +8,30 @@ namespace ProductManager
 {
     public partial class ProductsPage : Page
     {
+        private MainProductsViewModel vm;
+
         public ProductsPage()
         {
             InitializeComponent();
-            dgProducts.SelectionChanged += ResetVisibility;
+
+            if (this.DataContext as MainProductsViewModel != null)
+            {
+                vm = this.DataContext as MainProductsViewModel;
+            }
         }
 
-        private void ResetVisibility(object sender, EventArgs e)
+        private void AddImage_Click(object sender, RoutedEventArgs e)
         {
-            dgProducts.RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.Collapsed;
-        }
+            OpenFileDialog openFile = new OpenFileDialog();
 
-        private void ChangeVisibility(object sender, RoutedEventArgs e)
-        {
-            if (dgProducts.RowDetailsVisibilityMode == DataGridRowDetailsVisibilityMode.Collapsed)
-                dgProducts.RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
-            else
-                dgProducts.RowDetailsVisibilityMode = DataGridRowDetailsVisibilityMode.Collapsed;
+            openFile.Multiselect = false;
+            openFile.Filter = "Bilddateien (*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.bmp";
+            openFile.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            if (openFile.ShowDialog() == true)
+            {
+                vm.SetImageCommand.Execute(openFile.FileName);
+            }
         }
     }
 }

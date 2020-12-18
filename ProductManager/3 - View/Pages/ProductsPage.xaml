@@ -73,7 +73,8 @@
                     <TextBox
                         Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}"
                         Foreground="{StaticResource dSchriftv1}"
-                        Width="400" Margin="10 10 10 10"/>
+                        Width="400" Margin="10"
+                        BorderThickness="2"/>
 
                     <Label
                         Content="{StaticResource Sort}"
@@ -106,41 +107,19 @@
 
         <!-- PRODUKTLISTE -->
         <!-- Custom ColumnHeader -->
-        <DataGrid
-            Grid.Row="2"
-            Name="dgProducts"
-            ItemsSource="{Binding ViewCollection, Mode=OneWay}"
-            GridLinesVisibility="None"
-            SelectionMode="Single"
-            RowDetailsVisibilityMode="Collapsed"
-            d:RowDetailsVisibilityMode="VisibleWhenSelected"
-            RowHeaderWidth="0"
-            IsReadOnly="True"
-            SelectionUnit="FullRow"
-            AutoGenerateColumns="False"
-            VirtualizingPanel.ScrollUnit="Pixel">
+        <DataGrid Grid.Row="2"
+                  Name="dgProducts"
+                  ItemsSource="{Binding ViewCollection, Mode=OneWay}"
+                  GridLinesVisibility="None"
+                  SelectionMode="Single"
+                  d:RowDetailsVisibilityMode="VisibleWhenSelected"
+                  RowHeaderWidth="0"
+                  IsReadOnly="True"
+                  SelectionUnit="FullRow"
+                  AutoGenerateColumns="False"
+                  VirtualizingPanel.ScrollUnit="Pixel">
 
             <DataGrid.Columns>
-
-                <!-- Interaktions Buttons -->
-                <DataGridTemplateColumn Width="120">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="5 0 0 0">
-                                <Button Width="50" Height="60"
-                                        Content="&#xf044;"
-                                        Style="{StaticResource btnFontIcon}"
-                                        Click="ChangeVisibility"/>
-
-                                <Button Width="50" Height="60"
-                                        Content="&#xf2ed;"
-                                        Foreground="{StaticResource Orange}"
-                                        Command="{Binding Source={StaticResource vmProducts}, Path=DeleteCommand}"
-                                        Style="{StaticResource btnFontIcon}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
                 <DataGridTextColumn Width="300" Header="PRODUKT" Binding="{Binding Name.Value}"/>
                 <DataGridTextColumn Width="150" Header="PREIS" Binding="{Binding Price.PriceFinal, StringFormat=#.##, TargetNullValue=0.00}"/>
                 <DataGridTextColumn Width="150" Header="BESTAND" Binding="{Binding Quantity.Value}" CellStyle="{StaticResource QuantityDataGridCell}"/>
@@ -150,199 +129,220 @@
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
 
-                    <Expander>
-                        <Expander.Style>
-                            <Style TargetType="HeaderedContentControl">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type HeaderedContentControl}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <ContentPresenter/>
-                                            </StackPanel>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Expander.Style>
+                    <Border MaxHeight="350"
+                            BorderBrush="Black"
+                            BorderThickness="2"
+                            CornerRadius="10"
+                            Background="White"
+                            Margin="10 0 10 10">
 
-                        <Border MaxHeight="300"
-                                BorderBrush="Black"
-                                BorderThickness="2"
-                                CornerRadius="10"
-                                Background="White"
-                                Margin="10 0 10 10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="350"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="350"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0 5">
+                                <Button Width="50" Height="60"
+                                        Content="&#xf2ed;"
+                                        Foreground="{StaticResource Orange}"
+                                        Command="{Binding Source={StaticResource vmProducts}, Path=DeleteCommand}"
+                                        Style="{StaticResource btnFontIcon}"/>
 
-                                <!-- Produktbild -->
-                                <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" Margin="15">
-                                    <Grid>
-                                        <ScrollViewer CanContentScroll="True">
-                                            <Image Source="/Shared/Images/notavailable.jpg" Stretch="UniformToFill" MaxHeight="250"/>
-                                        </ScrollViewer>
-                                        <Button Content="&#xf0fe;"
-                                                FontSize="40"
-                                                Margin="-10"
-                                                Style="{StaticResource btnInteract}">
-                                        </Button>
-                                    </Grid>
-                                </Border>
+                                <Button Width="50" Height="60"
+                                        Content="&#xf2ea;"
+                                        Command="{Binding Source={StaticResource vmProducts}, Path=UndoCommand}"
+                                        FontFamily="{StaticResource FontAwesomeSolid}"
+                                        Style="{StaticResource btnFontIcon}"/>
+                            </StackPanel>
 
-                                <!-- Produktname -->
-                                <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Top" Margin="0 15 0 0">
-                                    <TextBlock Text="Produktname" Foreground="{StaticResource dSchriftv1}"
-                                               Width="110" Padding="0" Margin="5 0"
-                                               FontSize="12" FontWeight="Bold"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Left"/>
-                                    <TextBox Name="tbProductName"
-                                             Width="280" Padding="5" Margin="5">
-                                        <Binding Path="Name.Value" UpdateSourceTrigger="LostFocus">
-                                            <Binding.ValidationRules>
-                                                <helper:StringValidationRule/>
-                                            </Binding.ValidationRules>
-                                        </Binding>
-                                    </TextBox>
+                            <!-- Produktbild -->
+                            <Border Grid.Column="0" Grid.RowSpan="2"
+                                    CornerRadius="5"
+                                    BorderBrush="Black"
+                                    BorderThickness="2"
+                                    Margin="15"
+                                    Background="{StaticResource hGrau}">
+                                <Grid>
+                                    <Image Source="/Shared/Images/notavailable.jpg"
+                                           Margin="5" Stretch="Uniform"/>
 
-                                    <!-- Beschreibung -->
-                                    <TextBlock Text="Beschreibung" Foreground="{StaticResource dSchriftv1}"
-                                               Width="115" Padding="0" Margin="5 2"
-                                               FontWeight="Bold" FontSize="12"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Left"/>
-                                    <TextBox Text="{Binding Description.Value, UpdateSourceTrigger=LostFocus}"
-                                             VerticalAlignment="Top"
-                                             Height="auto" MaxHeight="170" Width="280" Padding="5" Margin="5"
-                                             TextWrapping="WrapWithOverflow" MaxLines="20"
-                                             VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
-                                </StackPanel>
+                                    <Image Source="{Binding ImagePath.Value, UpdateSourceTrigger=PropertyChanged}"
+                                           MaxHeight="300" Margin="5" Stretch="Uniform"/>
 
-                                <StackPanel Orientation="Vertical" VerticalAlignment="Top" Grid.Column="2" Margin="5 15">
-                                    <!-- Preis -->
-                                    <TextBlock Text="EK-Preis"
-                                               Width="80" Padding="0" Margin="5 0"
-                                               FontWeight="Bold" FontSize="12"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Left"/>
-                                    <TextBox Width="100" Padding="5" Margin="5">
-                                        <Binding Path="Price.PriceBase.Value"
-                                                 UpdateSourceTrigger="LostFocus">
+                                    <Button Content="&#xf0fe;"
+                                            FontSize="40"
+                                            Margin="5" Width="50" Height="50"
+                                            Click="AddImage_Click"
+                                            HorizontalAlignment="Left"
+                                            Style="{StaticResource btnInteract}"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Produktname -->
+                            <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Top" Margin="0 15 0 0">
+                                <TextBlock Text="Produktname"
+                                           Foreground="{StaticResource dSchriftv1}"
+                                           Width="110" Padding="0" Margin="5 0"
+                                           FontSize="12" FontWeight="Bold"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"/>
+                                <TextBox Name="tbProductName"
+                                         Width="280" Padding="5" Margin="5">
+                                    <Binding Path="Name.Value" UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <helper:StringValidationRule/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox>
+
+                                <!-- Beschreibung -->
+                                <TextBlock Text="Beschreibung"
+                                           Foreground="{StaticResource dSchriftv1}"
+                                           Width="115" Padding="0" Margin="5 2"
+                                           FontWeight="Bold" FontSize="12"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"/>
+                                <TextBox Text="{Binding Description.Value, UpdateSourceTrigger=LostFocus}"
+                                         VerticalAlignment="Top"
+                                         Height="auto" MaxHeight="170" Width="280" Padding="5" Margin="5"
+                                         TextWrapping="WrapWithOverflow" MaxLines="20"
+                                         VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Top" Grid.Column="2" Margin="5 15">
+                                <!-- Preis -->
+                                <TextBlock Text="EK-Preis"
+                                           Foreground="{StaticResource dSchriftv1}"
+                                           Width="80" Padding="0" Margin="5 0"
+                                           FontWeight="Bold" FontSize="12"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"/>
+                                <TextBox Width="100" Padding="5" Margin="5">
+                                    <Binding Path="Price.PriceBase.Value"
+                                             UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <helper:NumericValidationRule ValidationType="{x:Type sys:Double}" ValidatesOnTargetUpdated="True"/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox>
+
+                                <!-- Versandkosten -->
+                                <TextBlock Text="Versand"
+                                           Foreground="{StaticResource dSchriftv1}"
+                                           Width="80" Padding="0" Margin="5 2"
+                                           FontWeight="Bold" FontSize="12"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"/>
+                                <TextBox Width="100" Padding="5" Margin="5">
+                                    <Binding Path="Price.PriceShipping.Value"
+                                             UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <helper:NumericValidationRule ValidationType="{x:Type sys:Double}" ValidatesOnTargetUpdated="True"/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox>
+
+                                <!-- Profit -->
+                                <TextBlock Text="Profit"
+                                           Foreground="{StaticResource dSchriftv1}"
+                                           Width="80" Padding="0" Margin="5 2"
+                                           FontWeight="Bold" FontSize="12"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox Width="70" Padding="5" Margin="5">
+                                        <Binding Path="Price.Profit.Value"
+                                                 UpdateSourceTrigger="LostFocus"
+                                                 StringFormat="#.##">
                                             <Binding.ValidationRules>
                                                 <helper:NumericValidationRule ValidationType="{x:Type sys:Double}" ValidatesOnTargetUpdated="True"/>
                                             </Binding.ValidationRules>
                                         </Binding>
                                     </TextBox>
-
-                                    <!-- Versandkosten -->
-                                    <TextBlock Text="Versand"
-                                               Width="80" Padding="0" Margin="5 2"
-                                               FontWeight="Bold" FontSize="12"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Left"/>
-                                    <TextBox Width="100" Padding="5" Margin="5">
-                                        <Binding Path="Price.PriceShipping.Value"
-                                                     UpdateSourceTrigger="LostFocus">
-                                            <Binding.ValidationRules>
-                                                <helper:NumericValidationRule ValidationType="{x:Type sys:Double}" ValidatesOnTargetUpdated="True"/>
-                                            </Binding.ValidationRules>
-                                        </Binding>
-                                    </TextBox>
-
-                                    <!-- Profit -->
-                                    <TextBlock Text="Profit"
-                                               Width="80" Padding="0" Margin="5 2"
-                                               FontWeight="Bold" FontSize="12"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Left"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBox Width="70" Padding="5" Margin="5">
-                                            <Binding Path="Price.Profit.Value"
-                                                     UpdateSourceTrigger="LostFocus"
-                                                     StringFormat="#.##">
-                                                <Binding.ValidationRules>
-                                                    <helper:NumericValidationRule ValidationType="{x:Type sys:Double}" ValidatesOnTargetUpdated="True"/>
-                                                </Binding.ValidationRules>
-                                            </Binding>
-                                        </TextBox>
-                                        <Label Content="&#xf295;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                                    </StackPanel>
-
-                                    <Separator Margin="5"/>
-
-                                    <!-- Gesamtpreis -->
-                                    <TextBlock Text="Gesamt"
-                                               Width="80" Padding="0" Margin="5 2"
-                                               FontWeight="Bold" FontSize="12"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Left"/>
-                                    <TextBox Text="{Binding Price.PriceFinal, StringFormat=#.####}"
-                                             Width="100" Padding="5" Margin="5"
-                                             IsReadOnly="True"/>
+                                    <Label Content="&#xf295;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                                 </StackPanel>
 
-                                <StackPanel Orientation="Vertical" Grid.Column="3" Margin="5 15">
-                                    <!-- Bestand -->
-                                    <TextBlock Text="Bestand"
-                                                   Width="80" Padding="0" Margin="5 0"
-                                                   FontWeight="Bold" FontSize="12"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Left"/>
-                                    <TextBox Width="100" Padding="5" Margin="5" HorizontalAlignment="Left">
-                                        <Binding Path="Quantity.Value"
-                                                     UpdateSourceTrigger="LostFocus">
-                                            <Binding.ValidationRules>
-                                                <helper:NumericValidationRule ValidationType="{x:Type sys:Int32}" ValidatesOnTargetUpdated="True"/>
-                                            </Binding.ValidationRules>
-                                        </Binding>
-                                    </TextBox>
+                                <Separator Margin="5"/>
 
-                                    <!-- Bestellt -->
+                                <!-- Gesamtpreis -->
+                                <TextBlock Text="Gesamt"
+                                           Foreground="{StaticResource dSchriftv1}"
+                                           Width="80" Padding="0" Margin="5 2"
+                                           FontWeight="Bold" FontSize="12"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"/>
+                                <TextBox Text="{Binding Price.PriceFinal, StringFormat=#.####}"
+                                         Width="100" Padding="5" Margin="5"
+                                         IsReadOnly="True"/>
+                            </StackPanel>
 
-                                    <TextBlock Text="Bestellt"
-                                                   Width="80" Padding="0" Margin="5 2"
-                                                   FontWeight="Bold" FontSize="12"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Left"/>
-                                    <TextBox Width="100" Padding="5" Margin="5" HorizontalAlignment="Left"/>
-                                </StackPanel>
+                            <StackPanel Orientation="Vertical" Grid.Column="3" Margin="5 15">
+                                <!-- Bestand -->
+                                <TextBlock Text="Bestand"
+                                           Foreground="{StaticResource dSchriftv1}"
+                                           Width="80" Padding="0" Margin="5 0"
+                                           FontWeight="Bold" FontSize="12"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"/>
+                                <TextBox Width="100" Padding="5" Margin="5" HorizontalAlignment="Left">
+                                    <Binding Path="Quantity.Value"
+                                             UpdateSourceTrigger="LostFocus">
+                                        <Binding.ValidationRules>
+                                            <helper:NumericValidationRule ValidationType="{x:Type sys:Int32}" ValidatesOnTargetUpdated="True"/>
+                                        </Binding.ValidationRules>
+                                    </Binding>
+                                </TextBox>
 
-                                <StackPanel Grid.Column="4" Orientation="Vertical" Margin="5 15">
-                                    <!-- Kategorie -->
-                                    <TextBlock Text="Kategorie"
-                                               Width="110" Padding="0" Margin="5 0"
-                                               FontWeight="Bold" FontSize="12"
-                                               VerticalAlignment="Center"
-                                               HorizontalAlignment="Left"/>
-                                    <ComboBox ItemsSource="{Binding Source={StaticResource vmProducts}, Path=CategoryList}"
-                                              SelectedValue="{Binding Path=SelectedItem.CategoryId.Value, ElementName=dgProducts}"
-                                              SelectedValuePath="ID"
-                                              DisplayMemberPath="Name"
-                                              Width="180" Margin="5"/>
+                                <!-- Bestellt -->
 
-                                    <!-- Hersteller -->
-                                    <TextBlock Text="Hersteller"
-                                                   Width="110" Padding="0" Margin="5 2"
-                                                   FontWeight="Bold" FontSize="12"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Left"/>
-                                    <ComboBox ItemsSource="{Binding Source={StaticResource vmProducts}, Path=SupplierList}"
-                                              SelectedValue="{Binding Path=SelectedItem.SupplierId.Value, ElementName=dgProducts}"
-                                              SelectedValuePath="ID"
-                                              DisplayMemberPath="Name"
-                                              Width="180" Margin="5"/>
-                                </StackPanel>
-                            </Grid>
-                        </Border>
-                    </Expander>
+                                <TextBlock Text="Bestellt"
+                                           Foreground="{StaticResource dSchriftv1}"
+                                           Width="80" Padding="0" Margin="5 2"
+                                           FontWeight="Bold" FontSize="12"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"/>
+                                <TextBox Width="100" Padding="5" Margin="5" HorizontalAlignment="Left"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4" Orientation="Vertical" Margin="5 15">
+                                <!-- Kategorie -->
+                                <TextBlock Text="Kategorie"
+                                           Foreground="{StaticResource dSchriftv1}"
+                                           Width="110" Padding="0" Margin="5 0"
+                                           FontWeight="Bold" FontSize="12"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"/>
+                                <ComboBox ItemsSource="{Binding Source={StaticResource vmProducts}, Path=CategoryList}"
+                                          SelectedValue="{Binding Path=SelectedItem.CategoryId.Value, ElementName=dgProducts}"
+                                          SelectedValuePath="ID"
+                                          DisplayMemberPath="Name"
+                                          Width="180" Margin="5"/>
+
+                                <!-- Hersteller -->
+                                <TextBlock Text="Hersteller"
+                                           Foreground="{StaticResource dSchriftv1}"
+                                           Width="110" Padding="0" Margin="5 2"
+                                           FontWeight="Bold" FontSize="12"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"/>
+                                <ComboBox ItemsSource="{Binding Source={StaticResource vmProducts}, Path=SupplierList}"
+                                          SelectedValue="{Binding Path=SelectedItem.SupplierId.Value, ElementName=dgProducts}"
+                                          SelectedValuePath="ID"
+                                          DisplayMemberPath="Name"
+                                          Width="180" Margin="5"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
         </DataGrid>
