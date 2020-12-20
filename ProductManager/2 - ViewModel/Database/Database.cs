@@ -10,11 +10,152 @@ namespace ProductManager.ViewModel.DatabaseData
 {
     public class Database : DatabaseProperties
     {
-        public ObservableCollection<Product> GetProducts()
+        #region MetaData
+        public void GetSupplier(ref ObservableCollection<SupplierData> list)
         {
-            ObservableCollection<Product> list = new ObservableCollection<Product>();
-            Product product;
-            Price price;
+            list = new ObservableCollection<SupplierData>();
+
+            SqlCommand cmd = new SqlCommand("")
+            {
+                CommandText = "select s.supplier_id, s.supplier_name, s.supplier_address "
+                            + "from suppliers s "
+                            + "order by s.supplier_id"
+            };
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                cmd.Connection = conn;
+                conn.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(
+                            new SupplierData(
+                                DatabaseClientCast.DBToValue<int>(reader["supplier_id"]),
+                                reader["supplier_name"].ToString(),
+                                reader["supplier_address"].ToString()
+                                ));
+                    }
+                }
+            }
+        }
+        public void DeleteSupplier(SupplierData data)
+        {
+            string sql;
+            SqlCommand cmd;
+
+            sql = "delete from suppliers "
+                + "where supplier_id = @id";
+
+            cmd = new SqlCommand(sql);
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = data.ID;
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public void InsertSupplier(SupplierData data)
+        {
+            string sql;
+            SqlCommand cmd;
+
+            sql = "INSERT into suppliers(supplier_name, supplier_address) "
+                + "               values(@NAME, @ADDRESS)";
+
+            cmd = new SqlCommand(sql);
+            cmd.Parameters.Add("@NAME", SqlDbType.Text).Value = data.Name;
+            cmd.Parameters.Add("@ADDRESS", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Address);
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public void GetCategories(ref ObservableCollection<CategoryData> list)
+        {
+            list = new ObservableCollection<CategoryData>();
+
+            SqlCommand cmd = new SqlCommand("")
+            {
+                CommandText = "select c.category_id, c.category_name, c.category_description "
+                            + "from categories c "
+                            + "order by c.category_id"
+            };
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                cmd.Connection = conn;
+                conn.Open();
+
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(
+                            new CategoryData(
+                                DatabaseClientCast.DBToValue<int>(reader["category_id"]),
+                                (string)reader["category_name"].ToString(),
+                                (string)reader["category_description"].ToString()
+                                ));
+                    }
+                }
+            }
+        }
+        public void DeleteCategory(CategoryData data)
+        {
+            string sql;
+            SqlCommand cmd;
+
+            sql = "delete from categories "
+                + "where category_id = @id";
+
+            cmd = new SqlCommand(sql);
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = data.ID;
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public void InsertCategory(CategoryData data)
+        {
+            string sql;
+            SqlCommand cmd;
+
+            sql = "INSERT into categories(category_name, category_description) "
+                + "                values(@NAME, @DESCRIPTION)";
+
+            cmd = new SqlCommand(sql);
+            cmd.Parameters.Add("@NAME", SqlDbType.Text).Value = data.Name;
+            cmd.Parameters.Add("@DESCRIPTION", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Description);
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        #endregion MetaData
+
+        #region Products
+        public ObservableCollection<ProductModel> GetProducts()
+        {
+            ObservableCollection<ProductModel> list = new ObservableCollection<ProductModel>();
+            ProductModel product;
+            PriceModel price;
+            ImageModel image;
 
             SqlCommand cmd = new SqlCommand("")
             {
@@ -26,7 +167,6 @@ namespace ProductManager.ViewModel.DatabaseData
                             + "product.product_supplier_id, "
                             + "category.category_name, "
                             + "supplier.supplier_name, "
-                            + "price.price_id, "
                             + "price.price_base, "
                             + "price.price_shipping, "
                             + "price.price_profit, "
@@ -47,24 +187,27 @@ namespace ProductManager.ViewModel.DatabaseData
                 {
                     while (reader.Read())
                     {
-                        price = new Price(
-                            DatabaseClientCast.DBToValue<int>(reader["price_id"]),
+                        price = new PriceModel(
                             Convert.ToDecimal(DatabaseClientCast.DBToValue<decimal>(reader["price_base"])),
                             Convert.ToDecimal(DatabaseClientCast.DBToValue<decimal>(reader["price_shipping"])),
                             Convert.ToDecimal(DatabaseClientCast.DBToValue<decimal>(reader["price_base"]))
                             );
 
-                        product = new Product(
+                        image = new ImageModel(
+                            reader["image_path"].ToString()
+                            );
+
+                        product = new ProductModel(
                                   reader["product_name"].ToString(),
                                   price,
                                   Convert.ToInt32(reader["product_quantity"]),
                                   reader["product_description"].ToString(),
                                   DatabaseClientCast.DBToValue<int>(reader["product_category_id"]),
                                   DatabaseClientCast.DBToValue<int>(reader["product_supplier_id"]),
-                                  reader["image_path"].ToString()
+                                  image
                                   );
 
-                        product.SetProductID((int)reader["product_id"]);
+                        product.SetID((int)reader["product_id"]);
 
                         list.Add(product);
                     }
@@ -74,80 +217,19 @@ namespace ProductManager.ViewModel.DatabaseData
             return list;
         }
 
-        public void GetSupplier(ref ObservableCollection<SupplierData> list)
-        {
-            list = new ObservableCollection<SupplierData>();
-
-            SqlCommand cmd = new SqlCommand("")
-            {
-                CommandText = "select s.supplier_id, s.supplier_name "
-                            + "from suppliers s "
-                            + "order by s.supplier_id"
-            };
-
-            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-            {
-                cmd.Connection = conn;
-                conn.Open();
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        list.Add(
-                            new SupplierData(
-                                (int?)reader["supplier_id"],
-                                (string)reader["supplier_name"]
-                                ));
-                    }
-                }
-            }
-        }
-
-        public void GetCategories(ref ObservableCollection<CategoryData> list)
-        {
-            list = new ObservableCollection<CategoryData>();
-
-            SqlCommand cmd = new SqlCommand("")
-            {
-                CommandText = "select c.category_id, c.category_name "
-                            + "from categories c "
-                            + "order by c.category_id"
-            };
-
-            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-            {
-                cmd.Connection = conn;
-                conn.Open();
-
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        list.Add(
-                            new CategoryData(
-                                (int?)reader["category_id"],
-                                (string)reader["category_name"]
-                                ));
-                    }
-                }
-            }
-        }
-
-        #region Speicher Routine
-        public void SaveProductList(ref List<Product> products, ref List<Product> deletedProducts)
+        public void SaveProductList(ref List<ProductModel> products, ref List<ProductModel> deletedProducts)
         {
             if (deletedProducts.Count > 0)
             {
-                foreach (Product product in deletedProducts)
+                foreach (ProductModel product in deletedProducts)
                 {
                     this.DeleteProduct(product);
                 }
             }
 
-            foreach (Product p in products)
+            foreach (ProductModel p in products)
             {
-                if (p.ProductID > 0)
+                if (p.ID > 0)
                 {
                     this.UpdateProduct(p);
                 }
@@ -158,7 +240,7 @@ namespace ProductManager.ViewModel.DatabaseData
             }
         }
 
-        private void DeleteProduct(Product product)
+        private void DeleteProduct(ProductModel product)
         {
             string sql;
             SqlCommand cmd;
@@ -168,7 +250,7 @@ namespace ProductManager.ViewModel.DatabaseData
                 + "where product_id = @id";
 
             cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ProductID;
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ID;
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -183,7 +265,7 @@ namespace ProductManager.ViewModel.DatabaseData
                 + "where price_id = @id";
 
             cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.Price.ID;
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ID;
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -198,7 +280,7 @@ namespace ProductManager.ViewModel.DatabaseData
                 + "where image_id = @id";
 
             cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ProductID;
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ID;
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -209,7 +291,7 @@ namespace ProductManager.ViewModel.DatabaseData
             #endregion Delete Image
         }
 
-        private void UpdateProduct(Product product)
+        private void UpdateProduct(ProductModel product)
         {
             string sql;
             SqlCommand cmd;
@@ -225,7 +307,7 @@ namespace ProductManager.ViewModel.DatabaseData
 
             cmd = new SqlCommand(sql);
 
-            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ProductID;
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ID;
             cmd.Parameters.Add("@productName", SqlDbType.NVarChar).Value = product.ProductName.StringToDb();
             cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
             cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
@@ -245,11 +327,11 @@ namespace ProductManager.ViewModel.DatabaseData
                 + "price_base = @priceBase, "
                 + "price_shipping = @priceShipping, "
                 + "price_profit = @priceProfit "
-                + "WHERE price_id = @priceID";
+                + "WHERE price_id = @productID";
 
             cmd = new SqlCommand(sql);
 
-            cmd.Parameters.Add("@priceID", SqlDbType.Int).Value = product.Price.ID;
+            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
             cmd.Parameters.Add("@priceBase", SqlDbType.Money).Value = product.Price.BasePrice.ValueToDb<decimal>();
             cmd.Parameters.Add("@priceShipping", SqlDbType.Money).Value = product.Price.ShippingPrice.ValueToDb<decimal>();
             cmd.Parameters.Add("@priceProfit", SqlDbType.Decimal).Value = product.Price.Profit.ValueToDb<decimal>();
@@ -271,8 +353,8 @@ namespace ProductManager.ViewModel.DatabaseData
 
             cmd = new SqlCommand(sql);
 
-            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ProductID;
-            cmd.Parameters.Add("@imagePath", SqlDbType.Text).Value = product.ImagePath.StringToDb();
+            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
+            cmd.Parameters.Add("@imagePath", SqlDbType.Text).Value = product.Image.Path.StringToDb();
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -283,7 +365,7 @@ namespace ProductManager.ViewModel.DatabaseData
             #endregion Update Image
         }
 
-        private void InsertProduct(Product product)
+        private void InsertProduct(ProductModel product)
         {
             string sql;
             int id;
@@ -311,7 +393,7 @@ namespace ProductManager.ViewModel.DatabaseData
                 cmd.Connection = conn;
 
                 id = Convert.ToInt32(cmd.ExecuteScalar());
-                product.SetProductID(id);
+                product.SetID(id);
             }
             #endregion Insert Produkt
 
@@ -330,8 +412,6 @@ namespace ProductManager.ViewModel.DatabaseData
                 conn.Open();
                 cmd.Connection = conn;
                 cmd.ExecuteNonQuery();
-
-                product.Price.SetID(id);
             }
             #endregion Insert Preis
 
@@ -341,7 +421,7 @@ namespace ProductManager.ViewModel.DatabaseData
 
             cmd = new SqlCommand(sql);
             cmd.Parameters.Add("@productID", SqlDbType.Int).Value = id;
-            cmd.Parameters.Add("@imagePath", SqlDbType.Text).Value = product.ImagePath;
+            cmd.Parameters.Add("@imagePath", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(product.Image.Path);
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -351,6 +431,6 @@ namespace ProductManager.ViewModel.DatabaseData
             }
             #endregion Insert Image
         }
-        #endregion Speicher Routine
+        #endregion Products
     }
 }

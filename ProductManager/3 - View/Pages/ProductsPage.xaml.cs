@@ -18,6 +18,38 @@ namespace ProductManager
             {
                 vm = this.DataContext as MainProductsViewModel;
             }
+
+            popupMetaData.Closed += Popup_Closed;
+        }
+
+        private void Popup_Closed(object sender, EventArgs e)
+        {
+            popupListBox.ItemsSource = null;
+            popupAddBtn.Command = null;
+            popupRemoveBtn.Command = null;
+            popupTextBox.Text = string.Empty;
+        }
+
+        private void btnCategorieSettings_Click(object sender, RoutedEventArgs e)
+        {
+            popupListBox.ItemsSource = vm.CategoryList;
+            popupAddBtn.Command = vm.AddCategoryCommand;
+            popupRemoveBtn.Command = vm.RemoveCategoryCommand;
+            popupListBox.SelectedIndex = 0;
+
+            popupMetaData.IsOpen = popupMetaData.IsOpen == false;
+            popupTextBox.Focus();
+        }
+
+        private void btnSupplierSettings_Click(object sender, RoutedEventArgs e)
+        {
+            popupListBox.ItemsSource = vm.SupplierList;
+            popupAddBtn.Command = vm.AddSupplierCommand;
+            popupRemoveBtn.Command = vm.RemoveSupplierCommand;
+            popupListBox.SelectedIndex = 0;
+
+            popupMetaData.IsOpen = popupMetaData.IsOpen == false;
+            popupTextBox.Focus();
         }
 
         private void AddImage_Click(object sender, RoutedEventArgs e)
@@ -32,6 +64,10 @@ namespace ProductManager
             {
                 vm.SetImageCommand.Execute(openFile.FileName);
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

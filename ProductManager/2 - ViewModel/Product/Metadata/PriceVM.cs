@@ -1,23 +1,23 @@
-﻿using ProductManager.Model.Product;
+﻿using ProductManager.Model.Product.Metadata;
 using System.ComponentModel;
 
-namespace ProductManager.ViewModel
+namespace ProductManager.ViewModel.Product.Metadata
 {
-    public class PPrice : ViewModelBase
+    public class PriceVM : ViewModelBase
     {
         private const int TAX = 16;
         private const int MWS = 16;
 
-        private Price _price;
-        private PDecimal _priceBase;
-        private PDecimal _priceShipping;
-        private PDecimal _profit;
+        private PriceModel _priceModel;
+        private DecimalVM _priceBase;
+        private DecimalVM _priceShipping;
+        private DecimalVM _profit;
         private decimal _priceFinal;
         private bool _changed;
 
-        public PDecimal PriceBase => _priceBase;
-        public PDecimal PriceShipping => _priceShipping;
-        public PDecimal Profit => _profit;
+        public DecimalVM PriceBase => _priceBase;
+        public DecimalVM PriceShipping => _priceShipping;
+        public DecimalVM Profit => _profit;
         public decimal PriceFinal
         {
             get => _priceFinal;
@@ -29,16 +29,16 @@ namespace ProductManager.ViewModel
             set => SetProperty(ref _changed, value);
         }
 
-        public PPrice(Price price)
+        public PriceVM(PriceModel price)
         {
             if (price != null)
             {
-                _price = price;
+                _priceModel = price;
                 InitializeFields();
             }
             else
             {
-                _price = new Price();
+                _priceModel = new PriceModel();
                 InitializeFields();
                 _priceBase.HasChanged = true;
                 _priceShipping.HasChanged = true;
@@ -48,25 +48,6 @@ namespace ProductManager.ViewModel
             _priceBase.PropertyChanged += Price_PropertyChanged;
             _priceShipping.PropertyChanged += Price_PropertyChanged;
             _profit.PropertyChanged += Price_PropertyChanged;
-        }
-
-        /// <summary>
-        /// Bei veränderungen einer der Eigenschaften wird <see cref="Changed"/> auf true gesetzt.
-        /// <seealso cref="CalculatePrice(PPrice)"/> wird ausgeführt, zum neu Berechnen der Kosten.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Price_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (_priceBase.HasChanged || _priceShipping.HasChanged || _profit.HasChanged)
-            {
-                this.Changed = true;
-                CalculatePrice(this);
-            }
-            else
-            {
-                this.Changed = false;
-            }
         }
 
         /// <summary>
@@ -90,13 +71,32 @@ namespace ProductManager.ViewModel
         }
 
         /// <summary>
-        /// Initialisieren der Felder des Price-Objekts. Führt <seealso cref="CalculatePrice(PPrice)"/> aus.
+        /// Bei veränderungen einer der Eigenschaften wird <see cref="Changed"/> auf true gesetzt.
+        /// <seealso cref="CalculatePrice(PriceVM)"/> wird ausgeführt, zum neu Berechnen der Kosten.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Price_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (_priceBase.HasChanged || _priceShipping.HasChanged || _profit.HasChanged)
+            {
+                this.Changed = true;
+                CalculatePrice(this);
+            }
+            else
+            {
+                this.Changed = false;
+            }
+        }
+
+        /// <summary>
+        /// Initialisieren der Felder des Price-Objekts. Führt <seealso cref="CalculatePrice(PriceVM)"/> aus.
         /// </summary>
         private void InitializeFields()
         {
-            _priceBase = new PDecimal(_price.BasePrice);
-            _priceShipping = new PDecimal(_price.ShippingPrice);
-            _profit = new PDecimal(_price.Profit);
+            _priceBase = new DecimalVM(_priceModel.BasePrice);
+            _priceShipping = new DecimalVM(_priceModel.ShippingPrice);
+            _profit = new DecimalVM(_priceModel.Profit);
 
             CalculatePrice(this);
         }
@@ -105,7 +105,7 @@ namespace ProductManager.ViewModel
         /// Aktualisiert den Brutto-Preis
         /// </summary>
         /// <param name="price"></param>
-        private static void CalculatePrice(PPrice price)
+        private static void CalculatePrice(PriceVM price)
         {
             decimal result;
 

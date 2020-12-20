@@ -1,4 +1,6 @@
 ﻿using ProductManager.Model.Product;
+using ProductManager.Model.Product.Metadata;
+using ProductManager.ViewModel.Product.Metadata;
 using System.ComponentModel;
 using System.IO;
 
@@ -8,26 +10,27 @@ namespace ProductManager.ViewModel
     {
         private string _imageDir = Directory.GetCurrentDirectory() + @"\Images\";
 
-        private Product _product;
-        private PString _name;
-        private PPrice _price;
-        private PInteger _quantity;
-        private PString _description;
-        private PString _imagePath;
-        private PNullableInteger _categoryId;
-        private PNullableInteger _supplierId;
+        private ProductModel _product;
+        private StringVM _name;
+        private PriceVM _price;
+        private IntVM _quantity;
+        private StringVM _description;
+        private ImageVM _image;
+        private IntNullVM _categoryId;
+        private IntNullVM _supplierId;
         private bool _changed;
         private bool _needRestock;
         private bool _isEmpty;
         private bool _isDeleted;
 
-        public PString Name => _name;
-        public PPrice Price => _price;
-        public PInteger Quantity => _quantity;
-        public PString Description => _description;
-        public PString ImagePath => _imagePath;
-        public PNullableInteger CategoryId { get => _categoryId; set => _categoryId = value; }
-        public PNullableInteger SupplierId { get => _supplierId; set => _supplierId = value; }
+        public ProductModel Product => _product;
+        public StringVM Name => _name;
+        public PriceVM Price => _price;
+        public IntVM Quantity => _quantity;
+        public StringVM Description => _description;
+        public ImageVM Image => _image;
+        public IntNullVM CategoryId { get => _categoryId; set => _categoryId = value; }
+        public IntNullVM SupplierId { get => _supplierId; set => _supplierId = value; }
         public bool Changed
         {
             get => _changed;
@@ -49,7 +52,7 @@ namespace ProductManager.ViewModel
             set => SetProperty(ref _isDeleted, value);
         }
 
-        public ProductViewModel(Product product)
+        public ProductViewModel(ProductModel product)
         {
             if (product != null)
             {
@@ -58,14 +61,15 @@ namespace ProductManager.ViewModel
             }
             else
             {
-                _product = new Product();
+                _product = new ProductModel();
                 InitializeFields();
                 _name.HasChanged = true;
                 _quantity.HasChanged = true;
                 _description.HasChanged = true;
                 _categoryId.HasChanged = true;
                 _supplierId.HasChanged = true;
-                _imagePath.HasChanged = true;
+
+                Changed = true;
             }
 
             _name.PropertyChanged += Product_PropertyChanged;
@@ -74,14 +78,19 @@ namespace ProductManager.ViewModel
             _description.PropertyChanged += Product_PropertyChanged;
             _categoryId.PropertyChanged += Product_PropertyChanged;
             _supplierId.PropertyChanged += Product_PropertyChanged;
-            _imagePath.PropertyChanged += Product_PropertyChanged;
+            _image.PropertyChanged += Product_PropertyChanged;
 
             CheckStock();
         }
 
+        /// <summary>
+        /// Regelt die <see cref="Changed"/> Eigenschaft wenn ein Wert im Objekt geändert wurde
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Product_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_name.HasChanged || _description.HasChanged || _quantity.HasChanged || _categoryId.HasChanged || _supplierId.HasChanged || _price.Changed || _imagePath.HasChanged)
+            if (_name.HasChanged || _description.HasChanged || _quantity.HasChanged || _categoryId.HasChanged || _supplierId.HasChanged || _price.Changed || _image.Changed)
             {
                 if (_quantity.HasChanged)
                 {
@@ -101,13 +110,13 @@ namespace ProductManager.ViewModel
         /// </summary>
         private void InitializeFields()
         {
-            _name = new PString(_product.ProductName);
-            _price = new PPrice(_product.Price);
-            _quantity = new PInteger(_product.Quantity);
-            _description = new PString(_product.Description);
-            _categoryId = new PNullableInteger(_product.CategoryID);
-            _supplierId = new PNullableInteger(_product.SupplierID);
-            _imagePath = new PString(_product.ImagePath);
+            _name = new StringVM(_product.ProductName);
+            _price = new PriceVM(_product.Price);
+            _quantity = new IntVM(_product.Quantity);
+            _description = new StringVM(_product.Description);
+            _categoryId = new IntNullVM(_product.CategoryID);
+            _supplierId = new IntNullVM(_product.SupplierID);
+            _image = new ImageVM(_product.Image);
         }
 
         /// <summary>
@@ -130,7 +139,7 @@ namespace ProductManager.ViewModel
             Description.UndoChanges();
             CategoryId.UndoChanges();
             SupplierId.UndoChanges();
-            ImagePath.UndoChanges();
+            Image.UndoChanges();
 
             IsDeleted = false;
 
@@ -148,7 +157,7 @@ namespace ProductManager.ViewModel
             Description.AcceptChanges();
             CategoryId.AcceptChanges();
             SupplierId.AcceptChanges();
-            ImagePath.AcceptChanges();
+            Image.AcceptChanges();
 
             CheckStock();
         }
@@ -157,26 +166,29 @@ namespace ProductManager.ViewModel
         /// Konvertiert das Aktuelle <see cref="ProductViewModel"/> in ein <see cref="Product"/>, zum speichern in die Datenbank.
         /// </summary>
         /// <returns></returns>
-        public Product ConvertToProduct()
+        public ProductModel ConvertToProduct()
         {
-            Price price = new Price(
-                this._product.ProductID,
+            PriceModel price = new PriceModel(
                 this._price.PriceBase.Value,
                 this._price.PriceShipping.Value,
                 this._price.Profit.Value
                 );
 
-            Product p = new Product(
+            ImageModel image = new ImageModel(
+                this._image.Path.Value
+                );
+
+            ProductModel p = new ProductModel(
                 this.Name.Value,
                 price,
                 this.Quantity.Value,
                 this.Description.Value,
                 this.CategoryId.Value,
                 this.SupplierId.Value,
-                this.ImagePath.Value
+                image
                 );
 
-            p.SetProductID(this._product.ProductID);
+            p.SetID(this._product.ID);
 
             return p;
         }
@@ -202,35 +214,6 @@ namespace ProductManager.ViewModel
             {
                 NeedRestock = false;
                 IsEmpty = false;
-            }
-        }
-
-        /// <summary>
-        /// Nimmt den ursprünglichen Pfad Der Bilddatei und speichert eine Kopie davon
-        /// in den Anwendungsordner.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public void SaveImage(string path)
-        {
-            if (File.Exists(path))
-            {
-                string fileName = _product.ProductID + "_" + _name.Value + Path.GetExtension(path);
-
-                if (path != Path.Combine(_imageDir, fileName))
-                {
-                    if (!Directory.Exists(_imageDir))
-                    {
-                        Directory.CreateDirectory(_imageDir);
-                    }
-
-                    if (!File.Exists(Path.Combine(_imageDir, fileName)))
-                    {
-                        File.Copy(path, Path.Combine(_imageDir, fileName), false);
-                    }
-
-                    ImagePath.Value = _imageDir + fileName;
-                }
             }
         }
     }

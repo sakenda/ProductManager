@@ -51,6 +51,10 @@ namespace ProductManager.ViewModel
         public ICommand NewCommand { get; private set; }
         public ICommand UndoCommand { get; private set; }
         public ICommand SetImageCommand { get; private set; }
+        public ICommand AddCategoryCommand { get; private set; }
+        public ICommand RemoveCategoryCommand { get; private set; }
+        public ICommand AddSupplierCommand { get; private set; }
+        public ICommand RemoveSupplierCommand { get; private set; }
 
         public string[] SortCriteria => _sortCriteria;
         public string SortByProperty
@@ -106,10 +110,15 @@ namespace ProductManager.ViewModel
             NewCommand = new RelayCommand(NewExecuted);
             UndoCommand = new RelayCommand(UndoExecuted, UndoCanExecute);
             SetImageCommand = new RelayCommand(SetImageExecuted);
+            AddCategoryCommand = new RelayCommand(AddCategoryExecuted);
+            RemoveCategoryCommand = new RelayCommand(RemoveCategoryExecuted, RemoveCategoryCanExecute);
+            AddSupplierCommand = new RelayCommand(AddSupplierExecuted);
+            RemoveSupplierCommand = new RelayCommand(RemoveSupplierExecuted, RemoveSupplierCanExecute);
 
             UpdateSorting();
             _viewCollection.MoveCurrentToFirst();
         }
+
         #endregion "Konstruktor"
 
         #region "Commands"
@@ -133,8 +142,8 @@ namespace ProductManager.ViewModel
         }
         private void SaveExecuted(object sender)
         {
-            List<Product> changedProducts = new List<Product>();
-            List<Product> deletedProducts = new List<Product>();
+            List<ProductModel> changedProducts = new List<ProductModel>();
+            List<ProductModel> deletedProducts = new List<ProductModel>();
             List<ProductViewModel> deletedViewList = new List<ProductViewModel>();
 
             foreach (ProductViewModel item in _listCollection)
@@ -163,9 +172,9 @@ namespace ProductManager.ViewModel
                 }
             }
 
-            _database.SaveProductList(ref changedProducts, ref deletedProducts);
-
             AcceptChanges();
+
+            _database.SaveProductList(ref changedProducts, ref deletedProducts);
 
             _viewCollection.Refresh();
             _viewCollection.MoveCurrentToFirst();
@@ -180,13 +189,20 @@ namespace ProductManager.ViewModel
             ProductViewModel product = _viewCollection.CurrentItem as ProductViewModel;
             if (product != null)
             {
-                product.DeleteProduct();
+                if (product.Product.ID == -1)
+                {
+                    _listCollection.Remove(product);
+                }
+                else
+                {
+                    product.DeleteProduct();
+                }
             }
         }
 
         private bool UndoCanExecute(object sender)
         {
-            if (((ProductViewModel)_viewCollection.CurrentItem).Changed)
+            if (_viewCollection.CurrentItem != null && ((ProductViewModel)_viewCollection.CurrentItem).Changed)
             {
                 return true;
             }
@@ -194,18 +210,63 @@ namespace ProductManager.ViewModel
         }
         private void UndoExecuted(object sender)
         {
-            ((ProductViewModel)_viewCollection.CurrentItem).UndoChanges();
+            ProductViewModel product = (ProductViewModel)_viewCollection.CurrentItem;
+            product.UndoChanges();
         }
 
         private void SetImageExecuted(object obj)
         {
             string path = obj as string;
+            ProductViewModel product = _viewCollection.CurrentItem as ProductViewModel;
 
-            if (path != null)
+            if (path != null && product != null)
             {
-                ((ProductViewModel)_viewCollection.CurrentItem).SaveImage(path);
+                product.Image.SaveImage(path);
             }
         }
+
+        private void AddCategoryExecuted(object obj)
+        {
+            CategoryData data = new CategoryData(null, obj as string, null);
+            CategoryList.Add(data);
+            _database.InsertCategory(data);
+        }
+        private bool RemoveCategoryCanExecute(object obj)
+        {
+            if (obj as CategoryData != null)
+            {
+                return true;
+            }
+            return false;
+        }
+        private void RemoveCategoryExecuted(object obj)
+        {
+            var item = obj as CategoryData;
+            CategoryList.Remove(item);
+            _database.DeleteCategory(item);
+        }
+
+        private void AddSupplierExecuted(object obj)
+        {
+            SupplierData data = new SupplierData(null, obj as string, null);
+            SupplierList.Add(data);
+            _database.InsertSupplier(data);
+        }
+        private bool RemoveSupplierCanExecute(object obj)
+        {
+            if (obj as SupplierData != null)
+            {
+                return true;
+            }
+            return false;
+        }
+        private void RemoveSupplierExecuted(object obj)
+        {
+            var item = obj as SupplierData;
+            SupplierList.Remove(item);
+            _database.DeleteSupplier(item);
+        }
+
         #endregion "Commands"
 
         #region "Private Methoden"
@@ -227,7 +288,7 @@ namespace ProductManager.ViewModel
                     property = nameof(ProductViewModel.Name);
                     break;
                 case "Preis":
-                    property = nameof(ProductViewModel.Price);
+                    property = nameof(ProductViewModel.Price.PriceFinal);
                     break;
                 case "Menge":
                     property = nameof(ProductViewModel.Quantity);
@@ -285,9 +346,9 @@ namespace ProductManager.ViewModel
         {
             _listCollection = new ObservableCollection<ProductViewModel>();
 
-            ObservableCollection<Product> temp = _database.GetProducts();
+            ObservableCollection<ProductModel> temp = _database.GetProducts();
 
-            foreach (Product product in temp)
+            foreach (ProductModel product in temp)
             {
                 liste.Add(new ProductViewModel(product));
             }

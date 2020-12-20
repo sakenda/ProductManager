@@ -117,4 +117,34 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style x:Key="btnIcon" TargetType="Button">
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Margin" Value="0 0 10 0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <ContentPresenter/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource hBlau}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

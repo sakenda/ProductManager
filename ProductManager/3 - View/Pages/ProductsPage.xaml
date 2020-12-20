@@ -29,6 +29,36 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <Popup x:Name="popupMetaData" Placement="Mouse" StaysOpen="True" AllowsTransparency="True">
+            <Border BorderBrush="Black" BorderThickness="1" CornerRadius="0 15 15 15"
+                    Width="250" Height="320" Margin="20"
+                    Background="White">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="5" Color="Black"/>
+                </Border.Effect>
+
+                <StackPanel Orientation="Vertical" Margin="10">
+
+                    <TextBlock Text="Bezeichner"/>
+                    <TextBox Name="popupTextBox" Margin="0 5 0 15" BorderThickness="1" Padding="5"/>
+                    <ListBox x:Name="popupListBox"
+                             Height="185" BorderBrush="Black"
+                             DisplayMemberPath="Name"
+                             SelectedValuePath="ID"/>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Content="Hinzufügen" Name="popupAddBtn"
+                                Style="{StaticResource btnBlue}" Height="30" Width="100"
+                                CommandParameter="{Binding ElementName=popupTextBox, Path=Text}"/>
+                        <Button Content="Entfernen" Name="popupRemoveBtn"
+                                Style="{StaticResource btnBlue}" Height="30" Width="100"
+                                Background="{StaticResource Orange}"
+                                CommandParameter="{Binding ElementName=popupListBox, Path=SelectedItem}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Popup>
+
         <!-- HEADER -->
         <StackPanel
             Grid.Row="0"
@@ -112,6 +142,7 @@
                   ItemsSource="{Binding ViewCollection, Mode=OneWay}"
                   GridLinesVisibility="None"
                   SelectionMode="Single"
+                  SelectedIndex="0"
                   d:RowDetailsVisibilityMode="VisibleWhenSelected"
                   RowHeaderWidth="0"
                   IsReadOnly="True"
@@ -123,9 +154,34 @@
                 <DataGridTextColumn Width="300" Header="PRODUKT" Binding="{Binding Name.Value}"/>
                 <DataGridTextColumn Width="150" Header="PREIS" Binding="{Binding Price.PriceFinal, StringFormat=#.##, TargetNullValue=0.00}"/>
                 <DataGridTextColumn Width="150" Header="BESTAND" Binding="{Binding Quantity.Value}" CellStyle="{StaticResource QuantityDataGridCell}"/>
-                <DataGridTextColumn Width="200" Header="KATEGORIE" Binding="{Binding CategoryId.Value, Converter={StaticResource CategoryConv}}"/>
-                <DataGridTextColumn Width="Auto" Header="HERSTELLER" Binding="{Binding SupplierId.Value, Converter={StaticResource SupplierConv}}"/>
+                <DataGridTextColumn Width="200" Binding="{Binding CategoryId.Value, Converter={StaticResource CategoryConv}}">
+                    <DataGridTextColumn.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="&#xf044;"
+                                    Name="btnCategorieSettings"
+                                    Click="btnCategorieSettings_Click"
+                                    Style="{StaticResource btnIcon}"
+                                    FontFamily="{StaticResource FontAwesomeSolid}"/>
+                            <TextBlock Text="KATEGORIE"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
+                <DataGridTextColumn Width="Auto" Binding="{Binding SupplierId.Value, Converter={StaticResource SupplierConv}}">
+                    <DataGridTextColumn.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="&#xf044;"
+                                    Name="btnSupplierSettings"
+                                    Click="btnSupplierSettings_Click"
+                                    Style="{StaticResource btnIcon}"
+                                    FontFamily="{StaticResource FontAwesomeSolid}"/>
+                            <TextBlock Text="HERSTELLER"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
             </DataGrid.Columns>
+
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
 
@@ -176,15 +232,24 @@
                                     <Image Source="/Shared/Images/notavailable.jpg"
                                            Margin="5" Stretch="Uniform"/>
 
-                                    <Image Source="{Binding ImagePath.Value, UpdateSourceTrigger=PropertyChanged}"
+                                    <Image Source="{Binding Image.Path.Value, UpdateSourceTrigger=PropertyChanged}"
                                            MaxHeight="300" Margin="5" Stretch="Uniform"/>
 
-                                    <Button Content="&#xf0fe;"
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="&#xf2ed;"
+                                            FontSize="40"
+                                            Margin="5" Width="50" Height="50"
+                                            Click="Button_Click"
+                                            HorizontalAlignment="Left"
+                                            Style="{StaticResource btnInteract}"/>
+
+                                        <Button Content="&#xf0fe;"
                                             FontSize="40"
                                             Margin="5" Width="50" Height="50"
                                             Click="AddImage_Click"
                                             HorizontalAlignment="Left"
                                             Style="{StaticResource btnInteract}"/>
+                                    </StackPanel>
                                 </Grid>
                             </Border>
 
@@ -227,14 +292,19 @@
                                            FontWeight="Bold" FontSize="12"
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="Left"/>
-                                <TextBox Width="100" Padding="5" Margin="5">
-                                    <Binding Path="Price.PriceBase.Value"
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox Width="80" Padding="5" Margin="5">
+                                        <Binding Path="Price.PriceBase.Value"
                                              UpdateSourceTrigger="LostFocus">
-                                        <Binding.ValidationRules>
-                                            <helper:NumericValidationRule ValidationType="{x:Type sys:Double}" ValidatesOnTargetUpdated="True"/>
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox>
+                                            <Binding.ValidationRules>
+                                                <helper:NumericValidationRule ValidationType="{x:Type sys:Double}" ValidatesOnTargetUpdated="True"/>
+                                            </Binding.ValidationRules>
+                                        </Binding>
+                                    </TextBox>
+                                    <Label Content="&#xf153;"
+                                           FontFamily="{StaticResource FontAwesomeSolid}"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                                </StackPanel>
 
                                 <!-- Versandkosten -->
                                 <TextBlock Text="Versand"
@@ -243,14 +313,20 @@
                                            FontWeight="Bold" FontSize="12"
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="Left"/>
-                                <TextBox Width="100" Padding="5" Margin="5">
-                                    <Binding Path="Price.PriceShipping.Value"
-                                             UpdateSourceTrigger="LostFocus">
-                                        <Binding.ValidationRules>
-                                            <helper:NumericValidationRule ValidationType="{x:Type sys:Double}" ValidatesOnTargetUpdated="True"/>
-                                        </Binding.ValidationRules>
-                                    </Binding>
-                                </TextBox>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox Width="80" Padding="5" Margin="5">
+                                        <TextBox.Text>
+                                            <Binding Path="Price.PriceShipping.Value" UpdateSourceTrigger="LostFocus">
+                                                <Binding.ValidationRules>
+                                                    <helper:NumericValidationRule ValidationType="{x:Type sys:Double}" ValidatesOnTargetUpdated="True"/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <Label Content="&#xf153;"
+                                           FontFamily="{StaticResource FontAwesomeSolid}"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                                </StackPanel>
 
                                 <!-- Profit -->
                                 <TextBlock Text="Profit"
@@ -260,7 +336,7 @@
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="Left"/>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBox Width="70" Padding="5" Margin="5">
+                                    <TextBox Width="80" Padding="5" Margin="5">
                                         <Binding Path="Price.Profit.Value"
                                                  UpdateSourceTrigger="LostFocus"
                                                  StringFormat="#.##">
@@ -269,7 +345,9 @@
                                             </Binding.ValidationRules>
                                         </Binding>
                                     </TextBox>
-                                    <Label Content="&#xf295;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                                    <Label Content="&#xf295;"
+                                           FontFamily="{StaticResource FontAwesomeSolid}"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
                                 </StackPanel>
 
                                 <Separator Margin="5"/>
@@ -281,9 +359,14 @@
                                            FontWeight="Bold" FontSize="12"
                                            VerticalAlignment="Center"
                                            HorizontalAlignment="Left"/>
-                                <TextBox Text="{Binding Price.PriceFinal, StringFormat=#.####}"
-                                         Width="100" Padding="5" Margin="5"
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox Text="{Binding Price.PriceFinal, StringFormat=#.####}"
+                                         Width="80" Padding="5" Margin="5"
                                          IsReadOnly="True"/>
+                                    <Label Content="&#xf153;"
+                                           FontFamily="{StaticResource FontAwesomeSolid}"
+                                           VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                                </StackPanel>
                             </StackPanel>
 
                             <StackPanel Orientation="Vertical" Grid.Column="3" Margin="5 15">
@@ -354,17 +437,28 @@
                     VerticalAlignment="Bottom"
                     Margin="20">
 
-            <Button Grid.Row="2"
-                    Command="{Binding NewCommand}"
-                    Content="&#xf0fe;"
-                    Style="{StaticResource btnInteract}"
-                    Margin="0 0 0 0"/>
-
             <Button Content="&#xf0c7;"
+                    FontSize="60"
+                    BorderThickness="0"
                     Command="{Binding SaveCommand}"
                     Style="{StaticResource btnInteract}"
                     IsEnabled="{Binding Changed}"
-                    Margin="0 0 0 0"/>
+                    Width="80" Height="80">
+                <Button.Effect>
+                    <DropShadowEffect BlurRadius="4" ShadowDepth="5" Opacity="0.5" Color="Black"/>
+                </Button.Effect>
+            </Button>
+
+            <Button Content="&#xf0fe;"
+                    FontSize="60"
+                    BorderThickness="0"
+                    Command="{Binding NewCommand}"
+                    Style="{StaticResource btnInteract}"
+                    Width="80" Height="80">
+                <Button.Effect>
+                    <DropShadowEffect BlurRadius="4" ShadowDepth="5" Opacity="0.5" Color="Black"/>
+                </Button.Effect>
+            </Button>
         </StackPanel>
     </Grid>
 </Page>

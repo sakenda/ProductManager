@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ProductManager.ViewModel
 {
-    public class PNullableInteger : ViewModelBase, IComparable
+    public class IntNullVM : ViewModelBase, IComparable
     {
         private int? _currentValue;
         private int? _originalValue;
@@ -31,7 +31,7 @@ namespace ProductManager.ViewModel
             }
         }
 
-        public PNullableInteger(int? value)
+        public IntNullVM(int? value)
         {
             _currentValue = value;
             _originalValue = value;
@@ -62,7 +62,7 @@ namespace ProductManager.ViewModel
         /// <returns></returns>
         public int CompareTo(object obj)
         {
-            PNullableInteger value = obj as PNullableInteger;
+            IntNullVM value = obj as IntNullVM;
             if (value == null)
                 throw new ArgumentException("Integer erwartet");
 

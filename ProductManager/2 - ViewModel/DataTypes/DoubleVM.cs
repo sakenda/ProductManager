@@ -2,10 +2,10 @@
 
 namespace ProductManager.ViewModel
 {
-    public class PDecimal : ViewModelBase, IComparable
+    public class DoubleVM : ViewModelBase, IComparable
     {
-        private decimal _currentValue;
-        private decimal _originalValue;
+        private double _currentValue;
+        private double _originalValue;
         private bool _hasChanged;
 
         /// <summary>
@@ -18,9 +18,9 @@ namespace ProductManager.ViewModel
         }
 
         /// <summary>
-        /// Öffentlicher zugriff auf den Inhalt des Decimals
+        /// Öffentlicher zugriff auf den Inhalt des Integers
         /// </summary>
-        public decimal Value
+        public double Value
         {
             get => _currentValue;
             set
@@ -30,7 +30,7 @@ namespace ProductManager.ViewModel
             }
         }
 
-        public PDecimal(decimal value)
+        public DoubleVM(double value)
         {
             _currentValue = value;
             _originalValue = value;
@@ -61,9 +61,9 @@ namespace ProductManager.ViewModel
         /// <returns></returns>
         public int CompareTo(object obj)
         {
-            PDecimal value = obj as PDecimal;
+            DoubleVM value = obj as DoubleVM;
             if (value == null)
-                throw new ArgumentException("Decimal erwartet");
+                throw new ArgumentException("Double erwartet");
 
             if (_currentValue > value._currentValue) return 1;
             if (_currentValue == value._currentValue) return 0;

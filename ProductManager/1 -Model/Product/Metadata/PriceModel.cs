@@ -1,21 +1,19 @@
-﻿namespace ProductManager.Model.Product
+﻿namespace ProductManager.Model.Product.Metadata
 {
-    public class Price
+    public class PriceModel
     {
-        private int? _id;
         private decimal _basePrice;
         private decimal _shippingPrice;
         private decimal _profit;
 
-        public int? ID => _id;
+        public int ID { get; private set; }
         public decimal BasePrice => _basePrice;
         public decimal ShippingPrice => _shippingPrice;
         public decimal Profit => _profit;
 
-        public Price() { }
-        public Price(int? id, decimal basePrice, decimal shipping, decimal profit)
+        public PriceModel() { }
+        public PriceModel(decimal basePrice, decimal shipping, decimal profit)
         {
-            _id = id;
             _basePrice = basePrice;
             _shippingPrice = shipping;
             _profit = profit;
@@ -23,7 +21,7 @@
 
         public void SetID(int id)
         {
-            _id = id;
+            ID = id;
         }
     }
 }

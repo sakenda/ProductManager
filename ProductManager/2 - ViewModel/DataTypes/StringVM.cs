@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ProductManager.ViewModel
 {
-    public class PInteger : ViewModelBase, IComparable
+    public class StringVM : ViewModelBase, IComparable
     {
-        private int _currentValue;
-        private int _originalValue;
+        private string _currentValue;
+        private string _originalValue;
         private bool _hasChanged;
 
         /// <summary>
-        /// Öffentlicher Zugriff auf Status des Wertes. Gibt true bei veränderung des Wertes zurück.
+        /// Öffentlicher Zugriff auf Status des Strings. Gibt true bei veränderung des Wertes zurück.
         /// </summary>
         public bool HasChanged
         {
@@ -20,20 +18,30 @@ namespace ProductManager.ViewModel
         }
 
         /// <summary>
-        /// Öffentlicher zugriff auf den Inhalt des Integers
+        /// Öffentlicher zugriff auf den Inhalt des Strings
         /// </summary>
-        public int Value
+        public string Value
         {
             get => _currentValue;
             set
             {
+                if (string.IsNullOrEmpty(value))
+                {
+                    value = null;
+                }
+
                 SetProperty(ref _currentValue, value);
                 HasChanged = _currentValue != _originalValue;
             }
         }
 
-        public PInteger(int value)
+        public StringVM(string value)
         {
+            if (string.IsNullOrEmpty(value))
+            {
+                value = null;
+            }
+
             _currentValue = value;
             _originalValue = value;
         }
@@ -63,14 +71,12 @@ namespace ProductManager.ViewModel
         /// <returns></returns>
         public int CompareTo(object obj)
         {
-            PInteger value = obj as PInteger;
-            if (value == null)
-                throw new ArgumentException("Integer erwartet");
+            if (obj == null) return 1;
 
-            if (_currentValue > value._currentValue) return 1;
-            if (_currentValue == value._currentValue) return 0;
+            if (ReferenceEquals(this, obj)) return 0;
 
-            return -1;
+            StringVM item = obj as StringVM;
+            return string.Compare(_currentValue, item._currentValue);
         }
     }
 }

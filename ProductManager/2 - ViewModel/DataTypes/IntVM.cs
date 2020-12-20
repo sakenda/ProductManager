@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace ProductManager.ViewModel
 {
-    public class PString : ViewModelBase, IComparable
+    public class IntVM : ViewModelBase, IComparable
     {
-        private string _currentValue;
-        private string _originalValue;
+        private int _currentValue;
+        private int _originalValue;
         private bool _hasChanged;
 
         /// <summary>
-        /// Öffentlicher Zugriff auf Status des Strings. Gibt true bei veränderung des Wertes zurück.
+        /// Öffentlicher Zugriff auf Status des Wertes. Gibt true bei veränderung des Wertes zurück.
         /// </summary>
         public bool HasChanged
         {
@@ -18,30 +20,20 @@ namespace ProductManager.ViewModel
         }
 
         /// <summary>
-        /// Öffentlicher zugriff auf den Inhalt des Strings
+        /// Öffentlicher zugriff auf den Inhalt des Integers
         /// </summary>
-        public string Value
+        public int Value
         {
             get => _currentValue;
             set
             {
-                if (string.IsNullOrEmpty(value))
-                {
-                    value = null;
-                }
-
                 SetProperty(ref _currentValue, value);
                 HasChanged = _currentValue != _originalValue;
             }
         }
 
-        public PString(string value)
+        public IntVM(int value)
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                value = null;
-            }
-
             _currentValue = value;
             _originalValue = value;
         }
@@ -71,12 +63,14 @@ namespace ProductManager.ViewModel
         /// <returns></returns>
         public int CompareTo(object obj)
         {
-            if (obj == null) return 1;
+            IntVM value = obj as IntVM;
+            if (value == null)
+                throw new ArgumentException("Integer erwartet");
 
-            if (ReferenceEquals(this, obj)) return 0;
+            if (_currentValue > value._currentValue) return 1;
+            if (_currentValue == value._currentValue) return 0;
 
-            PString item = obj as PString;
-            return string.Compare(_currentValue, item._currentValue);
+            return -1;
         }
     }
 }
