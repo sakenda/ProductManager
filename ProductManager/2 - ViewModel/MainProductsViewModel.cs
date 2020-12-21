@@ -51,6 +51,7 @@ namespace ProductManager.ViewModel
         public ICommand NewCommand { get; private set; }
         public ICommand UndoCommand { get; private set; }
         public ICommand SetImageCommand { get; private set; }
+        public ICommand RemoveImageCommand { get; private set; }
         public ICommand AddCategoryCommand { get; private set; }
         public ICommand RemoveCategoryCommand { get; private set; }
         public ICommand AddSupplierCommand { get; private set; }
@@ -109,7 +110,10 @@ namespace ProductManager.ViewModel
             SaveCommand = new RelayCommand(SaveExecuted, SaveCanExecute);
             NewCommand = new RelayCommand(NewExecuted);
             UndoCommand = new RelayCommand(UndoExecuted, UndoCanExecute);
+
             SetImageCommand = new RelayCommand(SetImageExecuted);
+            RemoveImageCommand = new RelayCommand(RemoveImageExecuted, RemoveImageCanExecute);
+
             AddCategoryCommand = new RelayCommand(AddCategoryExecuted);
             RemoveCategoryCommand = new RelayCommand(RemoveCategoryExecuted, RemoveCategoryCanExecute);
             AddSupplierCommand = new RelayCommand(AddSupplierExecuted);
@@ -160,6 +164,7 @@ namespace ProductManager.ViewModel
                 }
                 else
                 {
+                    item.AcceptChanges();
                     changedProducts.Add(item.ConvertToProduct());
                 }
             }
@@ -171,8 +176,6 @@ namespace ProductManager.ViewModel
                     _listCollection.Remove(item);
                 }
             }
-
-            AcceptChanges();
 
             _database.SaveProductList(ref changedProducts, ref deletedProducts);
 
@@ -221,8 +224,27 @@ namespace ProductManager.ViewModel
 
             if (path != null && product != null)
             {
-                product.Image.SaveImage(path);
+                product.Image.LoadImage(path);
             }
+        }
+
+        private bool RemoveImageCanExecute(object obj)
+        {
+            if (_viewCollection.CurrentItem != null)
+            {
+                ProductViewModel item = (ProductViewModel)_viewCollection.CurrentItem;
+
+                if (item != null && !string.IsNullOrEmpty(item.Image.Path.Value))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private void RemoveImageExecuted(object obj)
+        {
+            ProductViewModel product = _viewCollection.CurrentItem as ProductViewModel;
+            product.Image.RemoveCurrentImage();
         }
 
         private void AddCategoryExecuted(object obj)

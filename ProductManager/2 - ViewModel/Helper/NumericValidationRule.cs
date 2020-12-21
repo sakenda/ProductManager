@@ -48,6 +48,21 @@ namespace ProductManager.ViewModel.Helper
                         return ValidationResult.ValidResult;
                     }
 
+                case "Decimal":
+                    if (!decimal.TryParse(strValue, out decimal decimalVal))
+                    {
+                        return new ValidationResult(false, $"Ungültige Zeichen. Nur Zahlen 0-9 und Dezimalstellen erlaubt.");
+                    }
+                    else
+                    {
+                        if (decimalVal < 0)
+                        {
+                            return new ValidationResult(false, $"Wert darf nicht negativ sein.");
+                        }
+
+                        return ValidationResult.ValidResult;
+                    }
+
                 default:
                     throw new InvalidCastException($"{ValidationType.Name} wird nicht unterstützt.");
             }

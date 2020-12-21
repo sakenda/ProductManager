@@ -83,8 +83,8 @@
         <Setter Property="FontSize" Value="60"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{StaticResource hBlau}"/>
-        <Setter Property="Width" Value="80"/>
-        <Setter Property="Height" Value="80"/>
+        <Setter Property="Width" Value="70"/>
+        <Setter Property="Height" Value="70"/>
         <Setter Property="Margin" Value="10"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="VerticalAlignment" Value="Bottom"/>
@@ -95,6 +95,11 @@
                 <ControlTemplate TargetType="Button">
                     <Grid Width="{TemplateBinding Width}"
                           Height="{TemplateBinding Height}">
+                        <Border Background="{StaticResource hGrau}" CornerRadius="5">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="4" ShadowDepth="5" Opacity="0.5" Color="Black"/>
+                            </Border.Effect>
+                        </Border>
                         <Label Content="{TemplateBinding Content}"
                                Foreground="{TemplateBinding Foreground}"
                                Background="{TemplateBinding Background}"

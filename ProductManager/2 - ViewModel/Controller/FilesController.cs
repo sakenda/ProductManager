@@ -91,9 +91,7 @@ namespace ProductManager.ViewModel.Controller
         {
             if (File.Exists(path))
             {
-                // Muss noch implementiert werden.
-                // Probleme mit "Datei wird bereits ausgeführt"
-                throw new System.NotImplementedException();
+                File.Delete(path);
             }
         }
     }

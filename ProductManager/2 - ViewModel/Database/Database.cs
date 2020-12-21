@@ -146,7 +146,6 @@ namespace ProductManager.ViewModel.DatabaseData
                 cmd.ExecuteNonQuery();
             }
         }
-
         #endregion MetaData
 
         #region Products
@@ -190,7 +189,7 @@ namespace ProductManager.ViewModel.DatabaseData
                         price = new PriceModel(
                             Convert.ToDecimal(DatabaseClientCast.DBToValue<decimal>(reader["price_base"])),
                             Convert.ToDecimal(DatabaseClientCast.DBToValue<decimal>(reader["price_shipping"])),
-                            Convert.ToDecimal(DatabaseClientCast.DBToValue<decimal>(reader["price_base"]))
+                            Convert.ToDecimal(DatabaseClientCast.DBToValue<decimal>(reader["price_profit"]))
                             );
 
                         image = new ImageModel(

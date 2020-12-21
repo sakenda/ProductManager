@@ -58,16 +58,11 @@ namespace ProductManager
 
             openFile.Multiselect = false;
             openFile.Filter = "Bilddateien (*.jpg;*.jpeg;*.png;*.bmp)|*.jpg;*.jpeg;*.png;*.bmp";
-            openFile.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             if (openFile.ShowDialog() == true)
             {
                 vm.SetImageCommand.Execute(openFile.FileName);
             }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
         }
     }
 }
