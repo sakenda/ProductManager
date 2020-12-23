@@ -265,9 +265,9 @@
                                     <Image MaxHeight="300" Margin="5" Stretch="Uniform">
                                         <Image.Style>
                                             <Style TargetType="Image">
-                                                <Setter Property="Source" Value="{Binding Image.Image, UpdateSourceTrigger=PropertyChanged}"/>
+                                                <Setter Property="Source" Value="{Binding Image.CurrentImage, UpdateSourceTrigger=PropertyChanged}"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Image.Image}" Value="{x:Null}">
+                                                    <DataTrigger Binding="{Binding Image.CurrentImage}" Value="{x:Null}">
                                                         <Setter Property="Source" Value="/Shared/Images/notavailable.jpg"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>

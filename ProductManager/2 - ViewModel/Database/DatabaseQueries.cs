@@ -6,9 +6,9 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace ProductManager.ViewModel.DatabaseData
+namespace ProductManager.ViewModel.Database
 {
-    public class Database : DatabaseProperties
+    public class DatabaseQueries : DatabaseProperties
     {
         #region MetaData
         public void GetSupplier(ref ObservableCollection<SupplierData> list)
@@ -216,7 +216,7 @@ namespace ProductManager.ViewModel.DatabaseData
             return list;
         }
 
-        public void SaveProductList(ref List<ProductModel> products, ref List<ProductModel> deletedProducts)
+        public void SaveProductList(ref List<ProductModel> changedProducts, ref List<ProductModel> deletedProducts)
         {
             if (deletedProducts.Count > 0)
             {
@@ -226,7 +226,7 @@ namespace ProductManager.ViewModel.DatabaseData
                 }
             }
 
-            foreach (ProductModel p in products)
+            foreach (ProductModel p in changedProducts)
             {
                 if (p.ID > 0)
                 {
@@ -353,7 +353,7 @@ namespace ProductManager.ViewModel.DatabaseData
             cmd = new SqlCommand(sql);
 
             cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
-            cmd.Parameters.Add("@imagePath", SqlDbType.Text).Value = product.Image.Path.StringToDb();
+            cmd.Parameters.Add("@imagePath", SqlDbType.Text).Value = product.Image.FileName.StringToDb();
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -420,7 +420,7 @@ namespace ProductManager.ViewModel.DatabaseData
 
             cmd = new SqlCommand(sql);
             cmd.Parameters.Add("@productID", SqlDbType.Int).Value = id;
-            cmd.Parameters.Add("@imagePath", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(product.Image.Path);
+            cmd.Parameters.Add("@imagePath", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(product.Image.FileName);
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {

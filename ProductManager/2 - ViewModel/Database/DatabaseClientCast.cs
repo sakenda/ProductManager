@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ProductManager.ViewModel
+namespace ProductManager.ViewModel.Database
 {
     public static class DatabaseClientCast
     {

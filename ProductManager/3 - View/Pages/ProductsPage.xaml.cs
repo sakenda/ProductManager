@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using ProductManager.ViewModel;
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -61,7 +62,9 @@ namespace ProductManager
 
             if (openFile.ShowDialog() == true)
             {
-                vm.SetImageCommand.Execute(openFile.FileName);
+                (string FilePath, string FileName) file = (Path.GetDirectoryName(openFile.FileName), Path.GetFileName(openFile.FileName));
+
+                vm.SetImageCommand.Execute(file);
             }
         }
     }

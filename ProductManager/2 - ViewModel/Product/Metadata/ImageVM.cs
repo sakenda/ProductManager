@@ -10,18 +10,18 @@ namespace ProductManager.ViewModel.Product.Metadata
 {
     public class ImageVM : ViewModelBase
     {
-        private ImageModel _imageModel;
-
         private List<string> _deletedImages;
-        private StringVM _path;
-        private BitmapImage _image;
+
+        private ImageModel _imageModel;
+        private StringVM _fileName;
+        private BitmapImage _currentImage;
         private bool _changed;
 
-        public StringVM Path => _path;
-        public BitmapImage Image
+        public StringVM FileName => _fileName;
+        public BitmapImage CurrentImage
         {
-            get => _image;
-            set => SetProperty(ref _image, value);
+            get => _currentImage;
+            set => SetProperty(ref _currentImage, value);
         }
         public bool Changed
         {
@@ -44,15 +44,14 @@ namespace ProductManager.ViewModel.Product.Metadata
                 InitializeFields();
             }
 
-            _path.PropertyChanged += Image_PropertyChanged;
+            _fileName.PropertyChanged += Image_PropertyChanged;
         }
 
         private void Image_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_path.HasChanged)
+            if (_fileName.HasChanged)
             {
                 Changed = true;
-                LoadImage(_path.Value);
             }
             else
             {
@@ -62,25 +61,28 @@ namespace ProductManager.ViewModel.Product.Metadata
 
         private void InitializeFields()
         {
-            _path = new StringVM(_imageModel.Path);
-            LoadImage(_path.Value);
+            _fileName = new StringVM(_imageModel.FileName);
+            LoadImage(_fileName.Value);
         }
 
         public void UndoChanges()
         {
-            _path.UndoChanges();
+            _deletedImages.Add(_fileName.Value);
+            _fileName.UndoChanges();
+            LoadImage(_fileName.Value);
+            _deletedImages.Remove(_fileName.Value);
         }
 
         public void AcceptChanges()
         {
-            _path.AcceptChanges();
-            SaveCurrentImage();
+            _fileName.AcceptChanges();
 
             if (_deletedImages.Count != 0)
             {
                 foreach (string item in _deletedImages)
                 {
-                    FilesController.Delete(item);
+                    FilesController fc = new FilesController(FilesController.FileType.Image, item);
+                    FilesController.Delete(fc);
                 }
 
                 _deletedImages.Clear();
@@ -88,70 +90,97 @@ namespace ProductManager.ViewModel.Product.Metadata
         }
 
         /// <summary>
-        /// Lädt die Datei in ein <see cref="BitmapImage"/>.
+        /// Ladet und übersetzt das angegebene Bild in die <see cref="CurrentImage"/> Eigenschaft.
         /// </summary>
-        /// <param name="path"></param>
-        public void LoadImage(string path)
+        /// <param name="filename">Dateiname des Ursprungbildes, bzw. aus der Datenbank gespeicherten Wertes</param>
+        /// <param name="path">Nur anzugeben wenn die Datei sich auserhalb vom Anwendungsordner befindet</param>
+        public void LoadImage(string filename, string path = null)
         {
-            if (!string.IsNullOrEmpty(path) && File.Exists(path))
+            // Pfad wird nur in der View definiert
+            if (!string.IsNullOrEmpty(path))
             {
-                if (_path.Value == null)
+                // Wenn zuvor noch kein Bild definiert war
+                if (string.IsNullOrEmpty(_fileName.Value))
                 {
-                    Path.Value = path;
+                    SaveAsCurrentImage(filename, path);
+                }
+                // Zuvor definiertes Bild wird zum löschen markiertt
+                else
+                {
+                    _deletedImages.Add(_fileName.Value);
+                    SaveAsCurrentImage(filename, path);
+                }
+
+                BuildImage();
+            }
+            // Pfad wird NICHT definiert und kommt vom Konstruktor
+            else
+            {
+                // Zur sicherheit alles auf null setzen, damit die View sich aktualisiert.
+                if (string.IsNullOrEmpty(_fileName.Value))
+                {
+                    FileName.Value = null;
+                    CurrentImage = null;
+                    return;
                 }
                 else
                 {
-                    _deletedImages.Add(_path.Value);
-                    Path.Value = path;
+                    if (File.Exists(Properties.IMAGE_PATH + _fileName.Value))
+                    {
+                        BuildImage();
+                    }
+                    else
+                    {
+                        CurrentImage = null;
+                        _fileName.Value = null;
+                        AcceptChanges();
+                    }
                 }
-
-                try
-                {
-                    Image = new BitmapImage();
-                    Image.BeginInit();
-                    Image.UriSource = new Uri(path);
-                    Image.CacheOption = BitmapCacheOption.OnLoad;
-                    Image.EndInit();
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception($"Error initializing Image. ID: {this._imageModel.ID}, Path: {this._path.Value}, Message: {ex.Message}");
-                }
-            }
-            else
-            {
-                Image = null;
-                _path.Value = null;
-                AcceptChanges();
             }
         }
 
         /// <summary>
-        /// Nimmt den ursprünglichen Pfad Der Bilddatei und speichert eine Kopie davon
-        /// in den Anwendungsordner.
-        /// </summary>
-        /// <param name="path">Der Pfad der Originaldatei</param>
-        /// <returns></returns>
-        public void SaveCurrentImage()
-        {
-            string filename = Guid.NewGuid().ToString();
-
-            var fc = new FilesController(_path.Value, FilesController.Type.Image, filename);
-
-            _path.Value = FilesController.Save(fc);
-        }
-
-        /// <summary>
-        /// Löscht die angehängte Datei
+        /// Entfernt das Aktuelle Bild, und markiert sie zum Löschen
         /// </summary>
         public void RemoveCurrentImage()
         {
-            if (_path.Value != null)
-            {
-                _deletedImages.Add(_path.Value);
-            }
+            _deletedImages.Add(_fileName.Value);
+            FileName.Value = null;
+            CurrentImage = null;
+        }
 
-            Path.Value = null;
+        /// <summary>
+        /// Übersetzt die Bilddatei in eine <see cref="BitmapImage"/>.
+        /// </summary>
+        private void BuildImage()
+        {
+            try
+            {
+                CurrentImage = new BitmapImage();
+                CurrentImage.BeginInit();
+                CurrentImage.UriSource = new Uri(Properties.IMAGE_PATH + _fileName.Value);
+                CurrentImage.CacheOption = BitmapCacheOption.OnLoad;
+                CurrentImage.EndInit();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error initializing Image. ID: {this._imageModel.ID}, Path: {Properties.IMAGE_PATH + this._fileName.Value}, Message: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Nimmt das ursprungsbild und speichert eine Kopie davon in den Anwendungsordner.
+        /// Der Dateiname der kopie wird im aktuellen <see cref="FileName"/> gespeichert.
+        /// </summary>
+        /// <param name="fileName">Der Dateiname der Originaldatei</param>
+        /// <param name="path">Der Pfad der Originaldatei</param>
+        private void SaveAsCurrentImage(string fileName, string path)
+        {
+            string newFilename = Guid.NewGuid().ToString();
+
+            var fc = new FilesController(FilesController.FileType.Image, newFilename, path + "/" + fileName);
+
+            this._fileName.Value = FilesController.Save(fc);
         }
     }
 }

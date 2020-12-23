@@ -1,6 +1,6 @@
 ﻿using ProductManager.Model.Product;
 using ProductManager.Model.Product.Metadata;
-using ProductManager.ViewModel.DatabaseData;
+using ProductManager.ViewModel.Database;
 using ProductManager.ViewModel.Helper;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace ProductManager.ViewModel
     public partial class MainProductsViewModel : ViewModelBase
     {
         #region "Private Felder"
-        private Database _database;
+        private DatabaseQueries _database;
 
         private ObservableCollection<ProductViewModel> _listCollection;
         private ObservableCollection<CategoryData> _categoryList;
@@ -99,7 +99,7 @@ namespace ProductManager.ViewModel
         #region "Konstruktor"
         public MainProductsViewModel()
         {
-            _database = new Database();
+            _database = new DatabaseQueries();
             _database.GetSupplier(ref _supplierList);
             _database.GetCategories(ref _categoryList);
 
@@ -152,9 +152,10 @@ namespace ProductManager.ViewModel
 
             foreach (ProductViewModel item in _listCollection)
             {
-                if (!item.Changed)
+                if (item.Changed)
                 {
-                    continue;
+                    item.AcceptChanges();
+                    changedProducts.Add(item.ConvertToProduct());
                 }
                 else if (item.IsDeleted)
                 {
@@ -164,8 +165,7 @@ namespace ProductManager.ViewModel
                 }
                 else
                 {
-                    item.AcceptChanges();
-                    changedProducts.Add(item.ConvertToProduct());
+                    continue;
                 }
             }
 
@@ -219,12 +219,12 @@ namespace ProductManager.ViewModel
 
         private void SetImageExecuted(object obj)
         {
-            string path = obj as string;
+            (string FilePath, string FileName) imageFile = ((string, string))obj;
             ProductViewModel product = _viewCollection.CurrentItem as ProductViewModel;
 
-            if (path != null && product != null)
+            if (imageFile.FilePath != null && imageFile.FileName != null && product != null)
             {
-                product.Image.LoadImage(path);
+                product.Image.LoadImage(imageFile.FileName, imageFile.FilePath);
             }
         }
 
@@ -234,7 +234,7 @@ namespace ProductManager.ViewModel
             {
                 ProductViewModel item = (ProductViewModel)_viewCollection.CurrentItem;
 
-                if (item != null && !string.IsNullOrEmpty(item.Image.Path.Value))
+                if (item != null && !string.IsNullOrEmpty(item.Image.FileName.Value))
                 {
                     return true;
                 }

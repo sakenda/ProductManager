@@ -1,21 +1,18 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace ProductManager.ViewModel.Controller
 {
     public class FilesController
     {
-        private readonly string IMAGE_PATH = Directory.GetCurrentDirectory() + @"\Images\";
-        private readonly string SETTINGS_PATH = Directory.GetCurrentDirectory() + @"\Settings\";
-        private readonly string PRODUCTS_PATH = Directory.GetCurrentDirectory() + @"\Products\";
-
         private string _folderTarget;
         private string _fileOriginFullPath;
-        private string _newFileName;
+        private string _fileName;
 
         public string FolderTarget => _folderTarget;
         public string FileOriginFullPath => _fileOriginFullPath;
-        public string NewFileName => _newFileName;
-        public enum Type
+        public string FileName => _fileName;
+        public enum FileType
         {
             Image,
             Settings,
@@ -23,40 +20,28 @@ namespace ProductManager.ViewModel.Controller
         }
 
         /// <summary>
-        /// Allgemeiner Konstruktor
+        /// Konstruktor für spezifische Speicherorte.
         /// </summary>
         /// <param name="origin">Originaldatei mit vollständigem Pfad</param>
-        /// <param name="target">Zielordner, ohne Dateiangabe</param>
+        /// <param name="type">Vordefinierte Speicherorte.
+        /// <see cref="FileType.Image"/>, <see cref="FileType.Settings"/>, <see cref="FileType.Products"/></param>
         /// <param name="filename">Dateiname ohne erweiterung. Z.B *.jpg</param>
-        public FilesController(string origin, string target, string filename)
+        public FilesController(FileType type, string filename, string origin = null)
         {
             _fileOriginFullPath = origin;
-            _folderTarget = target;
-            _newFileName = filename;
-        }
-
-        /// <summary>
-        /// Systeminterner Konstruktor für spezifische Speicherorte.
-        /// </summary>
-        /// <param name="origin">Originaldatei mit vollständigem Pfad</param>
-        /// <param name="type">Für Systeminterne Speicherorte.</param>
-        /// <param name="filename">Dateiname ohne erweiterung. Z.B *.jpg</param>
-        public FilesController(string origin, Type type, string filename)
-        {
+            _fileName = filename;
             _folderTarget = type switch
             {
-                Type.Image => IMAGE_PATH,
-                Type.Settings => SETTINGS_PATH,
-                Type.Products => PRODUCTS_PATH,
-                _ => throw new System.NotImplementedException(),
+                FileType.Image => Properties.IMAGE_PATH,
+                FileType.Settings => Properties.SETTINGS_PATH,
+                FileType.Products => Properties.PRODUCTS_PATH,
+                _ => throw new NotImplementedException("Not supportet Filetype format."),
             };
-
-            _fileOriginFullPath = origin;
-            _newFileName = filename;
         }
 
         /// <summary>
         /// Speichert die angegebene Datei. Dazu muss ein <seealso cref="FilesController"/> übergeben werden.
+        /// Benötigt den Ursprungspfad, Zielpfad und Dateinamen
         /// </summary>
         /// <param name="fc"></param>
         /// <returns>Den vollständigen Pfad der Kopierten Datei als <see cref="string"/></returns>
@@ -64,34 +49,34 @@ namespace ProductManager.ViewModel.Controller
         {
             if (File.Exists(fc._fileOriginFullPath))
             {
-                fc._newFileName += Path.GetExtension(fc._fileOriginFullPath);
+                fc._fileName += Path.GetExtension(fc._fileOriginFullPath);
 
-                if (fc._fileOriginFullPath != Path.Combine(fc._folderTarget, fc._newFileName))
+                if (fc._fileOriginFullPath != Path.Combine(fc._folderTarget, fc._fileName))
                 {
                     if (!Directory.Exists(fc._folderTarget))
                     {
                         Directory.CreateDirectory(fc._folderTarget);
                     }
 
-                    if (!File.Exists(Path.Combine(fc._folderTarget, fc._newFileName)))
+                    if (!File.Exists(Path.Combine(fc._folderTarget, fc._fileName)))
                     {
-                        File.Copy(fc._fileOriginFullPath, Path.Combine(fc._folderTarget, fc._newFileName));
+                        File.Copy(fc._fileOriginFullPath, Path.Combine(fc._folderTarget, fc._fileName));
                     }
                 }
             }
 
-            return Path.Combine(fc._folderTarget, fc._newFileName);
+            return fc._fileName;
         }
 
         /// <summary>
-        /// Löscht eine angegebene Datei
+        /// Löscht eine angegebene Datei, entsprechend dem Dateityp
         /// </summary>
-        /// <param name="path">Der vollständige Pfad zur löschenden Datei</param>
-        public static void Delete(string path)
+        /// <param name="fc">Ein <see cref="FilesController"/> Objekt, mit dem Pfad und Dateiname.</param>
+        public static void Delete(FilesController fc)
         {
-            if (File.Exists(path))
+            if (File.Exists(fc.FolderTarget + fc.FileName))
             {
-                File.Delete(path);
+                File.Delete(fc.FolderTarget + fc.FileName);
             }
         }
     }

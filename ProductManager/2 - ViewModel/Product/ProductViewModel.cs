@@ -124,6 +124,7 @@ namespace ProductManager.ViewModel
         /// </summary>
         public void DeleteProduct()
         {
+            _image.RemoveCurrentImage();
             IsDeleted = true;
             Changed = true;
         }
@@ -175,7 +176,7 @@ namespace ProductManager.ViewModel
                 );
 
             ImageModel image = new ImageModel(
-                this._image.Path.Value
+                this._image.FileName.Value
                 );
 
             ProductModel p = new ProductModel(

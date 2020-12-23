@@ -2,15 +2,15 @@
 {
     public class ImageModel
     {
-        private string _path;
+        private string _fileName;
 
         public int ID { get; private set; }
-        public string Path => _path;
+        public string FileName => _fileName;
 
         public ImageModel() { }
-        public ImageModel(string path)
+        public ImageModel(string name)
         {
-            _path = path;
+            _fileName = name;
         }
 
         public void SetID(int id)
