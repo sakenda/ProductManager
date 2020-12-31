@@ -288,7 +288,6 @@ namespace ProductManager.ViewModel
             SupplierList.Remove(item);
             _database.DeleteSupplier(item);
         }
-
         #endregion "Commands"
 
         #region "Private Methoden"

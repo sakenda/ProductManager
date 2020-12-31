@@ -1,10 +1,11 @@
-﻿using System.IO;
-
-namespace ProductManager.ViewModel
+﻿namespace ProductManager.ViewModel
 {
     public class DatabaseProperties
     {
-        protected const string DBCONNECTION = "Server=localhost; Database=TestDB; Trusted_Connection=True;";
+        protected const string DBCONNECTION = "SERVER=DESKTOP-9QI02R2\\LOCALSQLSERVER; "
+                                            + "DATABASE=ECommerceDB; "
+                                            + "UID=client; "
+                                            + "PWD=client; ";
 
     }
 }

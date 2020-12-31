@@ -174,7 +174,7 @@ namespace ProductManager.ViewModel.Database
                             + "left join categories category on product.product_category_id = category.category_id "
                             + "left join suppliers supplier on product.product_supplier_id = supplier.supplier_id "
                             + "left join prices price on product.product_id = price.price_id "
-                            + "left join product_images p_image on product.product_id = p_image.image_id"
+                            + "left join images p_image on product.product_id = p_image.image_id"
             };
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
@@ -415,12 +415,12 @@ namespace ProductManager.ViewModel.Database
             #endregion Insert Preis
 
             #region Insert Image
-            sql = "INSERT into product_images(image_id, image_path) "
-                + "                    values(@productID, @imagePath)";
+            sql = "INSERT into images(image_id, image_filename) "
+                + "            values(@productID, @imageFileName)";
 
             cmd = new SqlCommand(sql);
             cmd.Parameters.Add("@productID", SqlDbType.Int).Value = id;
-            cmd.Parameters.Add("@imagePath", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(product.Image.FileName);
+            cmd.Parameters.Add("@imageFileName", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(product.Image.FileName);
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
