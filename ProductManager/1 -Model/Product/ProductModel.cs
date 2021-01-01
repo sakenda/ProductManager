@@ -26,15 +26,15 @@ namespace ProductManager.Model.Product
             ID = -1;
         }
 
-        public ProductModel(string name, PriceModel price, int quantity, string description, int? categoryID, int? supplierID, ImageModel image)
+        public ProductModel(string name, int quantity, string description, PriceModel price, ImageModel image, int? categoryID, int? supplierID)
         {
             _ProductName = name;
-            _price = price;
             _Quantity = quantity;
             _Description = description;
+            _price = price;
+            _image = image;
             _CategoryID = categoryID;
             _SupplierID = supplierID;
-            _image = image;
         }
 
         public void SetID(int value)

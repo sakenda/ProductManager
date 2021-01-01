@@ -10,7 +10,7 @@ namespace ProductManager.ViewModel.Product.Metadata
 {
     public class ImageVM : ViewModelBase
     {
-        private List<string> _deletedImages;
+        private List<string> _archivedImages;
 
         private ImageModel _imageModel;
         private StringVM _fileName;
@@ -31,7 +31,7 @@ namespace ProductManager.ViewModel.Product.Metadata
 
         public ImageVM(ImageModel imageModel)
         {
-            _deletedImages = new List<string>();
+            _archivedImages = new List<string>();
 
             if (imageModel != null)
             {
@@ -67,25 +67,25 @@ namespace ProductManager.ViewModel.Product.Metadata
 
         public void UndoChanges()
         {
-            _deletedImages.Add(_fileName.Value);
+            _archivedImages.Add(_fileName.Value);
             _fileName.UndoChanges();
             LoadImage(_fileName.Value);
-            _deletedImages.Remove(_fileName.Value);
+            _archivedImages.Remove(_fileName.Value);
         }
 
         public void AcceptChanges()
         {
             _fileName.AcceptChanges();
 
-            if (_deletedImages.Count != 0)
+            if (_archivedImages.Count != 0)
             {
-                foreach (string item in _deletedImages)
+                foreach (string item in _archivedImages)
                 {
                     FilesController fc = new FilesController(FilesController.FileType.Image, item);
                     FilesController.Delete(fc);
                 }
 
-                _deletedImages.Clear();
+                _archivedImages.Clear();
             }
         }
 
@@ -96,7 +96,7 @@ namespace ProductManager.ViewModel.Product.Metadata
         /// <param name="path">Nur anzugeben wenn die Datei sich auserhalb vom Anwendungsordner befindet</param>
         public void LoadImage(string filename, string path = null)
         {
-            // Pfad wird nur in der View definiert
+            // Check ob die Parameter vom View kommen: path != null
             if (!string.IsNullOrEmpty(path))
             {
                 // Wenn zuvor noch kein Bild definiert war
@@ -107,7 +107,7 @@ namespace ProductManager.ViewModel.Product.Metadata
                 // Zuvor definiertes Bild wird zum löschen markiertt
                 else
                 {
-                    _deletedImages.Add(_fileName.Value);
+                    _archivedImages.Add(_fileName.Value);
                     SaveAsCurrentImage(filename, path);
                 }
 
@@ -144,7 +144,11 @@ namespace ProductManager.ViewModel.Product.Metadata
         /// </summary>
         public void RemoveCurrentImage()
         {
-            _deletedImages.Add(_fileName.Value);
+            if (_imageModel.ID > 0)
+            {
+                _archivedImages.Add(_fileName.Value);
+            }
+
             FileName.Value = null;
             CurrentImage = null;
         }

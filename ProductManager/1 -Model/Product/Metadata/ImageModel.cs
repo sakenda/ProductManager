@@ -2,20 +2,24 @@
 {
     public class ImageModel
     {
+        private int? _id;
         private string _fileName;
 
-        public int ID { get; private set; }
+        public int? ID => _id;
         public string FileName => _fileName;
 
-        public ImageModel() { }
-        public ImageModel(string name)
+        public ImageModel()
+        {
+            _id = -1;
+        }
+        public ImageModel(string name) : this()
         {
             _fileName = name;
         }
 
-        public void SetID(int id)
+        public void SetID(int? id)
         {
-            ID = id;
+            _id = id;
         }
     }
 }

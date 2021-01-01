@@ -2,14 +2,11 @@
 using ProductManager.Model.Product.Metadata;
 using ProductManager.ViewModel.Product.Metadata;
 using System.ComponentModel;
-using System.IO;
 
 namespace ProductManager.ViewModel
 {
     public class ProductViewModel : ViewModelBase
     {
-        private string _imageDir = Directory.GetCurrentDirectory() + @"\Images\";
-
         private ProductModel _product;
         private StringVM _name;
         private PriceVM _price;
@@ -179,19 +176,20 @@ namespace ProductManager.ViewModel
                 this._image.FileName.Value
                 );
 
-            ProductModel p = new ProductModel(
+            ProductModel product = new ProductModel(
                 this.Name.Value,
-                price,
                 this.Quantity.Value,
                 this.Description.Value,
+                price,
+                image,
                 this.CategoryId.Value,
-                this.SupplierId.Value,
-                image
+                this.SupplierId.Value
                 );
 
-            p.SetID(this._product.ID);
+            product.SetID(this._product.ID);
+            image.SetID(image.ID);
 
-            return p;
+            return product;
         }
 
         /// <summary>

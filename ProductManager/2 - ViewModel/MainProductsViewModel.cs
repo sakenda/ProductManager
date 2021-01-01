@@ -152,16 +152,16 @@ namespace ProductManager.ViewModel
 
             foreach (ProductViewModel item in _listCollection)
             {
-                if (item.Changed)
-                {
-                    item.AcceptChanges();
-                    changedProducts.Add(item.ConvertToProduct());
-                }
-                else if (item.IsDeleted)
+                if (item.IsDeleted)
                 {
                     deletedProducts.Add(item.ConvertToProduct());
                     deletedViewList.Add(item);
                     continue;
+                }
+                else if (item.Changed)
+                {
+                    item.AcceptChanges();
+                    changedProducts.Add(item.ConvertToProduct());
                 }
                 else
                 {
@@ -220,6 +220,7 @@ namespace ProductManager.ViewModel
         private void SetImageExecuted(object obj)
         {
             (string FilePath, string FileName) imageFile = ((string, string))obj;
+
             ProductViewModel product = _viewCollection.CurrentItem as ProductViewModel;
 
             if (imageFile.FilePath != null && imageFile.FileName != null && product != null)
