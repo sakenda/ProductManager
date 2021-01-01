@@ -40,8 +40,6 @@ namespace ProductManager.Model.Product
         public void SetID(int value)
         {
             ID = value;
-            _price.SetID(value);
-            _image.SetID(value);
         }
     }
 }

@@ -270,7 +270,7 @@ namespace ProductManager.ViewModel
 
         private void AddSupplierExecuted(object obj)
         {
-            SupplierData data = new SupplierData(null, obj as string, null);
+            SupplierData data = new SupplierData(null, obj as string, null, null, null, null);
             SupplierList.Add(data);
             _database.InsertSupplier(data);
         }

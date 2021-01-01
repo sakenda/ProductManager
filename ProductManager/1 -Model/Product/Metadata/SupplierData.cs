@@ -4,17 +4,26 @@
     {
         private int? _id;
         private string _name;
-        private string _address;
+        private string _street;
+        private string _nr;
+        private string _city;
+        private string _zip;
 
         public int? ID => _id;
         public string Name => _name;
-        public string Address => _address;
+        public string Street => _street;
+        public string Nr => _nr;
+        public string City => _city;
+        public string Zip => _zip;
 
-        public SupplierData(int? id, string name, string address)
+        public SupplierData(int? id, string name, string street, string nr, string city, string zip)
         {
             _id = id;
             _name = name;
-            _address = address;
+            _street = street;
+            _nr = nr;
+            _city = city;
+            _zip = zip;
         }
     }
 }

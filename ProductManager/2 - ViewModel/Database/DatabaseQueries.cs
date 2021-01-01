@@ -17,9 +17,15 @@ namespace ProductManager.ViewModel.Database
 
             SqlCommand cmd = new SqlCommand("")
             {
-                CommandText = "select s.supplier_id, s.supplier_name, s.supplier_address "
-                            + "from suppliers s "
-                            + "order by s.supplier_id"
+                CommandText = "SELECT "
+                            + "supplier_id, "
+                            + "supplier_name, "
+                            + "supplier_street, "
+                            + "supplier_nr, "
+                            + "supplier_city, "
+                            + "supplier_zip "
+                            + "FROM "
+                            + "suppliers; "
             };
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
@@ -35,7 +41,8 @@ namespace ProductManager.ViewModel.Database
                             new SupplierData(
                                 DatabaseClientCast.DBToValue<int>(reader["supplier_id"]),
                                 reader["supplier_name"].ToString(),
-                                reader["supplier_address"].ToString()
+                                reader["supplier_city"].ToString(),
+                                null, null, null
                                 ));
                     }
                 }
@@ -64,12 +71,15 @@ namespace ProductManager.ViewModel.Database
             string sql;
             SqlCommand cmd;
 
-            sql = "INSERT into suppliers(supplier_name, supplier_address) "
-                + "               values(@NAME, @ADDRESS)";
+            sql = "INSERT INTO suppliers (supplier_name, supplier_street, supplier_nr, supplier_city, supplier_zip)     "
+                + " 	VALUES (@name, @street, @nr, @city, @zip);                                                      ";
 
             cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@NAME", SqlDbType.Text).Value = data.Name;
-            cmd.Parameters.Add("@ADDRESS", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Address);
+            cmd.Parameters.Add("@name", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Name);
+            cmd.Parameters.Add("@street", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Street);
+            cmd.Parameters.Add("@nr", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Nr);
+            cmd.Parameters.Add("@city", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.City);
+            cmd.Parameters.Add("@zip", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Zip);
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -85,9 +95,11 @@ namespace ProductManager.ViewModel.Database
 
             SqlCommand cmd = new SqlCommand("")
             {
-                CommandText = "select c.category_id, c.category_name, c.category_description "
-                            + "from categories c "
-                            + "order by c.category_id"
+                CommandText = "SELECT "
+                            + "category_id, "
+                            + "category_name, "
+                            + "category_description "
+                            + "FROM categories; "
             };
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
@@ -132,12 +144,12 @@ namespace ProductManager.ViewModel.Database
             string sql;
             SqlCommand cmd;
 
-            sql = "INSERT into categories(category_name, category_description) "
-                + "                values(@NAME, @DESCRIPTION)";
+            sql = "INSERT INTO categories (category_name, category_description)     "
+                + " 	VALUES (@name, @description);                               ";
 
             cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@NAME", SqlDbType.Text).Value = data.Name;
-            cmd.Parameters.Add("@DESCRIPTION", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Description);
+            cmd.Parameters.Add("@name", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Name);
+            cmd.Parameters.Add("@description", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Description);
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -158,23 +170,25 @@ namespace ProductManager.ViewModel.Database
 
             SqlCommand cmd = new SqlCommand("")
             {
-                CommandText = "select product.product_id, "
-                            + "product.product_name, "
-                            + "product.product_quantity, "
-                            + "product.product_description, "
-                            + "product.product_category_id, "
-                            + "product.product_supplier_id, "
-                            + "category.category_name, "
-                            + "supplier.supplier_name, "
-                            + "price.price_base, "
-                            + "price.price_shipping, "
-                            + "price.price_profit, "
-                            + "p_image.image_path "
-                            + "from Products product "
-                            + "left join categories category on product.product_category_id = category.category_id "
-                            + "left join suppliers supplier on product.product_supplier_id = supplier.supplier_id "
-                            + "left join prices price on product.product_id = price.price_id "
-                            + "left join images p_image on product.product_id = p_image.image_id"
+                CommandText = "SELECT                                                                                           "
+                            + "     p.product_id, p.product_name, p.product_quantity, p.product_description,                    "
+                            + "     pr.price_base, pr.price_shipping, pr.price_profit,                                          "
+                            + "     cat.category_id, cat.category_name, cat.category_description,                               "
+                            + "     sup.supplier_id, sup.supplier_name, sup.supplier_street, sup.supplier_nr,                   "
+                            + "     sup.supplier_city, sup.supplier_zip,                                                        "
+                            + "     img.image_name                                                                              "
+                            + "FROM                                                                                             "
+                            + "     products p                                                                                  "
+                            + "         LEFT JOIN prices pr             ON p.product_id         = pr.fk_product_id              "
+                            + "         LEFT JOIN productcategory pcat  ON p.product_id         = pcat.fk_product_id            "
+                            + "         LEFT JOIN categories cat        ON pcat.fk_category_id  = cat.category_id               "
+                            + "         LEFT JOIN productsupplier psup  ON p.product_id         = psup.fk_product_id            "
+                            + "         LEFT JOIN suppliers sup         ON psup.fk_supplier_id  = sup.supplier_id               "
+                            + "         LEFT JOIN productimage pimg     ON pimg.fk_product_id   = p.product_id                  "
+                            + "         LEFT JOIN images img            ON pimg.fk_image_id     = img.image_id                  "
+                            + "         LEFT JOIN productsarchived pa   ON p.product_id         = pa.fk_product_id              "
+                            + "WHERE                                                                                            "
+                            + "     pa.fk_product_id IS NULL;                                                                   "
             };
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
@@ -193,7 +207,7 @@ namespace ProductManager.ViewModel.Database
                             );
 
                         image = new ImageModel(
-                            reader["image_path"].ToString()
+                            reader["image_name"].ToString()
                             );
 
                         product = new ProductModel(
@@ -201,8 +215,8 @@ namespace ProductManager.ViewModel.Database
                                   price,
                                   Convert.ToInt32(reader["product_quantity"]),
                                   reader["product_description"].ToString(),
-                                  DatabaseClientCast.DBToValue<int>(reader["product_category_id"]),
-                                  DatabaseClientCast.DBToValue<int>(reader["product_supplier_id"]),
+                                  DatabaseClientCast.DBToValue<int>(reader["category_id"]),
+                                  DatabaseClientCast.DBToValue<int>(reader["supplier_id"]),
                                   image
                                   );
 
@@ -245,11 +259,10 @@ namespace ProductManager.ViewModel.Database
             SqlCommand cmd;
 
             #region Delete Produkt
-            sql = "delete from products "
-                + "where product_id = @id";
+            sql = "INSERT INTO productsarchived VALUES (@productID); ";
 
             cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ID;
+            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -258,36 +271,6 @@ namespace ProductManager.ViewModel.Database
                 cmd.ExecuteNonQuery();
             }
             #endregion Delete Produkt
-
-            #region Delete Preis
-            sql = "delete from prices "
-                + "where price_id = @id";
-
-            cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ID;
-
-            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-            {
-                conn.Open();
-                cmd.Connection = conn;
-                cmd.ExecuteNonQuery();
-            }
-            #endregion Delete Preis
-
-            #region Delete Image
-            sql = "delete from product_images "
-                + "where image_id = @id";
-
-            cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ID;
-
-            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-            {
-                conn.Open();
-                cmd.Connection = conn;
-                cmd.ExecuteNonQuery();
-            }
-            #endregion Delete Image
         }
 
         private void UpdateProduct(ProductModel product)
@@ -296,22 +279,18 @@ namespace ProductManager.ViewModel.Database
             SqlCommand cmd;
 
             #region Update Produkt
-            sql = "UPDATE products set "
-                + "product_name = @productName, "
-                + "product_quantity = @quantity, "
-                + "product_description = @description, "
-                + "product_category_id = @categoryID, "
-                + "product_supplier_id = @supplierID "
-                + "WHERE product_id = @id";
+            sql = "UPDATE products                              "
+                + "SET product_name = @name,                    "
+                + "    product_quantity = @quantity,            "
+                + "	   product_description = @description       "
+                + "WHERE product_id = @productID;               ";
 
             cmd = new SqlCommand(sql);
 
-            cmd.Parameters.Add("@id", SqlDbType.Int).Value = product.ID;
-            cmd.Parameters.Add("@productName", SqlDbType.NVarChar).Value = product.ProductName.StringToDb();
+            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
+            cmd.Parameters.Add("@name", SqlDbType.NVarChar).Value = product.ProductName.StringToDb();
             cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
             cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
-            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryID.ValueToDb<int>();
-            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierID.ValueToDb<int>();
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -322,18 +301,18 @@ namespace ProductManager.ViewModel.Database
             #endregion Update Produkt
 
             #region Update Price
-            sql = "UPDATE prices set "
-                + "price_base = @priceBase, "
-                + "price_shipping = @priceShipping, "
-                + "price_profit = @priceProfit "
-                + "WHERE price_id = @productID";
+            sql = "UPDATE prices                            "
+                + "SET price_base = @base,                  "
+                + "    price_shipping = @shipping,          "
+                + "    price_profit = @profit               "
+                + "WHERE fk_product_id = @productID;        ";
 
             cmd = new SqlCommand(sql);
 
             cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
-            cmd.Parameters.Add("@priceBase", SqlDbType.Money).Value = product.Price.BasePrice.ValueToDb<decimal>();
-            cmd.Parameters.Add("@priceShipping", SqlDbType.Money).Value = product.Price.ShippingPrice.ValueToDb<decimal>();
-            cmd.Parameters.Add("@priceProfit", SqlDbType.Decimal).Value = product.Price.Profit.ValueToDb<decimal>();
+            cmd.Parameters.Add("@base", SqlDbType.Money).Value = product.Price.BasePrice.ValueToDb<decimal>();
+            cmd.Parameters.Add("@shipping", SqlDbType.Money).Value = product.Price.ShippingPrice.ValueToDb<decimal>();
+            cmd.Parameters.Add("@profit", SqlDbType.Decimal).Value = product.Price.Profit.ValueToDb<decimal>();
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -343,17 +322,67 @@ namespace ProductManager.ViewModel.Database
             }
             #endregion Update Price
 
-            #region Update Image
-            sql = "UPDATE product_images set image_path = @imagePath "
-                + "WHERE image_id = @productID "
-                + "IF @@ROWCOUNT = 0 "
-                + "INSERT into product_images(image_id, image_path) "
-                + "                    values(@productID, @imagePath) ";
+            #region Update Category
+            sql = "UPDATE productcategory                   "
+                + "SET fk_category_id = @categoryID         "
+                + "WHERE fk_product_id = @productID;        ";
 
             cmd = new SqlCommand(sql);
 
             cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
-            cmd.Parameters.Add("@imagePath", SqlDbType.Text).Value = product.Image.FileName.StringToDb();
+            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryID;
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+            #endregion Update Category
+
+            #region Update Supplier
+            sql = "UPDATE productsupplier                 "
+                + "SET fk_supplier_id = @supplierID       "
+                + "WHERE fk_product_id = @productID;      ";
+
+            cmd = new SqlCommand(sql);
+
+            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
+            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierID;
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+            #endregion Update Supplier
+
+            #region Update Image
+            // Dateiname in Datenbank speichern
+            sql = "UPDATE images                    "
+                + "SET image_name = @imageName      "
+                + "WHERE image_id = @imageID;       ";
+
+            cmd = new SqlCommand(sql);
+            cmd.Parameters.Add("@imageID", SqlDbType.Int).Value = product.Image.ID.ValueToDb<int>();
+            cmd.Parameters.Add("@imageName", SqlDbType.Text).Value = product.Image.FileName.StringToDb();
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+
+            // Bild und Produkt verknüpfen
+            sql = "UPDATE productimage                      "
+                + "SET fk_image_id = @imageID               "
+                + "WHERE fk_product_id = @productID;        ";
+
+            cmd = new SqlCommand(sql);
+            cmd.Parameters.Add("@imageID", SqlDbType.Int).Value = product.Image.ID;
+            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -371,15 +400,13 @@ namespace ProductManager.ViewModel.Database
             SqlCommand cmd;
 
             #region Insert Produkt
-            sql = "INSERT into products(product_name, product_quantity, product_description, product_category_id, product_supplier_id) "
-                + "              values(@productName, @quantity, @description, @categoryID, @supplierID) ";
+            sql = "INSERT INTO products (product_name, product_quantity, product_description)       "
+                + "     VALUES (@name, @quantity, @description);                                    ";
 
             cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@productName", SqlDbType.NVarChar).Value = product.ProductName.StringToDb();
-            cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
-            cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
-            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryID.ValueToDb<int>();
-            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierID.ValueToDb<int>();
+            cmd.Parameters.Add("@name", SqlDbType.Text).Value = product.ProductName.StringToDb();
+            cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = DatabaseClientCast.ValueToDb<int>(product.Quantity);
+            cmd.Parameters.Add("@description", SqlDbType.Text).Value = product.Description.StringToDb();
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -396,15 +423,15 @@ namespace ProductManager.ViewModel.Database
             }
             #endregion Insert Produkt
 
-            #region Insert Preis
-            sql = "INSERT into prices(price_id, price_base, price_shipping, price_profit) "
-                + "            values(@priceID, @priceBase, @priceShipping, @priceProfit)";
+            #region Insert Price
+            sql = "INSERT INTO prices (price_base, price_shipping, price_profit, fk_product_id)       "
+                + "     VALUES (@base, @shipping, @profit, @productID);                                 ";
 
             cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@priceID", SqlDbType.Int).Value = id;
-            cmd.Parameters.Add("@priceBase", SqlDbType.Decimal).Value = product.Price.BasePrice.ValueToDb<decimal>();
-            cmd.Parameters.Add("@priceShipping", SqlDbType.Decimal).Value = product.Price.ShippingPrice.ValueToDb<decimal>();
-            cmd.Parameters.Add("@priceProfit", SqlDbType.Decimal).Value = product.Price.Profit.ValueToDb<decimal>();
+            cmd.Parameters.Add("@base", SqlDbType.Decimal).Value = product.Price.BasePrice.ValueToDb<decimal>();
+            cmd.Parameters.Add("@shipping", SqlDbType.Decimal).Value = product.Price.ShippingPrice.ValueToDb<decimal>();
+            cmd.Parameters.Add("@profit", SqlDbType.Decimal).Value = product.Price.Profit.ValueToDb<decimal>();
+            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -412,15 +439,63 @@ namespace ProductManager.ViewModel.Database
                 cmd.Connection = conn;
                 cmd.ExecuteNonQuery();
             }
-            #endregion Insert Preis
+            #endregion Insert Price
 
-            #region Insert Image
-            sql = "INSERT into images(image_id, image_filename) "
-                + "            values(@productID, @imageFileName)";
+            #region Insert Category
+            sql = "INSERT INTO productcategory (fk_category_id, fk_product_id)      "
+                + " 	VALUES (@categoryID, @productID);                           ";
 
             cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = id;
-            cmd.Parameters.Add("@imageFileName", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(product.Image.FileName);
+            cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryID.ValueToDb<int>();
+            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID.ValueToDb<int>();
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+            #endregion Insert Category
+
+            #region Insert Supplier
+            sql = "INSERT INTO productsupplier (fk_supplier_id, fk_product_id)      "
+                + " 	VALUES (@supplierID, @productID);                            ";
+
+            cmd = new SqlCommand(sql);
+            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierID;
+            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+            #endregion Insert Supplier
+
+            #region Insert Image
+            sql = "INSERT INTO images (image_name) VALUES (@name); ";
+            cmd = new SqlCommand(sql);
+            cmd.Parameters.Add("@name", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(product.Image.FileName);
+
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+
+                cmd = new SqlCommand();
+                cmd.CommandText = "select @@IDENTITY";
+                cmd.Connection = conn;
+
+                id = Convert.ToInt32(cmd.ExecuteScalar());
+                product.Image.SetID(id);
+            }
+
+            sql = "INSERT INTO productimage (fk_image_id, fk_product_id) VALUES (@imageID, @productID); ";
+            cmd = new SqlCommand(sql);
+            cmd.Parameters.Add("@imageID", SqlDbType.Int).Value = product.Image.ID;
+            cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
