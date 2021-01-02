@@ -225,7 +225,7 @@ namespace ProductManager.ViewModel
 
             if (imageFile.FilePath != null && imageFile.FileName != null && product != null)
             {
-                product.Image.LoadImage(imageFile.FileName, imageFile.FilePath);
+                product.Image.ChangeImage(imageFile.FileName, imageFile.FilePath);
             }
         }
 

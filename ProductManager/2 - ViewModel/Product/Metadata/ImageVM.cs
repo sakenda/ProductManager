@@ -44,6 +44,7 @@ namespace ProductManager.ViewModel.Product.Metadata
                 InitializeFields();
             }
 
+            ChangeImage(_fileName.Value);
             _fileName.PropertyChanged += Image_PropertyChanged;
         }
 
@@ -62,14 +63,14 @@ namespace ProductManager.ViewModel.Product.Metadata
         private void InitializeFields()
         {
             _fileName = new StringVM(_imageModel.FileName);
-            LoadImage(_fileName.Value);
+            ChangeImage(_fileName.Value);
         }
 
         public void UndoChanges()
         {
             _archivedImages.Add(_fileName.Value);
             _fileName.UndoChanges();
-            LoadImage(_fileName.Value);
+            ChangeImage(_fileName.Value);
             _archivedImages.Remove(_fileName.Value);
         }
 
@@ -94,47 +95,29 @@ namespace ProductManager.ViewModel.Product.Metadata
         /// </summary>
         /// <param name="filename">Dateiname des Ursprungbildes, bzw. aus der Datenbank gespeicherten Wertes</param>
         /// <param name="path">Nur anzugeben wenn die Datei sich auserhalb vom Anwendungsordner befindet</param>
-        public void LoadImage(string filename, string path = null)
+        public void ChangeImage(string filename, string path = null)
         {
-            // Check ob die Parameter vom View kommen: path != null
+            // Daten kommen vom View
             if (!string.IsNullOrEmpty(path))
             {
-                // Wenn zuvor noch kein Bild definiert war
-                if (string.IsNullOrEmpty(_fileName.Value))
-                {
-                    SaveAsCurrentImage(filename, path);
-                }
-                // Zuvor definiertes Bild wird zum löschen markiertt
-                else
-                {
-                    _archivedImages.Add(_fileName.Value);
-                    SaveAsCurrentImage(filename, path);
-                }
-
-                BuildImage();
+                RemoveCurrentImage();
+                _fileName.Value = filename;
+                BuildImage(path);
             }
-            // Pfad wird NICHT definiert und kommt vom Konstruktor
+            // Daten kommen von DB
             else
             {
-                // Zur sicherheit alles auf null setzen, damit die View sich aktualisiert.
-                if (string.IsNullOrEmpty(_fileName.Value))
+                // File Check
+                if (File.Exists(Properties.IMAGE_PATH + _fileName.Value))
                 {
-                    FileName.Value = null;
-                    CurrentImage = null;
-                    return;
+                    BuildImage();
                 }
+                // Wenn Datei nicht existiert, alles auf NULL setzten
                 else
                 {
-                    if (File.Exists(Properties.IMAGE_PATH + _fileName.Value))
-                    {
-                        BuildImage();
-                    }
-                    else
-                    {
-                        CurrentImage = null;
-                        _fileName.Value = null;
-                        AcceptChanges();
-                    }
+                    CurrentImage = null;
+                    _fileName.Value = null;
+                    AcceptChanges();
                 }
             }
         }
@@ -144,7 +127,7 @@ namespace ProductManager.ViewModel.Product.Metadata
         /// </summary>
         public void RemoveCurrentImage()
         {
-            if (_imageModel.ID > 0)
+            if (_imageModel.ID > 0 && !string.IsNullOrEmpty(_fileName.Value))
             {
                 _archivedImages.Add(_fileName.Value);
             }
@@ -156,13 +139,15 @@ namespace ProductManager.ViewModel.Product.Metadata
         /// <summary>
         /// Übersetzt die Bilddatei in eine <see cref="BitmapImage"/>.
         /// </summary>
-        private void BuildImage()
+        private void BuildImage(string path = null)
         {
+            if (path == null) path = Properties.IMAGE_PATH;
+
             try
             {
                 CurrentImage = new BitmapImage();
                 CurrentImage.BeginInit();
-                CurrentImage.UriSource = new Uri(Properties.IMAGE_PATH + _fileName.Value);
+                CurrentImage.UriSource = new Uri(path + "/" + _fileName.Value);
                 CurrentImage.CacheOption = BitmapCacheOption.OnLoad;
                 CurrentImage.EndInit();
             }
