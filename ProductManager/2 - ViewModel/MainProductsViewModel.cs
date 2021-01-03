@@ -155,7 +155,6 @@ namespace ProductManager.ViewModel
                 if (item.IsDeleted)
                 {
                     item.AcceptChanges();
-                    //deletedProducts.Add(item.ConvertToProduct());
                     deletedProducts.Add(item.GetProductModel());
                     deletedViewList.Add(item);
                     continue;
@@ -163,7 +162,6 @@ namespace ProductManager.ViewModel
                 else if (item.Changed)
                 {
                     item.AcceptChanges();
-                    //changedProducts.Add(item.ConvertToProduct());
                     changedProducts.Add(item.GetProductModel());
                 }
                 else

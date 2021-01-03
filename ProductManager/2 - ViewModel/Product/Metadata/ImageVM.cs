@@ -11,11 +11,12 @@ namespace ProductManager.ViewModel.Product.Metadata
     public class ImageVM : ViewModelBase
     {
         private List<string> _archivedImages;
+        private string _originPath;
+        private string _fileNameOld;
 
         private ImageModel _imageModel;
         private StringVM _fileName;
         private BitmapImage _currentImage;
-        private string originPath;
         private bool _changed;
 
         public StringVM FileName => _fileName;
@@ -68,15 +69,20 @@ namespace ProductManager.ViewModel.Product.Metadata
 
         public void UndoChanges()
         {
-            _archivedImages.Add(_fileName.Value);
             _fileName.UndoChanges();
             ChangeImage(_fileName.Value);
-            _archivedImages.Remove(_fileName.Value);
         }
 
         public void AcceptChanges()
         {
-            SaveAsCurrentImage(_fileName.Value, originPath);
+            if (!string.IsNullOrEmpty(_fileName.Value))
+            {
+                SaveAsCurrentImage(_fileName.Value, _originPath);
+            }
+            else
+            {
+                _imageModel.SetID(null);
+            }
 
             _fileName.AcceptChanges();
 
@@ -84,7 +90,7 @@ namespace ProductManager.ViewModel.Product.Metadata
             {
                 foreach (string item in _archivedImages)
                 {
-                    FilesController fc = new FilesController(FilesController.FileType.ImageArchived, item, Properties.IMAGE_PATH + _fileName.Value);
+                    FilesController fc = new FilesController(FilesController.FileType.ImageArchived, item, Properties.IMAGE_PATH);
                     FilesController.Move(fc);
                 }
 
@@ -106,7 +112,7 @@ namespace ProductManager.ViewModel.Product.Metadata
                 _fileName.Value = filename;
                 BuildImage(path);
 
-                originPath = path;
+                _originPath = path;
             }
             // Daten kommen von DB
             else
@@ -119,8 +125,7 @@ namespace ProductManager.ViewModel.Product.Metadata
                 // Wenn Datei nicht existiert, alles auf NULL setzten
                 else
                 {
-                    CurrentImage = null;
-                    _fileName.Value = null;
+                    RemoveCurrentImage();
                     AcceptChanges();
                 }
             }

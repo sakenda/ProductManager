@@ -286,7 +286,6 @@ namespace ProductManager.ViewModel.Database
             string sql;
             SqlCommand cmd;
 
-            #region Delete Produkt
             sql = "INSERT INTO productsarchived (fk_product_id) VALUES (@productID); ";
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
@@ -297,129 +296,277 @@ namespace ProductManager.ViewModel.Database
 
                 ExecuteQueryTransaction(cmd);
             }
-            #endregion Delete Produkt
         }
 
         private void UpdateProduct(ProductModel product)
         {
             string sql;
             SqlCommand cmd;
-
-            #region Update Produkt
-            sql = "UPDATE products                              "
-                + "SET product_name = @name,                    "
-                + "    product_quantity = @quantity,            "
-                + "	   product_description = @description       "
-                + "WHERE product_id = @productID;               ";
+            SqlTransaction transaction;
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
                 conn.Open();
-                cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
-                cmd.Parameters.Add("@name", SqlDbType.NVarChar).Value = product.ProductName.StringToDb();
-                cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
-                cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
+                transaction = conn.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-                ExecuteQueryTransaction(cmd);
+                try
+                {
+                    #region Update Produkt
+                    sql = "UPDATE products                              "
+                        + "SET product_name = @name,                    "
+                        + "    product_quantity = @quantity,            "
+                        + "	   product_description = @description       "
+                        + "WHERE product_id = @productID;               ";
+
+                    cmd = new SqlCommand(sql, conn, transaction);
+                    cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
+                    cmd.Parameters.Add("@name", SqlDbType.NVarChar).Value = product.ProductName.StringToDb();
+                    cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
+                    cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
+
+                    cmd.ExecuteNonQuery();
+                    #endregion Update Produkt
+
+                    #region Update Price
+                    sql = "UPDATE prices                            "
+                        + "SET price_base = @base,                  "
+                        + "    price_shipping = @shipping,          "
+                        + "    price_profit = @profit               "
+                        + "WHERE fk_product_id = @productID;        ";
+
+                    cmd = new SqlCommand(sql, conn, transaction);
+                    cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
+                    cmd.Parameters.Add("@base", SqlDbType.Money).Value = product.Price.BasePrice.ValueToDb<decimal>();
+                    cmd.Parameters.Add("@shipping", SqlDbType.Money).Value = product.Price.ShippingPrice.ValueToDb<decimal>();
+                    cmd.Parameters.Add("@profit", SqlDbType.Decimal).Value = product.Price.Profit.ValueToDb<decimal>();
+                    #endregion Update Price
+
+                    #region Update Category [dbo.productscategory]
+                    if (product.CategoryID != null)
+                    {
+                        sql = "UPDATE productcategory                                                   "
+                            + "SET fk_category_id = @categoryID                                         "
+                            + "WHERE fk_product_id = @productID                                         "
+                            + "IF @@ROWCOUNT = 0                                                        "
+                            + "     INSERT INTO productcategory VALUES(@productID, @categoryID);        ";
+
+                        cmd = new SqlCommand(sql, conn, transaction);
+                        cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID.ValueToDb<int>();
+                        cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryID.ValueToDb<int>();
+
+                        cmd.ExecuteNonQuery();
+                    }
+                    #endregion Update Category [dbo.productscategory]
+
+                    #region Update Supplier [dbo.productssupplier]
+                    if (product.SupplierID != null)
+                    {
+                        sql = "UPDATE productsupplier                                                   "
+                            + "SET fk_supplier_id = @supplierID                                         "
+                            + "WHERE fk_product_id = @productID                                         "
+                            + "IF @@ROWCOUNT = 0                                                        "
+                            + "     INSERT INTO productcategory VALUES(@productID, @supplierID);        ";
+
+                        cmd = new SqlCommand(sql, conn, transaction);
+                        cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID.ValueToDb<int>();
+                        cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierID.ValueToDb<int>();
+
+                        cmd.ExecuteNonQuery();
+                    }
+                    #endregion Update Supplier [dbo.productssupplier]
+
+                    if (product.Image.ID != null)
+                    {
+                        #region [dbo.images]
+                        sql = "UPDATE images                                    "
+                            + "SET image_name = @imageName                      "
+                            + "WHERE image_id = @imageID;                       "
+                            + "IF @@ROWCOUNT = 0                                "
+                            + "     INSERT INTO images VALUES (@imageName);     ";
+
+                        cmd = new SqlCommand(sql, conn, transaction);
+                        cmd.Parameters.Add("@imageID", SqlDbType.Int).Value = product.Image.ID.ValueToDb<int>();
+                        cmd.Parameters.Add("@imageName", SqlDbType.Text).Value = product.Image.FileName.StringToDb();
+
+                        cmd.ExecuteNonQuery();
+
+                        cmd = new SqlCommand("select @@IDENTITY", conn, transaction);
+                        int id = Convert.ToInt32(cmd.ExecuteScalar());
+                        if (product.Image.ID != id)
+                        {
+                            product.Image.SetID(id);
+                        }
+                        #endregion [dbo.images]
+
+                        #region [dbo.productimage]
+                        sql = "UPDATE productimage                      "
+                            + "SET fk_image_id = @imageID               "
+                            + "WHERE fk_product_id = @productID;        "
+                            + "IF @@ROWCOUNT = 0                        "
+                            + "     INSERT INTO productimage VALUES (@productID, @imageID); ";
+
+                        cmd = new SqlCommand(sql, conn, transaction);
+                        cmd.Parameters.Add("@imageID", SqlDbType.Int).Value = product.Image.ID.ValueToDb<int>();
+                        cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
+
+                        cmd.ExecuteNonQuery();
+                        #endregion [dbo.productimage]
+                    }
+                    else
+                    {
+                        sql = "UPDATE productimage                      "
+                            + "SET fk_image_id = @imageID               "
+                            + "WHERE fk_product_id = @productID;        "
+                            + "IF @@ROWCOUNT = 0                        "
+                            + "     INSERT INTO productimage VALUES (@productID, @imageID); ";
+
+                        cmd = new SqlCommand(sql, conn, transaction);
+                        cmd.Parameters.Add("@imageID", SqlDbType.Int).Value = product.Image.ID.ValueToDb<int>();
+                        cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    try
+                    {
+                        transaction.Rollback();
+                    }
+                    catch (Exception ex2)
+                    {
+                        throw ex2;
+                    }
+                    throw ex;
+                }
+                finally
+                {
+                    conn.Close();
+                }
             }
-            #endregion Update Produkt
 
-            #region Update Price
-            sql = "UPDATE prices                            "
-                + "SET price_base = @base,                  "
-                + "    price_shipping = @shipping,          "
-                + "    price_profit = @profit               "
-                + "WHERE fk_product_id = @productID;        ";
+            #region ============= Backup ================================================================================================
+            //string sql;
+            //SqlCommand cmd;
 
-            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-            {
-                conn.Open();
-                cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
-                cmd.Parameters.Add("@base", SqlDbType.Money).Value = product.Price.BasePrice.ValueToDb<decimal>();
-                cmd.Parameters.Add("@shipping", SqlDbType.Money).Value = product.Price.ShippingPrice.ValueToDb<decimal>();
-                cmd.Parameters.Add("@profit", SqlDbType.Decimal).Value = product.Price.Profit.ValueToDb<decimal>();
+            //#region Update Produkt
+            //sql = "UPDATE products                              "
+            //    + "SET product_name = @name,                    "
+            //    + "    product_quantity = @quantity,            "
+            //    + "	   product_description = @description       "
+            //    + "WHERE product_id = @productID;               ";
 
-                ExecuteQueryTransaction(cmd);
-            }
-            #endregion Update Price
+            //using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            //{
+            //    conn.Open();
+            //    cmd = new SqlCommand(sql, conn);
+            //    cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
+            //    cmd.Parameters.Add("@name", SqlDbType.NVarChar).Value = product.ProductName.StringToDb();
+            //    cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = product.Quantity;
+            //    cmd.Parameters.Add("@description", SqlDbType.NVarChar).Value = product.Description.StringToDb();
 
-            #region Update Category [dbo.productscategory]
-            sql = "UPDATE productcategory                                                   "
-                + "SET fk_category_id = @categoryID                                         "
-                + "WHERE fk_product_id = @productID                                         "
-                + "IF @@ROWCOUNT = 0                                                        "
-                + "     INSERT INTO productcategory VALUES(@productID, @categoryID);        ";
+            //    ExecuteQueryTransaction(cmd);
+            //}
+            //#endregion Update Produkt
 
-            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-            {
-                conn.Open();
-                cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
-                cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryID;
+            //#region Update Price
+            //sql = "UPDATE prices                            "
+            //    + "SET price_base = @base,                  "
+            //    + "    price_shipping = @shipping,          "
+            //    + "    price_profit = @profit               "
+            //    + "WHERE fk_product_id = @productID;        ";
 
-                ExecuteQueryTransaction(cmd);
-            }
-            #endregion Update Category [dbo.productscategory]
+            //using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            //{
+            //    conn.Open();
+            //    cmd = new SqlCommand(sql, conn);
+            //    cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
+            //    cmd.Parameters.Add("@base", SqlDbType.Money).Value = product.Price.BasePrice.ValueToDb<decimal>();
+            //    cmd.Parameters.Add("@shipping", SqlDbType.Money).Value = product.Price.ShippingPrice.ValueToDb<decimal>();
+            //    cmd.Parameters.Add("@profit", SqlDbType.Decimal).Value = product.Price.Profit.ValueToDb<decimal>();
 
-            #region Update Supplier [dbo.productssupplier]
-            sql = "UPDATE productsupplier                                                   "
-                + "SET fk_supplier_id = @supplierID                                         "
-                + "WHERE fk_product_id = @productID                                         "
-                + "IF @@ROWCOUNT = 0                                                        "
-                + "     INSERT INTO productcategory VALUES(@productID, @supplierID);        ";
+            //    ExecuteQueryTransaction(cmd);
+            //}
+            //#endregion Update Price
 
-            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-            {
-                conn.Open();
-                cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
-                cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierID;
+            //#region Update Category [dbo.productscategory]
+            //sql = "UPDATE productcategory                                                   "
+            //    + "SET fk_category_id = @categoryID                                         "
+            //    + "WHERE fk_product_id = @productID                                         "
+            //    + "IF @@ROWCOUNT = 0                                                        "
+            //    + "     INSERT INTO productcategory VALUES(@productID, @categoryID);        ";
 
-                ExecuteQueryTransaction(cmd);
-            }
-            #endregion Update Supplier [dbo.productssupplier]
+            //using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            //{
+            //    conn.Open();
+            //    cmd = new SqlCommand(sql, conn);
+            //    cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
+            //    cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryID.ValueToDb<int>();
 
-            #region Update Image
-            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
-            {
-                int newImageID;
+            //    ExecuteQueryTransaction(cmd);
+            //}
+            //#endregion Update Category [dbo.productscategory]
 
-                #region [dbo.images]
-                sql = "UPDATE images                                    "
-                    + "SET image_name = @imageName                      "
-                    + "WHERE image_id = @imageID;                       "
-                    + "IF @@ROWCOUNT = 0                                "
-                    + "     INSERT INTO images VALUES (@imageName);     ";
+            //#region Update Supplier [dbo.productssupplier]
+            //sql = "UPDATE productsupplier                                                   "
+            //    + "SET fk_supplier_id = @supplierID                                         "
+            //    + "WHERE fk_product_id = @productID                                         "
+            //    + "IF @@ROWCOUNT = 0                                                        "
+            //    + "     INSERT INTO productcategory VALUES(@productID, @supplierID);        ";
 
-                conn.Open();
-                cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.Add("@imageID", SqlDbType.Int).Value = product.Image.ID.ValueToDb<int>();
-                cmd.Parameters.Add("@imageName", SqlDbType.Text).Value = product.Image.FileName.StringToDb();
+            //using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            //{
+            //    conn.Open();
+            //    cmd = new SqlCommand(sql, conn);
+            //    cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
+            //    cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierID.ValueToDb<int>();
 
-                ExecuteQueryTransaction(cmd);
+            //    ExecuteQueryTransaction(cmd);
+            //}
+            //#endregion Update Supplier [dbo.productssupplier]
 
-                cmd = new SqlCommand("select @@IDENTITY", conn);
-                newImageID = Convert.ToInt32(cmd.ExecuteScalar());
-                #endregion [dbo.images]
+            //#region Update Image
+            //using (SqlConnection conn = new SqlConnection(DBCONNECTION))
+            //{
+            //    int? newImageID;
 
-                #region [dbo.productimage]
-                sql = "UPDATE productimage                      "
-                    + "SET fk_image_id = @imageID               "
-                    + "WHERE fk_product_id = @productID;        "
-                    + "IF @@ROWCOUNT = 0                        "
-                    + "     INSERT INTO productimage VALUES (@productID, @newImageID); ";
+            //    #region [dbo.images]
+            //    sql = "UPDATE images                                    "
+            //        + "SET image_name = @imageName                      "
+            //        + "WHERE image_id = @imageID;                       "
+            //        + "IF @@ROWCOUNT = 0                                "
+            //        + "     INSERT INTO images VALUES (@imageName);     ";
 
-                cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.Add("@imageID", SqlDbType.Int).Value = product.Image.ID;
-                cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
-                cmd.Parameters.Add("@newImageID", SqlDbType.Int).Value = newImageID;
+            //    conn.Open();
+            //    cmd = new SqlCommand(sql, conn);
+            //    cmd.Parameters.Add("@imageID", SqlDbType.Int).Value = product.Image.ID.ValueToDb<int>();
+            //    cmd.Parameters.Add("@imageName", SqlDbType.Text).Value = product.Image.FileName.StringToDb();
 
-                ExecuteQueryTransaction(cmd);
-                #endregion [dbo.productimage]
-            }
-            #endregion Update Image
+            //    ExecuteQueryTransaction(cmd);
+
+            //    cmd = new SqlCommand("select @@IDENTITY", conn);
+            //    newImageID = Convert.ToInt32(DatabaseClientCast.DBToValue<int>(cmd.ExecuteScalar()));
+            //    #endregion [dbo.images]
+
+            //    #region [dbo.productimage]
+            //    sql = "UPDATE productimage                      "
+            //        + "SET fk_image_id = @imageID               "
+            //        + "WHERE fk_product_id = @productID;        "
+            //        + "IF @@ROWCOUNT = 0                        "
+            //        + "     INSERT INTO productimage VALUES (@productID, @newImageID); ";
+
+            //    cmd = new SqlCommand(sql, conn);
+            //    cmd.Parameters.Add("@imageID", SqlDbType.Int).Value = product.Image.ID;
+            //    cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
+            //    cmd.Parameters.Add("@newImageID", SqlDbType.Int).Value = newImageID;
+
+            //    ExecuteQueryTransaction(cmd);
+            //    #endregion [dbo.productimage]
+            //}
+            //#endregion Update Image
+            #endregion ============= Backup ================================================================================================
         }
 
         private void InsertProduct(ProductModel product)
