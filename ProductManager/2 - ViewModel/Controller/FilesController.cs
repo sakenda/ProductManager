@@ -15,6 +15,7 @@ namespace ProductManager.ViewModel.Controller
         public enum FileType
         {
             Image,
+            ImageArchived,
             Settings,
             Products
         }
@@ -33,6 +34,7 @@ namespace ProductManager.ViewModel.Controller
             _folderTarget = type switch
             {
                 FileType.Image => Properties.IMAGE_PATH,
+                FileType.ImageArchived => Properties.IMAGEARCHIVED_PATH,
                 FileType.Settings => Properties.SETTINGS_PATH,
                 FileType.Products => Properties.PRODUCTS_PATH,
                 _ => throw new NotImplementedException("Not supportet Filetype format."),
@@ -77,6 +79,23 @@ namespace ProductManager.ViewModel.Controller
             if (File.Exists(fc.FolderTarget + fc.FileName))
             {
                 File.Delete(fc.FolderTarget + fc.FileName);
+            }
+        }
+
+        /// <summary>
+        /// Verschiebt eine Datei
+        /// </summary>
+        /// <param name="fc"></param>
+        public static void Move(FilesController fc)
+        {
+            if (File.Exists(fc.FileOriginFullPath + fc.FileName))
+            {
+                if (!Directory.Exists(fc.FolderTarget))
+                {
+                    Directory.CreateDirectory(fc.FolderTarget);
+                }
+
+                File.Move(fc.FileOriginFullPath + fc.FileName, fc.FolderTarget + fc.FileName, true);
             }
         }
     }

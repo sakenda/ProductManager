@@ -15,6 +15,7 @@ namespace ProductManager.ViewModel.Product.Metadata
         private ImageModel _imageModel;
         private StringVM _fileName;
         private BitmapImage _currentImage;
+        private string originPath;
         private bool _changed;
 
         public StringVM FileName => _fileName;
@@ -44,7 +45,6 @@ namespace ProductManager.ViewModel.Product.Metadata
                 InitializeFields();
             }
 
-            ChangeImage(_fileName.Value);
             _fileName.PropertyChanged += Image_PropertyChanged;
         }
 
@@ -76,14 +76,16 @@ namespace ProductManager.ViewModel.Product.Metadata
 
         public void AcceptChanges()
         {
+            SaveAsCurrentImage(_fileName.Value, originPath);
+
             _fileName.AcceptChanges();
 
             if (_archivedImages.Count != 0)
             {
                 foreach (string item in _archivedImages)
                 {
-                    FilesController fc = new FilesController(FilesController.FileType.Image, item);
-                    FilesController.Delete(fc);
+                    FilesController fc = new FilesController(FilesController.FileType.ImageArchived, item, Properties.IMAGE_PATH + _fileName.Value);
+                    FilesController.Move(fc);
                 }
 
                 _archivedImages.Clear();
@@ -103,6 +105,8 @@ namespace ProductManager.ViewModel.Product.Metadata
                 RemoveCurrentImage();
                 _fileName.Value = filename;
                 BuildImage(path);
+
+                originPath = path;
             }
             // Daten kommen von DB
             else
@@ -142,12 +146,13 @@ namespace ProductManager.ViewModel.Product.Metadata
         private void BuildImage(string path = null)
         {
             if (path == null) path = Properties.IMAGE_PATH;
+            else path += "/";
 
             try
             {
                 CurrentImage = new BitmapImage();
                 CurrentImage.BeginInit();
-                CurrentImage.UriSource = new Uri(path + "/" + _fileName.Value);
+                CurrentImage.UriSource = new Uri(path + _fileName.Value);
                 CurrentImage.CacheOption = BitmapCacheOption.OnLoad;
                 CurrentImage.EndInit();
             }

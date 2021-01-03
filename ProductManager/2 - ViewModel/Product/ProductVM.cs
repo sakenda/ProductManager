@@ -1,11 +1,10 @@
 ﻿using ProductManager.Model.Product;
-using ProductManager.Model.Product.Metadata;
 using ProductManager.ViewModel.Product.Metadata;
 using System.ComponentModel;
 
 namespace ProductManager.ViewModel
 {
-    public class ProductViewModel : ViewModelBase
+    public class ProductVM : ViewModelBase
     {
         private ProductModel _product;
         private StringVM _name;
@@ -49,7 +48,7 @@ namespace ProductManager.ViewModel
             set => SetProperty(ref _isDeleted, value);
         }
 
-        public ProductViewModel(ProductModel product)
+        public ProductVM(ProductModel product)
         {
             if (product != null)
             {
@@ -157,39 +156,26 @@ namespace ProductManager.ViewModel
             SupplierId.AcceptChanges();
             Image.AcceptChanges();
 
+            _product.ProductName = _name.Value;
+            _product.Price.BasePrice = _price.PriceBase.Value;
+            _product.Price.ShippingPrice = _price.PriceShipping.Value;
+            _product.Price.Profit = _price.Profit.Value;
+            _product.Quantity = _quantity.Value;
+            _product.Description = _description.Value;
+            _product.CategoryID = _categoryId.Value;
+            _product.SupplierID = _supplierId.Value;
+            _product.Image.FileName = _image.FileName.Value;
+
             CheckStock();
         }
 
         /// <summary>
-        /// Konvertiert das Aktuelle <see cref="ProductViewModel"/> in ein <see cref="Product"/>, zum speichern in die Datenbank.
+        /// Gibt das <see cref="ProductModel"/> zurück.
         /// </summary>
         /// <returns></returns>
-        public ProductModel ConvertToProduct()
+        public ProductModel GetProductModel()
         {
-            PriceModel price = new PriceModel(
-                this._price.PriceBase.Value,
-                this._price.PriceShipping.Value,
-                this._price.Profit.Value
-                );
-
-            ImageModel image = new ImageModel(
-                this._image.FileName.Value
-                );
-
-            ProductModel product = new ProductModel(
-                this.Name.Value,
-                this.Quantity.Value,
-                this.Description.Value,
-                price,
-                image,
-                this.CategoryId.Value,
-                this.SupplierId.Value
-                );
-
-            product.SetID(this._product.ID);
-            image.SetID(image.ID);
-
-            return product;
+            return _product;
         }
 
         /// <summary>

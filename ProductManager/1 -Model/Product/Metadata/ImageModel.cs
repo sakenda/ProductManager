@@ -6,7 +6,7 @@
         private string _fileName;
 
         public int? ID => _id;
-        public string FileName => _fileName;
+        public string FileName { get => _fileName; set => _fileName = value; }
 
         public ImageModel()
         {

@@ -16,7 +16,7 @@ namespace ProductManager.ViewModel
         #region "Private Felder"
         private DatabaseQueries _database;
 
-        private ObservableCollection<ProductViewModel> _listCollection;
+        private ObservableCollection<ProductVM> _listCollection;
         private ObservableCollection<CategoryData> _categoryList;
         private ObservableCollection<SupplierData> _supplierList;
         private ListCollectionView _viewCollection;
@@ -41,7 +41,7 @@ namespace ProductManager.ViewModel
         #endregion "Private Felder"
 
         #region "Öffentliche Eigenschaften"
-        public ObservableCollection<ProductViewModel> ListCollection => _listCollection;
+        public ObservableCollection<ProductVM> ListCollection => _listCollection;
         public ObservableCollection<CategoryData> CategoryList => _categoryList;
         public ObservableCollection<SupplierData> SupplierList => _supplierList;
         public ListCollectionView ViewCollection => _viewCollection;
@@ -128,14 +128,14 @@ namespace ProductManager.ViewModel
         #region "Commands"
         private void NewExecuted(object sender)
         {
-            ProductViewModel product = new ProductViewModel(null);
+            ProductVM product = new ProductVM(null);
             _listCollection.Add(product);
             _viewCollection.MoveCurrentTo(product);
         }
 
         private bool SaveCanExecute(object sender)
         {
-            foreach (ProductViewModel item in _listCollection)
+            foreach (ProductVM item in _listCollection)
             {
                 if (item.Changed)
                 {
@@ -148,20 +148,23 @@ namespace ProductManager.ViewModel
         {
             List<ProductModel> changedProducts = new List<ProductModel>();
             List<ProductModel> deletedProducts = new List<ProductModel>();
-            List<ProductViewModel> deletedViewList = new List<ProductViewModel>();
+            List<ProductVM> deletedViewList = new List<ProductVM>();
 
-            foreach (ProductViewModel item in _listCollection)
+            foreach (ProductVM item in _listCollection)
             {
                 if (item.IsDeleted)
                 {
-                    deletedProducts.Add(item.ConvertToProduct());
+                    item.AcceptChanges();
+                    //deletedProducts.Add(item.ConvertToProduct());
+                    deletedProducts.Add(item.GetProductModel());
                     deletedViewList.Add(item);
                     continue;
                 }
                 else if (item.Changed)
                 {
                     item.AcceptChanges();
-                    changedProducts.Add(item.ConvertToProduct());
+                    //changedProducts.Add(item.ConvertToProduct());
+                    changedProducts.Add(item.GetProductModel());
                 }
                 else
                 {
@@ -171,7 +174,7 @@ namespace ProductManager.ViewModel
 
             if (deletedViewList.Count != 0)
             {
-                foreach (ProductViewModel item in deletedViewList)
+                foreach (ProductVM item in deletedViewList)
                 {
                     _listCollection.Remove(item);
                 }
@@ -189,7 +192,7 @@ namespace ProductManager.ViewModel
         }
         private void DeleteExecuted(object sender)
         {
-            ProductViewModel product = _viewCollection.CurrentItem as ProductViewModel;
+            ProductVM product = _viewCollection.CurrentItem as ProductVM;
             if (product != null)
             {
                 if (product.Product.ID == -1)
@@ -205,7 +208,7 @@ namespace ProductManager.ViewModel
 
         private bool UndoCanExecute(object sender)
         {
-            if (_viewCollection.CurrentItem != null && ((ProductViewModel)_viewCollection.CurrentItem).Changed)
+            if (_viewCollection.CurrentItem != null && ((ProductVM)_viewCollection.CurrentItem).Changed)
             {
                 return true;
             }
@@ -213,7 +216,7 @@ namespace ProductManager.ViewModel
         }
         private void UndoExecuted(object sender)
         {
-            ProductViewModel product = (ProductViewModel)_viewCollection.CurrentItem;
+            ProductVM product = (ProductVM)_viewCollection.CurrentItem;
             product.UndoChanges();
         }
 
@@ -221,7 +224,7 @@ namespace ProductManager.ViewModel
         {
             (string FilePath, string FileName) imageFile = ((string, string))obj;
 
-            ProductViewModel product = _viewCollection.CurrentItem as ProductViewModel;
+            ProductVM product = _viewCollection.CurrentItem as ProductVM;
 
             if (imageFile.FilePath != null && imageFile.FileName != null && product != null)
             {
@@ -233,7 +236,7 @@ namespace ProductManager.ViewModel
         {
             if (_viewCollection.CurrentItem != null)
             {
-                ProductViewModel item = (ProductViewModel)_viewCollection.CurrentItem;
+                ProductVM item = (ProductVM)_viewCollection.CurrentItem;
 
                 if (item != null && !string.IsNullOrEmpty(item.Image.FileName.Value))
                 {
@@ -244,7 +247,7 @@ namespace ProductManager.ViewModel
         }
         private void RemoveImageExecuted(object obj)
         {
-            ProductViewModel product = _viewCollection.CurrentItem as ProductViewModel;
+            ProductVM product = _viewCollection.CurrentItem as ProductVM;
             product.Image.RemoveCurrentImage();
         }
 
@@ -292,14 +295,6 @@ namespace ProductManager.ViewModel
         #endregion "Commands"
 
         #region "Private Methoden"
-        private void AcceptChanges()
-        {
-            foreach (ProductViewModel item in _listCollection)
-            {
-                item.AcceptChanges();
-            }
-        }
-
         private void UpdateSorting()
         {
             string property;
@@ -307,19 +302,19 @@ namespace ProductManager.ViewModel
             switch (SortByProperty)
             {
                 case "Produktname":
-                    property = nameof(ProductViewModel.Name);
+                    property = nameof(ProductVM.Name);
                     break;
                 case "Preis":
-                    property = nameof(ProductViewModel.Price.PriceFinal);
+                    property = nameof(ProductVM.Price.PriceFinal);
                     break;
                 case "Menge":
-                    property = nameof(ProductViewModel.Quantity);
+                    property = nameof(ProductVM.Quantity);
                     break;
                 case "Kategorie":
-                    property = nameof(ProductViewModel.CategoryId);
+                    property = nameof(ProductVM.CategoryId);
                     break;
                 case "Hersteller":
-                    property = nameof(ProductViewModel.SupplierId);
+                    property = nameof(ProductVM.SupplierId);
                     break;
                 default:
                     property = null;
@@ -340,7 +335,7 @@ namespace ProductManager.ViewModel
 
         private bool FilterContains(object obj)
         {
-            ProductViewModel product = obj as ProductViewModel;
+            ProductVM product = obj as ProductVM;
 
             if (SelectedFilter.Contains("Alle Artikel")) return true;
             if (SelectedFilter.Contains("Kein Bestand"))
@@ -358,21 +353,21 @@ namespace ProductManager.ViewModel
         }
         private bool SearchContains(object obj)
         {
-            ProductViewModel product = obj as ProductViewModel;
+            ProductVM product = obj as ProductVM;
 
             if (product.Name.Value.ToLower().Contains(_searchString.ToLower())) return true;
             else return false;
         }
 
-        private void GetProductsViewModel(ref ObservableCollection<ProductViewModel> liste)
+        private void GetProductsViewModel(ref ObservableCollection<ProductVM> liste)
         {
-            _listCollection = new ObservableCollection<ProductViewModel>();
+            _listCollection = new ObservableCollection<ProductVM>();
 
             ObservableCollection<ProductModel> temp = _database.GetProducts();
 
             foreach (ProductModel product in temp)
             {
-                liste.Add(new ProductViewModel(product));
+                liste.Add(new ProductVM(product));
             }
         }
         #endregion "Private Methoden"

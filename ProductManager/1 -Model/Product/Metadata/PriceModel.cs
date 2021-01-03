@@ -6,22 +6,18 @@
         private decimal _shippingPrice;
         private decimal _profit;
 
-        public int ID { get; private set; }
-        public decimal BasePrice => _basePrice;
-        public decimal ShippingPrice => _shippingPrice;
-        public decimal Profit => _profit;
+        public decimal BasePrice { get => _basePrice; set => _basePrice = value; }
+        public decimal ShippingPrice { get => _shippingPrice; set => _shippingPrice = value; }
+        public decimal Profit { get => _profit; set => _profit = value; }
 
-        public PriceModel() { }
+        public PriceModel()
+        {
+        }
         public PriceModel(decimal basePrice, decimal shipping, decimal profit)
         {
             _basePrice = basePrice;
             _shippingPrice = shipping;
             _profit = profit;
-        }
-
-        public void SetID(int id)
-        {
-            ID = id;
         }
     }
 }
