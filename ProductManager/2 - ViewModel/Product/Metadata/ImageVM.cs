@@ -119,11 +119,11 @@ namespace ProductManager.ViewModel.Product.Metadata
         {
             if (File.Exists(Properties.IMAGE_PATH + _fileName.Value))
             {
-                FilesController fc = new FilesController(FilesController.FileType.ImageArchived, _fileName.Value);
+                FilesController fc = new FilesController(FilesController.FileType.ImageArchived, _fileName.Value, Properties.IMAGE_PATH);
                 FilesController.Move(fc);
             }
 
-            FileName.Value = null;
+            _fileName.Value = null;
             CurrentImage = null;
         }
 
