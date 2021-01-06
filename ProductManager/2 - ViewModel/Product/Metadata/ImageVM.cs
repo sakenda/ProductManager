@@ -1,7 +1,6 @@
 ﻿using ProductManager.Model.Product.Metadata;
 using ProductManager.ViewModel.Controller;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Media.Imaging;
@@ -10,9 +9,7 @@ namespace ProductManager.ViewModel.Product.Metadata
 {
     public class ImageVM : ViewModelBase
     {
-        private List<string> _archivedImages;
         private string _originPath;
-        private string _fileNameOld;
 
         private ImageModel _imageModel;
         private StringVM _fileName;
@@ -33,8 +30,6 @@ namespace ProductManager.ViewModel.Product.Metadata
 
         public ImageVM(ImageModel imageModel)
         {
-            _archivedImages = new List<string>();
-
             if (imageModel != null)
             {
                 _imageModel = imageModel;
@@ -75,27 +70,12 @@ namespace ProductManager.ViewModel.Product.Metadata
 
         public void AcceptChanges()
         {
-            if (!string.IsNullOrEmpty(_fileName.Value))
+            if (File.Exists(_originPath + "/" + _fileName.Value))
             {
                 SaveAsCurrentImage(_fileName.Value, _originPath);
             }
-            else
-            {
-                _imageModel.SetID(null);
-            }
-
             _fileName.AcceptChanges();
-
-            if (_archivedImages.Count != 0)
-            {
-                foreach (string item in _archivedImages)
-                {
-                    FilesController fc = new FilesController(FilesController.FileType.ImageArchived, item, Properties.IMAGE_PATH);
-                    FilesController.Move(fc);
-                }
-
-                _archivedImages.Clear();
-            }
+            _imageModel.FileName = _fileName.Value;
         }
 
         /// <summary>
@@ -109,10 +89,11 @@ namespace ProductManager.ViewModel.Product.Metadata
             if (!string.IsNullOrEmpty(path))
             {
                 RemoveCurrentImage();
-                _fileName.Value = filename;
-                BuildImage(path);
 
+                _fileName.Value = filename;
                 _originPath = path;
+
+                BuildImage(path);
             }
             // Daten kommen von DB
             else
@@ -136,9 +117,10 @@ namespace ProductManager.ViewModel.Product.Metadata
         /// </summary>
         public void RemoveCurrentImage()
         {
-            if (_imageModel.ID > 0 && !string.IsNullOrEmpty(_fileName.Value))
+            if (File.Exists(Properties.IMAGE_PATH + _fileName.Value))
             {
-                _archivedImages.Add(_fileName.Value);
+                FilesController fc = new FilesController(FilesController.FileType.ImageArchived, _fileName.Value);
+                FilesController.Move(fc);
             }
 
             FileName.Value = null;
@@ -176,9 +158,7 @@ namespace ProductManager.ViewModel.Product.Metadata
         private void SaveAsCurrentImage(string fileName, string path)
         {
             string newFilename = Guid.NewGuid().ToString();
-
             var fc = new FilesController(FilesController.FileType.Image, newFilename, path + "/" + fileName);
-
             this._fileName.Value = FilesController.Save(fc);
         }
     }

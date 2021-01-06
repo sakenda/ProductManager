@@ -179,6 +179,7 @@ namespace ProductManager.ViewModel
             }
 
             _database.SaveProductList(ref changedProducts, ref deletedProducts);
+            GetProductsViewModel(ref _listCollection);
 
             _viewCollection.Refresh();
             _viewCollection.MoveCurrentToFirst();
