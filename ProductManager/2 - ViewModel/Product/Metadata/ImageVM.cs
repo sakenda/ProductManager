@@ -113,7 +113,7 @@ namespace ProductManager.ViewModel.Product.Metadata
         }
 
         /// <summary>
-        /// Entfernt das Aktuelle Bild, und markiert sie zum Löschen
+        /// Entfernt das Aktuelle Bild.
         /// </summary>
         public void RemoveCurrentImage()
         {
@@ -151,7 +151,7 @@ namespace ProductManager.ViewModel.Product.Metadata
 
         /// <summary>
         /// Nimmt das ursprungsbild und speichert eine Kopie davon in den Anwendungsordner.
-        /// Der Dateiname der kopie wird im aktuellen <see cref="FileName"/> gespeichert.
+        /// Der Dateiname der Kopie wird im aktuellen <see cref="FileName"/> gespeichert.
         /// </summary>
         /// <param name="fileName">Der Dateiname der Originaldatei</param>
         /// <param name="path">Der Pfad der Originaldatei</param>

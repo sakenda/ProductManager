@@ -7,6 +7,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="3 - View\Dialogs\**" />
+	  <EmbeddedResource Remove="3 - View\Dialogs\**" />
+	  <None Remove="3 - View\Dialogs\**" />
+	  <Page Remove="3 - View\Dialogs\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Remove="Shared\Fonts\FontAwesome5Regular.otf" />
 		<None Remove="Shared\Fonts\FontAwesome5Solid.otf" />
 		<None Remove="Shared\Icons\add_black.png" />
@@ -87,10 +94,6 @@
 		<Resource Include="Shared\Images\notavailable.jpg">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Resource>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="3 - View\Dialogs\" />
 	</ItemGroup>
 
 </Project>

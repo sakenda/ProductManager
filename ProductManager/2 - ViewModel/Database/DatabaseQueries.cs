@@ -41,8 +41,10 @@ namespace ProductManager.ViewModel.Database
                             new SupplierData(
                                 DatabaseClientCast.DBToValue<int>(reader["supplier_id"]),
                                 reader["supplier_name"].ToString(),
+                                reader["supplier_street"].ToString(),
+                                reader["supplier_nr"].ToString(),
                                 reader["supplier_city"].ToString(),
-                                null, null, null
+                                reader["supplier_zip"].ToString()
                                 ));
                     }
                 }
@@ -53,8 +55,8 @@ namespace ProductManager.ViewModel.Database
             string sql;
             SqlCommand cmd;
 
-            sql = "delete from suppliers "
-                + "where supplier_id = @id";
+            sql = "DELETE FROM suppliers "
+                + "WHERE supplier_id = @id";
 
             cmd = new SqlCommand(sql);
             cmd.Parameters.Add("@id", SqlDbType.Int).Value = data.ID;
@@ -68,7 +70,6 @@ namespace ProductManager.ViewModel.Database
         }
         public void InsertSupplier(SupplierData data)
         {
-            #region Insert Supplier [dbo.suppliers]
             string sql;
             SqlCommand cmd;
 
@@ -85,9 +86,8 @@ namespace ProductManager.ViewModel.Database
                 cmd.Parameters.Add("@city", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.City);
                 cmd.Parameters.Add("@zip", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Zip);
 
-                ExecuteQueryTransaction(cmd);
+                cmd.ExecuteNonQuery();
             }
-            #endregion Insert Supplier [dbo.suppliers]
         }
 
         public void GetCategories(ref ObservableCollection<CategoryData> list)
@@ -142,7 +142,6 @@ namespace ProductManager.ViewModel.Database
         }
         public void InsertCategory(CategoryData data)
         {
-            #region Insert Category [dbo.categories]
             string sql;
             SqlCommand cmd;
 
@@ -156,9 +155,8 @@ namespace ProductManager.ViewModel.Database
                 cmd.Parameters.Add("@name", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Name);
                 cmd.Parameters.Add("@description", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Description);
 
-                ExecuteQueryTransaction(cmd);
+                cmd.ExecuteNonQuery();
             }
-            #endregion Insert Category [dbo.categories]
         }
         #endregion MetaData
 
@@ -188,9 +186,9 @@ namespace ProductManager.ViewModel.Database
                             + "         LEFT JOIN suppliers sup         ON psup.fk_supplier_id  = sup.supplier_id               "
                             + "         LEFT JOIN productimage pimg     ON pimg.fk_product_id   = p.product_id                  "
                             + "         LEFT JOIN images img            ON pimg.fk_image_id     = img.image_id                  "
-                            + "         LEFT JOIN productsarchived pa   ON p.product_id         = pa.fk_product_id              "
+                            + "         LEFT JOIN productsarchived pa   ON p.product_id = pa.fk_product_id                      "
                             + "WHERE                                                                                            "
-                            + "     pa.fk_product_id IS NULL;                                                                   "
+                            + "    pa.fk_product_id IS NULL;                                                                    "
             };
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
@@ -243,41 +241,16 @@ namespace ProductManager.ViewModel.Database
                 }
             }
 
-            foreach (ProductModel p in changedProducts)
+            foreach (ProductModel product in changedProducts)
             {
-                if (p.ID > 0)
+                if (product.ID > 0)
                 {
-                    this.UpdateProduct(p);
+                    this.UpdateProduct(product);
                 }
                 else
                 {
-                    this.InsertProduct(p);
+                    this.InsertProduct(product);
                 }
-            }
-        }
-
-        private void ExecuteQueryTransaction(SqlCommand cmd)
-        {
-            SqlTransaction transaction;
-            transaction = cmd.Connection.BeginTransaction();
-            cmd.Transaction = transaction;
-
-            try
-            {
-                cmd.ExecuteNonQuery();
-                transaction.Commit();
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    transaction.Rollback();
-                }
-                catch (Exception ex2)
-                {
-                    throw ex2;
-                }
-                throw ex;
             }
         }
 
@@ -294,12 +267,13 @@ namespace ProductManager.ViewModel.Database
                 cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
 
-                ExecuteQueryTransaction(cmd);
+                cmd.ExecuteNonQuery();
             }
         }
 
         private void UpdateProduct(ProductModel product)
         {
+            int id;
             string sql;
             SqlCommand cmd;
             SqlTransaction transaction;
@@ -395,7 +369,7 @@ namespace ProductManager.ViewModel.Database
                         cmd.ExecuteNonQuery();
 
                         cmd = new SqlCommand("SELECT IDENT_CURRENT ('images'); ", conn, transaction);
-                        int id = Convert.ToInt32(cmd.ExecuteScalar());
+                        id = Convert.ToInt32(cmd.ExecuteScalar());
                         if (product.Image.ID != id)
                         {
                             product.Image.SetID(id);
@@ -417,18 +391,22 @@ namespace ProductManager.ViewModel.Database
 
                     transaction.Commit();
                 }
-                catch (Exception ex)
+                #region Exception-Block
+                catch (Exception exceptionCommit)
                 {
                     try
                     {
                         transaction.Rollback();
                     }
-                    catch (Exception ex2)
+                    catch (Exception exceptionRollback)
                     {
-                        throw ex2;
+                        throw new Exception(
+                            $"Fehler beim Senden der Daten zur Datenbank: {exceptionCommit.Message}\n" +
+                            $"Fehler beim zurücksetzten der Daten in der Datenbank: {exceptionRollback.Message}");
                     }
-                    throw ex;
+                    throw new Exception($"Fehler beim Senden der Daten zur Datenbank: { exceptionCommit.Message }");
                 }
+                #endregion Exception-Block
                 finally
                 {
                     conn.Close();
@@ -438,116 +416,123 @@ namespace ProductManager.ViewModel.Database
 
         private void InsertProduct(ProductModel product)
         {
-            string sql;
             int id;
-            SqlConnection conn;
+            string sql;
             SqlCommand cmd;
+            SqlTransaction transaction;
 
-            #region Insert Produkt
-            sql = "INSERT INTO products (product_name, product_quantity, product_description)       "
-                + "     VALUES (@name, @quantity, @description);                                    ";
-
-            using (conn = new SqlConnection(DBCONNECTION))
+            using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
                 conn.Open();
-                cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.Add("@name", SqlDbType.Text).Value = product.ProductName.StringToDb();
-                cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = DatabaseClientCast.ValueToDb<int>(product.Quantity);
-                cmd.Parameters.Add("@description", SqlDbType.Text).Value = product.Description.StringToDb();
+                transaction = conn.BeginTransaction(IsolationLevel.ReadUncommitted);
 
-                ExecuteQueryTransaction(cmd);
-
-                cmd = new SqlCommand("select @@IDENTITY", conn);
-                id = Convert.ToInt32(cmd.ExecuteScalar());
-
-                product.SetID(id);
-            }
-            #endregion Insert Produkt
-
-            #region Insert Price
-            sql = "INSERT INTO prices (price_base, price_shipping, price_profit, fk_product_id)         "
-                + "     VALUES (@base, @shipping, @profit, @productID);                                 ";
-
-            using (conn = new SqlConnection(DBCONNECTION))
-            {
-                conn.Open();
-                cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.Add("@base", SqlDbType.Decimal).Value = product.Price.BasePrice.ValueToDb<decimal>();
-                cmd.Parameters.Add("@shipping", SqlDbType.Decimal).Value = product.Price.ShippingPrice.ValueToDb<decimal>();
-                cmd.Parameters.Add("@profit", SqlDbType.Decimal).Value = product.Price.Profit.ValueToDb<decimal>();
-                cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
-
-                ExecuteQueryTransaction(cmd);
-            }
-            #endregion Insert Price
-
-            #region Insert Category [dbo.productcategory]
-            if (product.CategoryID != null)
-            {
-                sql = "INSERT INTO productcategory (fk_category_id, fk_product_id)      "
-                    + " 	VALUES (@categoryID, @productID);                           ";
-
-                using (conn = new SqlConnection(DBCONNECTION))
+                try
                 {
-                    conn.Open();
-                    cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryID.ValueToDb<int>();
+                    #region Insert Produkt
+                    sql = "INSERT INTO products (product_name, product_quantity, product_description)       "
+                        + "     VALUES (@name, @quantity, @description);                                    ";
+
+                    cmd = new SqlCommand(sql, conn, transaction);
+                    cmd.Parameters.Add("@name", SqlDbType.Text).Value = product.ProductName.StringToDb();
+                    cmd.Parameters.Add("@quantity", SqlDbType.Int).Value = DatabaseClientCast.ValueToDb<int>(product.Quantity);
+                    cmd.Parameters.Add("@description", SqlDbType.Text).Value = product.Description.StringToDb();
+
+                    cmd.ExecuteNonQuery();
+
+                    cmd = new SqlCommand("select @@IDENTITY", conn, transaction);
+                    id = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    product.SetID(id);
+                    #endregion Insert Produkt
+
+                    #region Insert Price
+                    sql = "INSERT INTO prices (price_base, price_shipping, price_profit, fk_product_id)         "
+                        + "     VALUES (@base, @shipping, @profit, @productID);                                 ";
+
+                    cmd = new SqlCommand(sql, conn, transaction);
+                    cmd.Parameters.Add("@base", SqlDbType.Decimal).Value = product.Price.BasePrice.ValueToDb<decimal>();
+                    cmd.Parameters.Add("@shipping", SqlDbType.Decimal).Value = product.Price.ShippingPrice.ValueToDb<decimal>();
+                    cmd.Parameters.Add("@profit", SqlDbType.Decimal).Value = product.Price.Profit.ValueToDb<decimal>();
                     cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID.ValueToDb<int>();
 
-                    ExecuteQueryTransaction(cmd);
+                    cmd.ExecuteNonQuery();
+                    #endregion Insert Price
+
+                    #region Insert Category [dbo.productcategory]
+                    if (product.CategoryID != null)
+                    {
+                        sql = "INSERT INTO productcategory (fk_category_id, fk_product_id)      "
+                            + " 	VALUES (@categoryID, @productID);                           ";
+
+                        cmd = new SqlCommand(sql, conn, transaction);
+                        cmd.Parameters.Add("@categoryID", SqlDbType.Int).Value = product.CategoryID.ValueToDb<int>();
+                        cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID.ValueToDb<int>();
+
+                        cmd.ExecuteNonQuery();
+                    }
+                    #endregion Insert Category [dbo.productcategory]
+
+                    #region Insert Supplier [dbo.productsupplier]
+                    if (product.SupplierID != null)
+                    {
+                        sql = "INSERT INTO productsupplier (fk_supplier_id, fk_product_id)      "
+                            + " 	VALUES (@supplierID, @productID);                            ";
+
+                        cmd = new SqlCommand(sql, conn, transaction);
+                        cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierID.ValueToDb<int>();
+                        cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID.ValueToDb<int>();
+
+                        cmd.ExecuteNonQuery();
+                    }
+                    #endregion Insert Supplier [dbo.productsupplier]
+
+                    #region Insert Image
+                    if (product.Image.FileName != null)
+                    {
+                        sql = "	    BEGIN                                                                                       "
+                            + "		    INSERT INTO images (image_name) VALUES (@imageName);                                    "
+                            + "		    INSERT INTO productimage (fk_product_id, fk_image_id) VALUES (@productID, @@IDENTITY);  "
+                            + "	    END;                                                                                        ";
+
+                        cmd = new SqlCommand(sql, conn, transaction);
+                        cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID.ValueToDb<int>();
+                        cmd.Parameters.Add("@imageID", SqlDbType.Int).Value = product.Image.ID.ValueToDb<int>();
+                        cmd.Parameters.Add("@imageName", SqlDbType.Text).Value = product.Image.FileName.StringToDb();
+
+                        cmd.ExecuteNonQuery();
+
+                        cmd = new SqlCommand("SELECT IDENT_CURRENT ('images'); ", conn, transaction);
+                        id = Convert.ToInt32(cmd.ExecuteScalar());
+                        if (product.Image.ID != id)
+                        {
+                            product.Image.SetID(id);
+                        }
+                    }
+                    #endregion Insert Image
+
+                    transaction.Commit();
                 }
-            }
-            #endregion Insert Category [dbo.productcategory]
-
-            #region Insert Supplier [dbo.productsupplier]
-            if (product.SupplierID != null)
-            {
-                sql = "INSERT INTO productsupplier (fk_supplier_id, fk_product_id)      "
-                    + " 	VALUES (@supplierID, @productID);                            ";
-
-                using (conn = new SqlConnection(DBCONNECTION))
+                #region Exception-Block
+                catch (Exception exceptionCommit)
                 {
-                    conn.Open();
-                    cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = product.SupplierID;
-                    cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
-
-                    ExecuteQueryTransaction(cmd);
+                    try
+                    {
+                        transaction.Rollback();
+                    }
+                    catch (Exception exceptionRollback)
+                    {
+                        throw new Exception(
+                            $"Fehler beim Senden der Daten zur Datenbank: {exceptionCommit.Message}\n" +
+                            $"Fehler beim zurücksetzten der Daten in der Datenbank: {exceptionRollback.Message}");
+                    }
+                    throw new Exception($"Fehler beim Senden der Daten zur Datenbank: { exceptionCommit.Message }");
                 }
-            }
-            #endregion Insert Supplier [dbo.productsupplier]
-
-            #region Insert Image
-            if (product.Image.ID != null)
-            {
-                using (conn = new SqlConnection(DBCONNECTION))
+                #endregion Exception-Block
+                finally
                 {
-                    #region [dbo.images]
-                    sql = "INSERT INTO images (image_name) VALUES (@name); ";
-
-                    conn.Open();
-                    cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.Add("@name", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(product.Image.FileName);
-
-                    ExecuteQueryTransaction(cmd);
-
-                    cmd = new SqlCommand("select @@IDENTITY", conn);
-                    id = Convert.ToInt32(cmd.ExecuteScalar());
-                    product.Image.SetID(id);
-                    #endregion [dbo.images]
-
-                    #region [dbo.productimage]
-                    sql = "INSERT INTO productimage (fk_image_id, fk_product_id) VALUES (@imageID, @productID); ";
-
-                    cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.Add("@imageID", SqlDbType.Int).Value = product.Image.ID;
-                    cmd.Parameters.Add("@productID", SqlDbType.Int).Value = product.ID;
-
-                    ExecuteQueryTransaction(cmd);
-                    #endregion [dbo.productimage]
+                    conn.Close();
                 }
             }
-            #endregion Insert Image
         }
         #endregion Products
     }
