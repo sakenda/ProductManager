@@ -24,7 +24,6 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="{Binding ElementName=spHeader, Path=Height}"/>
             <RowDefinition Height="{Binding ElementName=spSuchfeld, Path=Height}"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -55,39 +54,19 @@
 
                         <Button Content="Entfernen" Name="popupRemoveBtn"
                                 Style="{StaticResource btnBlue}" Height="30" Width="100"
-                                Background="{StaticResource Orange}"
+                                Background="{StaticResource colorHighlight}"
                                 CommandParameter="{Binding ElementName=popupListBox, Path=SelectedItem}"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
         </Popup>
 
-        <!-- HEADER -->
-        <StackPanel Grid.Row="0"
-                    Name="spHeader"
-                    Orientation="Horizontal"
-                    Background="{StaticResource dBlau}"
-                    Height="45">
-            <Label Content="  &#xf54f; "
-                   FontFamily="{StaticResource FontAwesomeSolid}"
-                   FontSize="25"
-                   Foreground="{StaticResource hSchriftv1}"
-                   VerticalContentAlignment="Center"/>
-            <Label Content="Produkte"
-                   Padding="0"
-                   VerticalContentAlignment="Center"
-                   FontWeight="Light"
-                   FontSize="24"
-                   Foreground="White"/>
-        </StackPanel>
-
         <!-- SUCHFELD -->
-        <StackPanel
-            Grid.Row="1"
-            Name="spSuchfeld"
-            Orientation="Horizontal"
-            Background="{StaticResource hBlau}"
-            Height="50">
+        <StackPanel Grid.Row="0"
+                    Name="spSuchfeld"
+                    Orientation="Horizontal"
+                    Background="{StaticResource colorLight}"
+                    Height="50">
 
             <Grid>
 
@@ -99,11 +78,11 @@
                         FontFamily="{StaticResource FontAwesomeSolid}"
                         FontSize="20"
                         VerticalContentAlignment="Center"
-                        Foreground="{StaticResource hSchriftv1}"
+                        Foreground="{StaticResource colorFontLight}"
                         Margin="10 0 0 0"/>
                     <TextBox
                         Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}"
-                        Foreground="{StaticResource dSchriftv1}"
+                        Foreground="{StaticResource colorFontDark}"
                         Width="400" Margin="10"
                         BorderThickness="2"/>
 
@@ -113,7 +92,7 @@
                         FontFamily="{StaticResource FontAwesomeSolid}"
                         FontSize="20"
                         VerticalContentAlignment="Center"
-                        Foreground="{StaticResource hSchriftv1}"
+                        Foreground="{StaticResource colorFontLight}"
                         Margin="10 0 10 0"/>
                     <ComboBox
                         ItemsSource="{Binding SortCriteria, Mode=OneWay}"
@@ -127,7 +106,7 @@
                         FontFamily="{StaticResource FontAwesomeSolid}"
                         FontSize="20"
                         VerticalContentAlignment="Center"
-                        Foreground="{StaticResource hSchriftv1}"
+                        Foreground="{StaticResource colorFontLight}"
                         Margin="10 0 10 0"/>
                     <ComboBox
                         ItemsSource="{Binding FilterCriteria, Mode=OneWay}"
@@ -140,7 +119,7 @@
 
         <!-- PRODUKTLISTE -->
         <!-- Custom ColumnHeader -->
-        <DataGrid Grid.Row="2"
+        <DataGrid Grid.Row="1"
                   Name="dgProducts"
                   ItemsSource="{Binding ViewCollection, Mode=OneWay}"
                   GridLinesVisibility="None"
@@ -301,7 +280,7 @@
                             <!-- Produktname -->
                             <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Top" Margin="0 15 0 0">
                                 <TextBlock Text="Produktname"
-                                           Foreground="{StaticResource dSchriftv1}"
+                                           Foreground="{StaticResource colorFontDark}"
                                            Width="110" Padding="0" Margin="5 0"
                                            FontSize="12" FontWeight="Bold"
                                            VerticalAlignment="Center"
@@ -317,7 +296,7 @@
 
                                 <!-- Beschreibung -->
                                 <TextBlock Text="Beschreibung"
-                                           Foreground="{StaticResource dSchriftv1}"
+                                           Foreground="{StaticResource colorFontDark}"
                                            Width="115" Padding="0" Margin="5 2"
                                            FontWeight="Bold" FontSize="12"
                                            VerticalAlignment="Center"
@@ -333,7 +312,7 @@
                             <StackPanel Orientation="Vertical" VerticalAlignment="Top" Grid.Column="2" Margin="5 15">
                                 <!-- EK-Preis -->
                                 <TextBlock Text="EK-Preis"
-                                           Foreground="{StaticResource dSchriftv1}"
+                                           Foreground="{StaticResource colorFontDark}"
                                            Width="80" Padding="0" Margin="5 0"
                                            FontWeight="Bold" FontSize="12"
                                            VerticalAlignment="Center"
@@ -355,7 +334,7 @@
 
                                 <!-- Versandkosten -->
                                 <TextBlock Text="Versand"
-                                           Foreground="{StaticResource dSchriftv1}"
+                                           Foreground="{StaticResource colorFontDark}"
                                            Width="80" Padding="0" Margin="5 2"
                                            FontWeight="Bold" FontSize="12"
                                            VerticalAlignment="Center"
@@ -379,7 +358,7 @@
 
                                 <!-- Profit -->
                                 <TextBlock Text="Profit"
-                                           Foreground="{StaticResource dSchriftv1}"
+                                           Foreground="{StaticResource colorFontDark}"
                                            Width="80" Padding="0" Margin="5 2"
                                            FontWeight="Bold" FontSize="12"
                                            VerticalAlignment="Center"
@@ -403,7 +382,7 @@
 
                                 <!-- Gesamtpreis -->
                                 <TextBlock Text="Gesamt"
-                                           Foreground="{StaticResource dSchriftv1}"
+                                           Foreground="{StaticResource colorFontDark}"
                                            Width="80" Padding="0" Margin="5 2"
                                            FontWeight="Bold" FontSize="12"
                                            VerticalAlignment="Center"
@@ -421,7 +400,7 @@
                             <!-- Bestand -->
                             <StackPanel Orientation="Vertical" Grid.Column="3" Margin="5 15">
                                 <TextBlock Text="Bestand"
-                                           Foreground="{StaticResource dSchriftv1}"
+                                           Foreground="{StaticResource colorFontDark}"
                                            Width="80" Padding="0" Margin="5 0"
                                            FontWeight="Bold" FontSize="12"
                                            VerticalAlignment="Center"
@@ -437,7 +416,7 @@
 
                                 <!-- Bestellt -->
                                 <TextBlock Text="Bestellt"
-                                           Foreground="{StaticResource dSchriftv1}"
+                                           Foreground="{StaticResource colorFontDark}"
                                            Width="80" Padding="0" Margin="5 2"
                                            FontWeight="Bold" FontSize="12"
                                            VerticalAlignment="Center"
@@ -448,7 +427,7 @@
                             <!-- Kategorie -->
                             <StackPanel Grid.Column="4" Orientation="Vertical" Margin="5 15">
                                 <TextBlock Text="Kategorie"
-                                           Foreground="{StaticResource dSchriftv1}"
+                                           Foreground="{StaticResource colorFontDark}"
                                            Width="110" Padding="0" Margin="5 0"
                                            FontWeight="Bold" FontSize="12"
                                            VerticalAlignment="Center"
@@ -461,7 +440,7 @@
 
                                 <!-- Hersteller -->
                                 <TextBlock Text="Hersteller"
-                                           Foreground="{StaticResource dSchriftv1}"
+                                           Foreground="{StaticResource colorFontDark}"
                                            Width="110" Padding="0" Margin="5 2"
                                            FontWeight="Bold" FontSize="12"
                                            VerticalAlignment="Center"
@@ -479,7 +458,7 @@
         </DataGrid>
 
         <!-- Neues Produkt / Speichern -->
-        <StackPanel Grid.Row="2"
+        <StackPanel Grid.Row="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"

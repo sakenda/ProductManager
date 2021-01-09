@@ -8,8 +8,8 @@
 
     <Style TargetType="ComboBox">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource dSchriftv1}"/>
+        <Setter Property="Foreground" Value="{StaticResource colorFontDark}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource colorFontDark}"/>
         <Setter Property="BorderThickness" Value="0 0 0 2"/>
         <Setter Property="Height" Value="30"/>
         <Setter Property="Width" Value="200"/>
@@ -18,7 +18,7 @@
     </Style>
 
     <Style TargetType="ComboBoxItem">
-        <Setter Property="BorderBrush" Value="{StaticResource hBlau}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource colorLight}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Margin" Value="0"/>
     </Style>

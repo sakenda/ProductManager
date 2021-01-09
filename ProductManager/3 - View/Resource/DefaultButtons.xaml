@@ -6,8 +6,8 @@
         <ResourceDictionary Source="/3 - View/Resource/FontIcons.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="Button" x:Key="btnBlue">
-        <Setter Property="Background" Value="{StaticResource hBlau}"/>
+    <Style x:Key="btnBlue" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource colorLight}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="FontSize" Value="14"/>
@@ -28,13 +28,13 @@
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{StaticResource dBlau}"/>
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource colorDark}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="border" Property="Background" Value="{StaticResource Orange}"/>
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource colorHighlight}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="border" Property="Background" Value="{StaticResource dGrau}"/>
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource colorBackgroundDark}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -45,8 +45,8 @@
     <Style x:Key="btnFontIcon" TargetType="Button">
         <Setter Property="FontSize" Value="20"/>
         <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
-        <Setter Property="Background" Value="{StaticResource hGrau}"/>
-        <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
+        <Setter Property="Background" Value="{StaticResource colorBackgroundLight}"/>
+        <Setter Property="Foreground" Value="{StaticResource colorFontDark}"/>
         <Setter Property="BorderThickness" Value="2"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -55,7 +55,7 @@
                     <Border Margin="3 7 3 7"
                             CornerRadius="4"
                             Background="{TemplateBinding Background}"
-                            BorderBrush="{StaticResource dSchriftv1}"
+                            BorderBrush="{StaticResource colorFontDark}"
                             BorderThickness="{TemplateBinding BorderThickness}">
                         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                             <ContentPresenter/>
@@ -64,8 +64,8 @@
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" Value="{StaticResource hSchriftv1}"/>
-                            <Setter Property="Background" Value="{StaticResource hBlau}"/>
+                            <Setter Property="Foreground" Value="{StaticResource colorFontLight}"/>
+                            <Setter Property="Background" Value="{StaticResource colorLight}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Background" Value="Transparent"/>
@@ -78,11 +78,11 @@
         </Setter>
     </Style>
 
-    <Style TargetType="Button" x:Key="btnInteract">
+    <Style x:Key="btnInteract" TargetType="Button">
         <Setter Property="FontFamily" Value="{StaticResource FontAwesomeSolid}"/>
         <Setter Property="FontSize" Value="60"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource hBlau}"/>
+        <Setter Property="Foreground" Value="{StaticResource colorLight}"/>
         <Setter Property="Width" Value="70"/>
         <Setter Property="Height" Value="70"/>
         <Setter Property="Margin" Value="10"/>
@@ -95,7 +95,7 @@
                 <ControlTemplate TargetType="Button">
                     <Grid Width="{TemplateBinding Width}"
                           Height="{TemplateBinding Height}">
-                        <Border Background="{StaticResource hGrau}" CornerRadius="5">
+                        <Border Background="{StaticResource colorBackgroundLight}" CornerRadius="5">
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="4" ShadowDepth="5" Opacity="0.5" Color="Black"/>
                             </Border.Effect>
@@ -112,13 +112,13 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource dBlau}"/>
+                <Setter Property="Foreground" Value="{StaticResource colorDark}"/>
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource Orange}"/>
+                <Setter Property="Foreground" Value="{StaticResource colorHighlight}"/>
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Foreground" Value="{StaticResource hSchriftv2}"/>
+                <Setter Property="Foreground" Value="{StaticResource colorFontLight}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -127,7 +127,7 @@
         <Setter Property="FontSize" Value="18"/>
         <Setter Property="FontFamily" Value="{StaticResource FontAwesomeRegular}"/>
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
+        <Setter Property="Foreground" Value="{StaticResource colorFontDark}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Margin" Value="0 0 10 0"/>
         <Setter Property="Template">
@@ -140,12 +140,46 @@
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Foreground" Value="{StaticResource hBlau}"/>
+                            <Setter Property="Foreground" Value="{StaticResource colorLight}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="Foreground" Value="Transparent"/>
                             <Setter Property="BorderThickness" Value="0"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="btnMainHeader" TargetType="ToggleButton">
+        <Setter Property="Background" Value="{StaticResource colorBackgroundDark}"/>
+        <Setter Property="Foreground" Value="{StaticResource colorFontLight}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Margin" Value="0 0 0 0"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+
+                    <Grid Margin="{TemplateBinding Margin}"
+                          Background="{TemplateBinding Background}"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource colorDark}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource colorDark}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Background" Value="{StaticResource colorLight}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

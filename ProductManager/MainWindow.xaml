@@ -13,78 +13,41 @@
         WindowStartupLocation="CenterScreen"
         Topmost="False">
 
-    <DockPanel LastChildFill="True" Background="{StaticResource dBlau}">
+    <DockPanel LastChildFill="True" Background="{StaticResource colorBackgroundDark}">
+        <!-- Seitenmenü -->
+        <StackPanel DockPanel.Dock="Top"
+                    Orientation="Horizontal">
 
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="Datenbank">
-                <MenuItem Header="Datenbank Pfad..." ToolTip="Pfad zum Datenbank Server"/>
-                <MenuItem Header="Daten lokal speichern" IsCheckable="True" ToolTip="Wenn lokal gespeichert wird, wird keine externe Datenbank benötigt."/>
-            </MenuItem>
-            <MenuItem Header="Info">
-                <MenuItem Header="Über..."/>
-            </MenuItem>
-        </Menu>
+            <!-- Produkte -->
+            <ToggleButton Style="{StaticResource btnMainHeader}" Width="160" Height="50" Name="tbProducts" Click="ToggleButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="&#xf54f;" Foreground="{StaticResource colorFontLight}" FontFamily="{StaticResource FontAwesomeSolid}"/>
+                    <Label Content="Produkte" Foreground="{StaticResource colorFontLight}" FontSize="18"/>
+                </StackPanel>
+            </ToggleButton>
 
-        <StackPanel DockPanel.Dock="Left" Width="100" Orientation="Vertical" VerticalAlignment="Top">
+            <!-- Nutzer -->
+            <ToggleButton Style="{StaticResource btnMainHeader}" Width="160" Height="50" Name="tbUsers" Click="ToggleButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="&#xf0c0;" Foreground="{StaticResource colorFontLight}" FontFamily="{StaticResource FontAwesomeSolid}"/>
+                    <Label Content="Nutzer" Foreground="{StaticResource colorFontLight}" FontSize="18"/>
+                </StackPanel>
+            </ToggleButton>
 
-            <Border Height="80" Background="{StaticResource Orange}">
-                <Image Source="/Shared/Icons/productmanager_black.png" Height="50"/>
-            </Border>
-
-            <Border Background="{StaticResource hBlau}" Width="100" Margin="0 5 0 5">
-                <Button HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0">
-                    <StackPanel Orientation="Vertical">
-                        <Image Source="/Shared/Icons/products_white.png" Height="40"/>
-                        <Label Content="Produkte"
-                               HorizontalAlignment="Center"
-                               Margin="0 0 0 0"
-                               Foreground="White"
-                               FontSize="16"/>
-                    </StackPanel>
-                </Button>
-            </Border>
-
-            <Border Background="{StaticResource dBlau}" Width="100" Margin="0 5 0 5">
-                <Button HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0">
-                    <StackPanel Orientation="Vertical">
-                        <Image Source="/Shared/Icons/users_white.png" Height="40"/>
-                        <Label Content="Nutzer"
-                               HorizontalAlignment="Center"
-                               Margin="0 -5 0 0"
-                               Foreground="White"
-                               FontSize="16"/>
-                    </StackPanel>
-                </Button>
-            </Border>
-
-            <Border Background="{StaticResource dBlau}" Width="100" Margin="0 5 0 5">
-                <Button HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center"
-                        Background="Transparent"
-                        BorderThickness="0">
-                    <StackPanel Orientation="Vertical">
-                        <Image Source="/Shared/Icons/shipping_white.png" Height="40"/>
-                        <Label Content="Versand"
-                               HorizontalAlignment="Center"
-                               Margin="0 -5 0 0"
-                               Foreground="White"
-                               FontSize="16"/>
-                    </StackPanel>
-                </Button>
-            </Border>
+            <!-- Bestellungen -->
+            <ToggleButton Style="{StaticResource btnMainHeader}" Width="160" Height="50" Name="tbOrders" Click="ToggleButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="&#xf49e;" Foreground="{StaticResource colorFontLight}" FontFamily="{StaticResource FontAwesomeSolid}"/>
+                    <Label Content="Bestellungen" Foreground="{StaticResource colorFontLight}" FontSize="18"/>
+                </StackPanel>
+            </ToggleButton>
         </StackPanel>
 
+        <!-- Page Frame -->
         <Frame Name="mainFrame"
                NavigationUIVisibility="Hidden"
-               Background="{StaticResource hGrau}"
+               Background="{StaticResource colorBackgroundDark}"
                HorizontalAlignment="Stretch"
-               VerticalAlignment="Stretch"
-               Source="/3 - View/Pages/ProductsPage.xaml"/>
+               VerticalAlignment="Stretch"/>
     </DockPanel>
 </Window>

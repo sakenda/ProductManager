@@ -9,24 +9,24 @@
         <Setter Property="Margin" Value="10"/>
         <Setter Property="Padding" Value="10 0 0 0"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
+        <Setter Property="Foreground" Value="{StaticResource colorFontDark}"/>
         <Setter Property="Background" Value="White"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="FontWeight" Value="Regular"/>
         <Setter Property="BorderThickness" Value="2 0 0 0"/>
-        <Setter Property="BorderBrush" Value="{StaticResource dSchriftv1}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource colorFontDark}"/>
         <Setter Property="Validation.ErrorTemplate">
             <Setter.Value>
                 <ControlTemplate>
                     <Grid>
                         <Label Content="&#xf06a;"
                                ToolTip="{Binding ElementName=adorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}"
-                               Foreground="{StaticResource Orange}"
+                               Foreground="{StaticResource colorHighlight}"
                                FontFamily="{StaticResource FontAwesomeSolid}"
                                FontSize="18"
                                Margin="80 -28 0 0"
                                HorizontalContentAlignment="Right"/>
-                        <Border BorderBrush="{StaticResource Orange}" BorderThickness="2 2 0 0"/>
+                        <Border BorderBrush="{StaticResource colorHighlight}" BorderThickness="2 2 0 0"/>
                         <AdornedElementPlaceholder Name="adorner"/>
                     </Grid>
                 </ControlTemplate>
@@ -34,11 +34,11 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource hGrau}"/>
-                <Setter Property="BorderBrush" Value="{StaticResource dBlau}"/>
+                <Setter Property="Background" Value="{StaticResource colorBackgroundLight}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource colorDark}"/>
             </Trigger>
             <Trigger Property="IsSelectionActive" Value="True">
-                <Setter Property="Background" Value="{StaticResource hGrau}"/>
+                <Setter Property="Background" Value="{StaticResource colorBackgroundLight}"/>
                 <Setter Property="BorderThickness" Value="2 0 0 2"/>
             </Trigger>
         </Style.Triggers>
