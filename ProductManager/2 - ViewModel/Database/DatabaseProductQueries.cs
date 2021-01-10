@@ -23,7 +23,8 @@ namespace ProductManager.ViewModel.Database
                             + "	    a.adress_street,                                                        "
                             + "	    a.adress_number,                                                        "
                             + "	    a.adress_city,                                                          "
-                            + "	    a.adress_zip                                                            "
+                            + "	    a.adress_zip,                                                           "
+                            + "     a.adress_country                                                        "
                             + "FROM                                                                         "
                             + "	    suppliers s                                                             "
                             + "         LEFT JOIN supplieradress sa ON s.supplier_id = sa.fk_supplier_id    "
@@ -44,26 +45,34 @@ namespace ProductManager.ViewModel.Database
                                 DatabaseClientCast.DBToValue<int>(reader["supplier_id"]),
                                 reader["supplier_name"].ToString(),
                                 reader["adress_street"].ToString(),
-                                reader["adress_nr"].ToString(),
+                                reader["adress_number"].ToString(),
                                 reader["adress_city"].ToString(),
-                                reader["adress_zip"].ToString()
+                                reader["adress_zip"].ToString(),
+                                reader["adress_country"].ToString()
                                 ));
                     }
                 }
             }
         }
-        /* UMSTELLEN AUF NEUE TABLES
         public void DeleteSupplier(SupplierData data)
         {
             string sql;
             SqlCommand cmd;
 
-            sql = "DELETE FROM suppliers WHERE supplier_id = @id"
-                + "DELETE FROM adresses WHERE "
-                + "DELETE FROM ";
+            sql = "DECLARE @adressID AS INT                                                         "
+                + "SET @adressID = (                                                                "
+                + "	    SELECT a.adress_id                                                          "
+                + "	    FROM suppliers s                                                            "
+                + "	    	LEFT JOIN supplieradress sa ON s.supplier_id    = sa.fk_supplier_id     "
+                + "	    	LEFT JOIN adresses a        ON a.adress_id      = sa.fk_adress_id       "
+                + "	    WHERE s.supplier_id = sa.fk_supplier_id                                     "
+                + "	    );                                                                          "
+                + "DELETE FROM adresses WHERE adress_id = @adressID;                                "
+                + "DELETE FROM suppliers WHERE supplier_id = @supplierID;                           "
+                + "DELETE FROM supplieradress WHERE fk_adress_id = @adressID;                       ";
 
             cmd = new SqlCommand(sql);
-            cmd.Parameters.Add("@id", SqlDbType.Int).Value = data.ID;
+            cmd.Parameters.Add("@supplierID", SqlDbType.Int).Value = data.ID;
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -77,8 +86,8 @@ namespace ProductManager.ViewModel.Database
             string sql;
             SqlCommand cmd;
 
-            sql = "INSERT INTO suppliers (supplier_name, supplier_street, supplier_nr, supplier_city, supplier_zip)     "
-                + " 	VALUES (@name, @street, @nr, @city, @zip);                                                      ";
+            sql = "INSERT INTO suppliers (supplier_name) VALUES (@name);                                                                                        "
+                + "INSERT INTO adresses (adress_street, adress_number, adress_city, adress_zip, adress_country) VALUES (@street, @nr, @city, @zip, @country);   ";
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
@@ -89,11 +98,11 @@ namespace ProductManager.ViewModel.Database
                 cmd.Parameters.Add("@nr", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Nr);
                 cmd.Parameters.Add("@city", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.City);
                 cmd.Parameters.Add("@zip", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Zip);
+                cmd.Parameters.Add("@country", SqlDbType.Text).Value = DatabaseClientCast.StringToDb(data.Country);
 
                 cmd.ExecuteNonQuery();
             }
         }
-        */
 
         public void GetCategories(ref ObservableCollection<CategoryData> list)
         {
