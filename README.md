@@ -3,7 +3,11 @@
 
 Mein Lernfortschritt und gelernte Konzepte werden in diesem Projekt dargestellt.
 
+# User Interface
 ![](header.png)
+
+# Datenbank Diagramm
+![](dbdia.png)
 
 ## Über Mich
 
