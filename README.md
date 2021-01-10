@@ -10,6 +10,6 @@ Mein Lernfortschritt und gelernte Konzepte werden in diesem Projekt dargestellt.
 ![](dbdia.png)
 
 ## Über Mich
-Michael Barth 
-Software Entwickler
-sakenda1207@gmail.com
+Michael Barth  
+Software Entwickler  
+sakenda1207@gmail.com  
