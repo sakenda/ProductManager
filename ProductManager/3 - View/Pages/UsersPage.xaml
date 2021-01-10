@@ -18,6 +18,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <!-- SUCHFELD -->
         <StackPanel Name="spSuchfeld"
                     Grid.Row="0"
                     Orientation="Horizontal"
@@ -68,6 +69,7 @@
                         Width="200" Margin="0 0 10 0"/>
         </StackPanel>
 
+        <!-- DATAGRID -->
         <DataGrid Grid.Row="1"
                   ItemsSource="{Binding ViewCollection}"
                   Background="{StaticResource colorBackgroundDark}"
@@ -81,6 +83,23 @@
                   SelectionUnit="FullRow"
                   AutoGenerateColumns="False"
                   VirtualizingPanel.ScrollUnit="Pixel">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding LastName.Value}">
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="Familienname" Foreground="{StaticResource colorFontLight}"/>
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding FirstName.Value}">
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="Name" Foreground="{StaticResource colorFontLight}"/>
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding Email.Value}">
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="E-Mail" Foreground="{StaticResource colorFontLight}"/>
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </Page>

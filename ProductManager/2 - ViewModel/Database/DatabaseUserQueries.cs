@@ -7,9 +7,9 @@ namespace ProductManager.ViewModel.Database
 {
     public class DatabaseUserQueries : DatabaseProperties
     {
-        public void GetUsers(ref ObservableCollection<UserModel> list)
+        public ObservableCollection<UserModel> GetUsers()
         {
-            list = new ObservableCollection<UserModel>();
+            ObservableCollection<UserModel> list = new ObservableCollection<UserModel>();
 
             string sql = "SELECT                                                                                            "
                        + "	    us.user_id, us.user_firstname, us.user_lastname, us.user_email,                             "
@@ -54,6 +54,8 @@ namespace ProductManager.ViewModel.Database
                     }
                 }
             }
+
+            return list;
         }
     }
 }
