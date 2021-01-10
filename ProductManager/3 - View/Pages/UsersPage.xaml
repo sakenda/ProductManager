@@ -8,6 +8,7 @@
       d:DesignHeight="1080"
       d:DesignWidth="1920"
       FontSize="14"
+      DataContext="{StaticResource vmUsers}"
       Background="{StaticResource colorBackgroundDark}"
       Title="UsersPage">
 
@@ -67,7 +68,19 @@
                         Width="200" Margin="0 0 10 0"/>
         </StackPanel>
 
-        <DataGrid Grid.Row="1" Background="{StaticResource colorBackgroundDark}">
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding ViewCollection}"
+                  Background="{StaticResource colorBackgroundDark}"
+                  Name="dgUsers"
+                  GridLinesVisibility="None"
+                  SelectionMode="Single"
+                  SelectedIndex="0"
+                  d:RowDetailsVisibilityMode="VisibleWhenSelected"
+                  RowHeaderWidth="0"
+                  IsReadOnly="True"
+                  SelectionUnit="FullRow"
+                  AutoGenerateColumns="False"
+                  VirtualizingPanel.ScrollUnit="Pixel">
         </DataGrid>
     </Grid>
 </Page>

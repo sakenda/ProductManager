@@ -96,4 +96,8 @@
 		</Resource>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="2 - ViewModel\User\" />
+	</ItemGroup>
+
 </Project>

@@ -18,18 +18,19 @@
             </ResourceDictionary.MergedDictionaries>
 
             <viewModel:MainProductsViewModel x:Key="vmProducts"/>
+            <viewModel:MainUsersViewModel x:Key="vmUsers"/>
 
             <Style TargetType="Window">
                 <Setter Property="FontFamily" Value="Segoe MDL2"/>
                 <Setter Property="FontSize" Value="14"/>
-                <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
+                <Setter Property="Foreground" Value="{StaticResource colorFontLight}"/>
             </Style>
 
             <Style TargetType="Page">
                 <Setter Property="FontFamily" Value="Segoe MDL2"/>
                 <Setter Property="FontSize" Value="14"/>
-                <Setter Property="Foreground" Value="{StaticResource dSchriftv1}"/>
-                <Setter Property="Background" Value="White"/>
+                <Setter Property="Foreground" Value="{StaticResource colorFontDark}"/>
+                <Setter Property="Background" Value="{StaticResource colorBackgroundDark}"/>
             </Style>
         </ResourceDictionary>
     </Application.Resources>

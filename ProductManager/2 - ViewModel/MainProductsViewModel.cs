@@ -14,7 +14,7 @@ namespace ProductManager.ViewModel
     public partial class MainProductsViewModel : ViewModelBase
     {
         #region "Private Felder"
-        private DatabaseQueries _database;
+        private DatabaseProductQueries _database;
 
         private ObservableCollection<ProductVM> _listCollection;
         private ObservableCollection<CategoryData> _categoryList;
@@ -99,7 +99,7 @@ namespace ProductManager.ViewModel
         #region "Konstruktor"
         public MainProductsViewModel()
         {
-            _database = new DatabaseQueries();
+            _database = new DatabaseProductQueries();
             _database.GetSupplier(ref _supplierList);
             _database.GetCategories(ref _categoryList);
 
