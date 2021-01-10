@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 
 namespace ProductManager.ViewModel.Database
 {
-    public class DatabaseQueries : DatabaseProperties
+    public class DatabaseProductQueries : DatabaseProperties
     {
         #region MetaData
         public void GetSupplier(ref ObservableCollection<SupplierData> list)
@@ -17,15 +17,17 @@ namespace ProductManager.ViewModel.Database
 
             SqlCommand cmd = new SqlCommand("")
             {
-                CommandText = "SELECT "
-                            + "supplier_id, "
-                            + "supplier_name, "
-                            + "supplier_street, "
-                            + "supplier_nr, "
-                            + "supplier_city, "
-                            + "supplier_zip "
-                            + "FROM "
-                            + "suppliers; "
+                CommandText = "SELECT                                                                       "
+                            + "	    s.supplier_id,                                                          "
+                            + "	    s.supplier_name,                                                        "
+                            + "	    a.adress_street,                                                        "
+                            + "	    a.adress_number,                                                        "
+                            + "	    a.adress_city,                                                          "
+                            + "	    a.adress_zip                                                            "
+                            + "FROM                                                                         "
+                            + "	    suppliers s                                                             "
+                            + "         LEFT JOIN supplieradress sa ON s.supplier_id = sa.fk_supplier_id    "
+                            + "         LEFT JOIN adresses a ON sa.fk_adress_id = a.adress_id;              "
             };
 
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
@@ -41,22 +43,24 @@ namespace ProductManager.ViewModel.Database
                             new SupplierData(
                                 DatabaseClientCast.DBToValue<int>(reader["supplier_id"]),
                                 reader["supplier_name"].ToString(),
-                                reader["supplier_street"].ToString(),
-                                reader["supplier_nr"].ToString(),
-                                reader["supplier_city"].ToString(),
-                                reader["supplier_zip"].ToString()
+                                reader["adress_street"].ToString(),
+                                reader["adress_nr"].ToString(),
+                                reader["adress_city"].ToString(),
+                                reader["adress_zip"].ToString()
                                 ));
                     }
                 }
             }
         }
+        /* UMSTELLEN AUF NEUE TABLES
         public void DeleteSupplier(SupplierData data)
         {
             string sql;
             SqlCommand cmd;
 
-            sql = "DELETE FROM suppliers "
-                + "WHERE supplier_id = @id";
+            sql = "DELETE FROM suppliers WHERE supplier_id = @id"
+                + "DELETE FROM adresses WHERE "
+                + "DELETE FROM ";
 
             cmd = new SqlCommand(sql);
             cmd.Parameters.Add("@id", SqlDbType.Int).Value = data.ID;
@@ -89,6 +93,7 @@ namespace ProductManager.ViewModel.Database
                 cmd.ExecuteNonQuery();
             }
         }
+        */
 
         public void GetCategories(ref ObservableCollection<CategoryData> list)
         {
@@ -170,27 +175,28 @@ namespace ProductManager.ViewModel.Database
 
             SqlCommand cmd = new SqlCommand("")
             {
-                CommandText = "SELECT                                                                                           "
-                            + "     p.product_id, p.product_name, p.product_quantity, p.product_description,                    "
-                            + "     pr.price_base, pr.price_shipping, pr.price_profit,                                          "
-                            + "     cat.category_id, cat.category_name, cat.category_description,                               "
-                            + "     sup.supplier_id, sup.supplier_name, sup.supplier_street, sup.supplier_nr,                   "
-                            + "     sup.supplier_city, sup.supplier_zip,                                                        "
-                            + "     img.image_id, img.image_name                                                                "
-                            + "FROM                                                                                             "
-                            + "     products p                                                                                  "
-                            + "         LEFT JOIN prices pr             ON p.product_id         = pr.fk_product_id              "
-                            + "         LEFT JOIN productcategory pcat  ON p.product_id         = pcat.fk_product_id            "
-                            + "         LEFT JOIN categories cat        ON pcat.fk_category_id  = cat.category_id               "
-                            + "         LEFT JOIN productsupplier psup  ON p.product_id         = psup.fk_product_id            "
-                            + "         LEFT JOIN suppliers sup         ON psup.fk_supplier_id  = sup.supplier_id               "
-                            + "         LEFT JOIN productimage pimg     ON pimg.fk_product_id   = p.product_id                  "
-                            + "         LEFT JOIN images img            ON pimg.fk_image_id     = img.image_id                  "
-                            + "         LEFT JOIN productsarchived pa   ON p.product_id = pa.fk_product_id                      "
-                            + "WHERE                                                                                            "
-                            + "    pa.fk_product_id IS NULL;                                                                    "
+                CommandText = "SELECT                                                                                   "
+                            + "	p.product_id, p.product_name, p.product_quantity, p.product_description,                "
+                            + "	pr.price_base, pr.price_shipping, pr.price_profit,                                      "
+                            + "	cat.category_id, cat.category_name, cat.category_description,                           "
+                            + "	sup.supplier_id, sup.supplier_name,                                                     "
+                            + "	adr.adress_street, adr.adress_number, adr.adress_city, adr.adress_zip,                  "
+                            + "	img.image_id, img.image_name                                                            "
+                            + "FROM                                                                                     "
+                            + "	products p                                                                              "
+                            + "		LEFT JOIN prices pr				ON p.product_id			= pr.fk_product_id          "
+                            + "		LEFT JOIN productcategory pcat	ON p.product_id			= pcat.fk_product_id        "
+                            + "		LEFT JOIN categories cat		ON pcat.fk_category_id	= cat.category_id           "
+                            + "		LEFT JOIN productsupplier psup	ON p.product_id			= psup.fk_product_id        "
+                            + "		LEFT JOIN suppliers sup			ON psup.fk_supplier_id	= sup.supplier_id           "
+                            + "		LEFT JOIN productimage pimg		ON pimg.fk_product_id	= p.product_id              "
+                            + "		LEFT JOIN images img			ON pimg.fk_image_id		= img.image_id              "
+                            + "		LEFT JOIN productsarchived pa	ON p.product_id			= pa.fk_product_id          "
+                            + "		LEFT JOIN supplieradress sadr	ON sup.supplier_id		= sadr.fk_supplier_id       "
+                            + "		LEFT JOIN adresses adr			ON sadr.fk_adress_id	= adr.adress_id             "
+                            + "WHERE                                                                                    "
+                            + "     pa.fk_product_id IS NULL                                                            "
             };
-
             using (SqlConnection conn = new SqlConnection(DBCONNECTION))
             {
                 cmd.Connection = conn;
