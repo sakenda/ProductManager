@@ -16,63 +16,62 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="{Binding ElementName=spSuchfeld, Path=Height}"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="{Binding ElementName=spMenuUnten, Path=Height}"/>
         </Grid.RowDefinitions>
 
         <!-- SUCHFELD -->
-        <StackPanel Name="spSuchfeld"
-                    Grid.Row="0"
-                    Orientation="Horizontal"
-                    Height="50"
-                    VerticalAlignment="Top"
-                    Background="{StaticResource colorLight}">
+        <StackPanel Grid.Row="0"
+                        Name="spSuchfeld"
+                        Orientation="Horizontal"
+                        Background="{StaticResource colorLight}"
+                        Height="50">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <!-- Suchen -->
+                    <Label Content="{StaticResource Search}"
+                               FontFamily="{StaticResource FontAwesomeSolid}"
+                               FontSize="20"
+                               VerticalContentAlignment="Center"
+                               Foreground="{StaticResource colorFontLight}"
+                               Margin="10 0 0 0"/>
+                    <TextBox Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}"
+                                 Foreground="{StaticResource colorFontDark}"
+                                 Width="400" Margin="10"
+                                 BorderThickness="2"/>
 
-            <!-- Suchen -->
-            <Label
-                        Content="{StaticResource Search}"
-                        FontFamily="{StaticResource FontAwesomeSolid}"
-                        FontSize="20"
-                        VerticalContentAlignment="Center"
-                        Foreground="{StaticResource colorFontLight}"
-                        Margin="10 0 0 0"/>
-            <TextBox
-                        Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}"
-                        Foreground="{StaticResource colorFontDark}"
-                        Width="400" Margin="10"
-                        BorderThickness="2"/>
+                    <!-- Sortieren -->
+                    <Label Content="{StaticResource Sort}"
+                               FontFamily="{StaticResource FontAwesomeSolid}"
+                               FontSize="20"
+                               VerticalContentAlignment="Center"
+                               Foreground="{StaticResource colorFontLight}"
+                               Margin="10 0 10 0"/>
+                    <ComboBox ItemsSource="{Binding SortCriteria, Mode=OneWay}"
+                                  SelectedValue="{Binding SortByProperty}"
+                                  SelectedIndex="0"
+                                  Width="200" Margin="0 0 10 0"/>
 
-            <!-- Sortieren -->
-            <Label
-                        Content="{StaticResource Sort}"
-                        FontFamily="{StaticResource FontAwesomeSolid}"
-                        FontSize="20"
-                        VerticalContentAlignment="Center"
-                        Foreground="{StaticResource colorFontLight}"
-                        Margin="10 0 10 0"/>
-            <ComboBox
-                        ItemsSource="{Binding SortCriteria, Mode=OneWay}"
-                        SelectedValue="{Binding SortByProperty}"
-                        SelectedIndex="0"
-                        Width="200" Margin="0 0 10 0"/>
-
-            <!-- Filtern -->
-            <Label
+                    <!-- Filtern -->
+                    <Label
                         Content="{StaticResource Filter}"
                         FontFamily="{StaticResource FontAwesomeSolid}"
                         FontSize="20"
                         VerticalContentAlignment="Center"
                         Foreground="{StaticResource colorFontLight}"
                         Margin="10 0 10 0"/>
-            <ComboBox
+                    <ComboBox
                         ItemsSource="{Binding FilterCriteria, Mode=OneWay}"
                         SelectedValue="{Binding SelectedFilter}"
                         SelectedIndex="0"
                         Width="200" Margin="0 0 10 0"/>
+                </StackPanel>
+            </Grid>
         </StackPanel>
 
         <!-- DATAGRID -->
         <DataGrid Grid.Row="1"
                   ItemsSource="{Binding ViewCollection}"
-                  Background="{StaticResource colorBackgroundDark}"
+                  Background="{StaticResource colorBackgroundLight}"
                   Name="dgUsers"
                   GridLinesVisibility="None"
                   SelectionMode="Single"
@@ -89,7 +88,7 @@
                 <!-- Name-->
                 <DataGridTextColumn>
                     <DataGridTextColumn.Header>
-                        <TextBlock Text="Name" Foreground="{StaticResource colorFontLight}"/>
+                        <TextBlock Text="Name" Foreground="{StaticResource colorFontDark}"/>
                     </DataGridTextColumn.Header>
                     <DataGridTextColumn.CellStyle>
                         <Style>
@@ -114,7 +113,7 @@
                 <!-- Email -->
                 <DataGridTextColumn>
                     <DataGridTextColumn.Header>
-                        <TextBlock Text="E-Mail" Foreground="{StaticResource colorFontLight}"/>
+                        <TextBlock Text="E-Mail" Foreground="{StaticResource colorFontDark}"/>
                     </DataGridTextColumn.Header>
                     <DataGridTextColumn.CellStyle>
                         <Style>
@@ -132,7 +131,7 @@
                 <!-- Addresse -->
                 <DataGridTextColumn>
                     <DataGridTextColumn.Header>
-                        <TextBlock Text="Addresse" Foreground="{StaticResource colorFontLight}"/>
+                        <TextBlock Text="Addresse" Foreground="{StaticResource colorFontDark}"/>
                     </DataGridTextColumn.Header>
                     <DataGridTextColumn.CellStyle>
                         <Style>
@@ -172,5 +171,42 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
+
+        <!-- MENÜ UNTEN -->
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="2"
+                    Name="spMenuUnten"
+                    DockPanel.Dock="Bottom"
+                    HorizontalAlignment="Center"
+                    Height="80"
+                    Background="{StaticResource colorBackgroundDark}">
+
+            <Button Content="&#xf0fe;"
+                    Command="{Binding NewCommand}"
+                    Style="{StaticResource btnBottomMenu}"
+                    Width="50" Height="50"/>
+
+            <Button Content="&#xf2ea;"
+                    Command="{Binding UndoCommand}"
+                    Style="{StaticResource btnBottomMenu}"
+                    Width="50" Height="50"
+                    FontSize="38"/>
+
+            <Button Content="&#xf1f8;"
+                    Command="{Binding UndoCommand}"
+                    Style="{StaticResource btnBottomMenu}"
+                    Width="50" Height="50"/>
+
+            <Rectangle VerticalAlignment="Stretch"
+                       Width="1"
+                       Margin="20"
+                       Stroke="White"/>
+
+            <Button Content="&#xf0c7;"
+                    IsEnabled="{Binding Changed}"
+                    Command="{Binding SaveCommand}"
+                    Style="{StaticResource btnBottomMenu}"
+                    Width="50" Height="50"/>
+        </StackPanel>
     </Grid>
 </Page>

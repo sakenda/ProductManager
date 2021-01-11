@@ -1,18 +1,16 @@
-﻿using ProductManager.Model.User;
-using ProductManager.ViewModel.Database;
+﻿using ProductManager.ViewModel.Database;
 using ProductManager.ViewModel.Helper;
-using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.Windows.Input;
 
 namespace ProductManager.ViewModel
 {
-    public class MainUsersViewModel : ViewModelBase
+    public class MainOrdersViewModel : ViewModelBase
     {
         #region "Private Felder"
         private DatabaseUserQueries _database;
 
-        private ObservableCollection<UserVM> _listCollection;
+        //private ObservableCollection<OrderVM> _listCollection;
         private ListCollectionView _viewCollection;
         private string _sortByProperty = _sortCriteria[0];
         private static string[] _sortCriteria = {
@@ -30,7 +28,7 @@ namespace ProductManager.ViewModel
         #endregion "Private Felder"
 
         #region "Öffentliche Felder"
-        public ObservableCollection<UserVM> ListCollection => _listCollection;
+        //public ObservableCollection<OrderVM> ListCollection => _listCollection;
         public ListCollectionView ViewCollection => _viewCollection;
 
         public ICommand DeleteCommand { get; private set; }
@@ -78,12 +76,12 @@ namespace ProductManager.ViewModel
         #endregion "Öffentliche Felder"
 
         #region "Konstruktor"
-        public MainUsersViewModel()
+        public MainOrdersViewModel()
         {
             _database = new DatabaseUserQueries();
 
-            GetUserList(ref _listCollection);
-            _viewCollection = new ListCollectionView(_listCollection);
+            //GetUserList(ref _listCollection);
+            //_viewCollection = new ListCollectionView(_listCollection);
 
             DeleteCommand = new RelayCommand(DeleteExecuted, DeleteCanExecute);
             SaveCommand = new RelayCommand(SaveExecuted, SaveCanExecute);
@@ -123,18 +121,5 @@ namespace ProductManager.ViewModel
         {
         }
         #endregion "Commands"
-
-        #region "Private Methoden"
-        private void GetUserList(ref ObservableCollection<UserVM> list)
-        {
-            list = new ObservableCollection<UserVM>();
-            ObservableCollection<UserModel> temp = _database.GetUsers();
-
-            foreach (UserModel user in temp)
-            {
-                list.Add(new UserVM(user));
-            }
-        }
-        #endregion "Private Methoden"
     }
 }

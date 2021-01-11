@@ -19,6 +19,7 @@
 
             <viewModel:MainProductsViewModel x:Key="vmProducts"/>
             <viewModel:MainUsersViewModel x:Key="vmUsers"/>
+            <viewModel:MainOrdersViewModel x:Key="vmOrders"/>
 
             <Style TargetType="Window">
                 <Setter Property="FontFamily" Value="Segoe MDL2"/>

@@ -13,13 +13,23 @@
         WindowStartupLocation="CenterScreen"
         Topmost="False">
 
-    <DockPanel LastChildFill="True" Background="{StaticResource colorBackgroundDark}">
-        <!-- Seitenmenü -->
-        <StackPanel DockPanel.Dock="Top"
-                    Orientation="Horizontal">
+    <DockPanel LastChildFill="True" Background="{StaticResource colorBackgroundLight}">
+        <!-- MENÜ OBEN -->
+        <Grid DockPanel.Dock="Top"
+              Background="{StaticResource colorBackgroundDark}"
+              HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="{Binding ElementName=tbSettings, Path=Width}"/>
+            </Grid.ColumnDefinitions>
 
             <!-- Produkte -->
-            <ToggleButton Style="{StaticResource btnMainHeader}" Width="160" Height="50" Name="tbProducts" Click="ToggleButton_Click">
+            <ToggleButton Grid.Column="0" Style="{StaticResource btnMainHeader}" Width="160" Height="50" Name="tbProducts" Click="ToggleButton_Click">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="&#xf54f;" Foreground="{StaticResource colorFontLight}" FontFamily="{StaticResource FontAwesomeSolid}"/>
                     <Label Content="Produkte" Foreground="{StaticResource colorFontLight}" FontSize="18"/>
@@ -27,7 +37,7 @@
             </ToggleButton>
 
             <!-- Nutzer -->
-            <ToggleButton Style="{StaticResource btnMainHeader}" Width="160" Height="50" Name="tbUsers" Click="ToggleButton_Click">
+            <ToggleButton Grid.Column="1" Style="{StaticResource btnMainHeader}" Width="160" Height="50" Name="tbUsers" Click="ToggleButton_Click">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="&#xf0c0;" Foreground="{StaticResource colorFontLight}" FontFamily="{StaticResource FontAwesomeSolid}"/>
                     <Label Content="Nutzer" Foreground="{StaticResource colorFontLight}" FontSize="18"/>
@@ -35,18 +45,25 @@
             </ToggleButton>
 
             <!-- Bestellungen -->
-            <ToggleButton Style="{StaticResource btnMainHeader}" Width="160" Height="50" Name="tbOrders" Click="ToggleButton_Click">
+            <ToggleButton Grid.Column="2" Style="{StaticResource btnMainHeader}" Width="160" Height="50" Name="tbOrders" Click="ToggleButton_Click">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="&#xf49e;" Foreground="{StaticResource colorFontLight}" FontFamily="{StaticResource FontAwesomeSolid}"/>
                     <Label Content="Bestellungen" Foreground="{StaticResource colorFontLight}" FontSize="18"/>
                 </StackPanel>
             </ToggleButton>
-        </StackPanel>
 
-        <!-- Page Frame -->
+            <!-- Einstellungen -->
+            <ToggleButton Grid.Column="6" Style="{StaticResource btnMainHeader}" Width="160" Height="50" Name="tbSettings" Click="ToggleButton_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="&#xf085;" Foreground="{StaticResource colorFontLight}" FontFamily="{StaticResource FontAwesomeSolid}"/>
+                    <Label Content="Einstellungen" Foreground="{StaticResource colorFontLight}" FontSize="18"/>
+                </StackPanel>
+            </ToggleButton>
+        </Grid>
+
+        <!-- PAGE FRAME -->
         <Frame Name="mainFrame"
                NavigationUIVisibility="Hidden"
-               Background="{StaticResource colorBackgroundDark}"
                HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch"/>
     </DockPanel>
