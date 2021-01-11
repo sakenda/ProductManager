@@ -10,6 +10,9 @@
         public string BIC => _bic;
         public string BankName => _bankName;
 
+        public PaymentModel()
+        {
+        }
         public PaymentModel(string type, string bic, string name)
         {
             _cardType = type;

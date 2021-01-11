@@ -22,10 +22,11 @@
         <helper:SupplierValueConverter x:Key="SupplierConv"/>
     </Page.Resources>
 
-    <Grid>
+    <Grid Background="{StaticResource colorBackgroundDark}">
         <Grid.RowDefinitions>
             <RowDefinition Height="{Binding ElementName=spSuchfeld, Path=Height}"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="80"/>
         </Grid.RowDefinitions>
 
         <!-- POPUP -->
@@ -215,23 +216,6 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-
-                            <!-- Löschen / Rückgängig -->
-                            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="6" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="20 5">
-
-                                <Button Width="40" Height="40" Margin="0 0 5 10"
-                                        FontSize="28"
-                                        Content="&#xf2ea;"
-                                        Command="{Binding Source={StaticResource vmProducts}, Path=UndoCommand}"
-                                        FontFamily="{StaticResource FontAwesomeSolid}"
-                                        Style="{StaticResource btnInteract}"/>
-
-                                <Button Width="40" Height="40" Margin="5 0 0 10"
-                                        FontSize="28"
-                                        Content="&#xf1f8;"
-                                        Command="{Binding Source={StaticResource vmProducts}, Path=DeleteCommand}"
-                                        Style="{StaticResource btnInteract}"/>
-                            </StackPanel>
 
                             <!-- Produktbild -->
                             <Border Grid.Column="0" Grid.RowSpan="2"
@@ -457,35 +441,38 @@
             </DataGrid.RowDetailsTemplate>
         </DataGrid>
 
-        <!-- Neues Produkt / Speichern -->
-        <StackPanel Grid.Row="1"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Margin="20">
-
-            <Button Content="&#xf0c7;"
-                    FontSize="60"
-                    BorderThickness="0"
-                    Command="{Binding SaveCommand}"
-                    Style="{StaticResource btnInteract}"
-                    IsEnabled="{Binding Changed}"
-                    Width="80" Height="80">
-                <Button.Effect>
-                    <DropShadowEffect BlurRadius="4" ShadowDepth="5" Opacity="0.5" Color="Black"/>
-                </Button.Effect>
-            </Button>
+        <!-- TEST -->
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Grid.Row="2"
+                    Background="{StaticResource colorBackgroundDark}">
 
             <Button Content="&#xf0fe;"
-                    FontSize="60"
-                    BorderThickness="0"
                     Command="{Binding NewCommand}"
-                    Style="{StaticResource btnInteract}"
-                    Width="80" Height="80">
-                <Button.Effect>
-                    <DropShadowEffect BlurRadius="4" ShadowDepth="5" Opacity="0.5" Color="Black"/>
-                </Button.Effect>
-            </Button>
+                    Style="{StaticResource btnBottomMenu}"
+                    Width="50" Height="50"/>
+
+            <Button Content="&#xf2ea;"
+                    Command="{Binding UndoCommand}"
+                    Style="{StaticResource btnBottomMenu}"
+                    Width="50" Height="50"
+                    FontSize="38"/>
+
+            <Button Content="&#xf1f8;"
+                    Command="{Binding UndoCommand}"
+                    Style="{StaticResource btnBottomMenu}"
+                    Width="50" Height="50"/>
+
+            <Rectangle VerticalAlignment="Stretch"
+                       Width="1"
+                       Margin="20"
+                       Stroke="White"/>
+
+            <Button Content="&#xf0c7;"
+                    IsEnabled="{Binding Changed}"
+                    Command="{Binding SaveCommand}"
+                    Style="{StaticResource btnBottomMenu}"
+                    Width="50" Height="50"/>
         </StackPanel>
     </Grid>
 </Page>

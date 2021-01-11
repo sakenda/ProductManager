@@ -18,6 +18,9 @@ namespace ProductManager.Model.User.Metadata
         public string Zip => _zip;
         public string Country => _country;
 
+        public AdressModel()
+        {
+        }
         public AdressModel(string street, string number, string city, string zip, string country)
         {
             _street = street;

@@ -3,8 +3,9 @@ using System.ComponentModel;
 
 namespace ProductManager.ViewModel.Product.Metadata
 {
-    public class PriceVM : ViewModelBase
+    public class PriceVM : ViewModelBase, IViewModel<PriceModel>
     {
+        #region "Private Felder"
         private const int TAX = 16;
         private const int MWS = 16;
 
@@ -14,7 +15,9 @@ namespace ProductManager.ViewModel.Product.Metadata
         private DecimalVM _profit;
         private decimal _priceFinal;
         private bool _changed;
+        #endregion "Private Felder"
 
+        #region "Öffentliche Felder"
         public DecimalVM PriceBase => _priceBase;
         public DecimalVM PriceShipping => _priceShipping;
         public DecimalVM Profit => _profit;
@@ -28,7 +31,9 @@ namespace ProductManager.ViewModel.Product.Metadata
             get => _changed;
             set => SetProperty(ref _changed, value);
         }
+        #endregion "Öffentliche Felder"
 
+        #region "Konstruktor"
         public PriceVM(PriceModel price)
         {
             if (price != null)
@@ -49,7 +54,9 @@ namespace ProductManager.ViewModel.Product.Metadata
             _priceShipping.PropertyChanged += Price_PropertyChanged;
             _profit.PropertyChanged += Price_PropertyChanged;
         }
+        #endregion "Konstruktor"
 
+        #region "Öffentliche Methoden"
         /// <summary>
         /// Macht alle Änderungen der Daten, die diesen Objekt anhängen, rückgängig.
         /// </summary>
@@ -70,6 +77,17 @@ namespace ProductManager.ViewModel.Product.Metadata
             _profit.AcceptChanges();
         }
 
+        /// <summary>
+        /// Gibt das Model zurück
+        /// </summary>
+        /// <returns></returns>
+        public PriceModel GetModel()
+        {
+            return _priceModel;
+        }
+        #endregion "Öffentliche Methoden"
+
+        #region "Private Methoden"
         /// <summary>
         /// Bei veränderungen einer der Eigenschaften wird <see cref="Changed"/> auf true gesetzt.
         /// <seealso cref="CalculatePrice(PriceVM)"/> wird ausgeführt, zum neu Berechnen der Kosten.
@@ -115,5 +133,6 @@ namespace ProductManager.ViewModel.Product.Metadata
             result += result * (MWS / 100);
             price.PriceFinal = result;
         }
+        #endregion "Private Methoden"
     }
 }
