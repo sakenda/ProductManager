@@ -8,7 +8,7 @@
 
     <viewModel:MainProductsViewModel x:Key="vmProducts"/>
 
-    <Style TargetType="DataGridColumnHeader">
+    <!--<Style TargetType="DataGridColumnHeader">
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Foreground" Value="{StaticResource colorFontDark}"/>
@@ -63,6 +63,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+-->
 
     <Style x:Key="QuantityDataGridCell" TargetType="DataGridCell">
         <Setter Property="FontSize" Value="14"/>
@@ -95,5 +96,45 @@
                 <Setter Property="BorderThickness" Value="5 0 0 0"/>
             </DataTrigger>
         </Style.Triggers>
+    </Style>
+
+    <Style TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="{StaticResource colorBackgroundLight}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridColumnHeader">
+                    <Grid Grid.Column="0"
+                          Background="{TemplateBinding Background}"
+                          HorizontalAlignment="Stretch">
+                        <ContentPresenter Margin="25 10 0 10"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="DataGridRow">
+        <Setter Property="Background" Value="{StaticResource colorBackgroundLight}"/>
+        <Setter Property="Margin" Value="15 5 15 5"/>
+        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Effect" Value="{x:Null}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource colorDark}"/>
+                <Setter Property="Effect" Value="{StaticResource dropShadow}"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource colorLight}"/>
+                <Setter Property="Foreground" Value="{StaticResource colorFontLight}"/>
+                <Setter Property="Effect" Value="{StaticResource dropShadow}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="DataGridCell">
+        <Setter Property="Margin" Value="10"/>
+        <Setter Property="FontWeight" Value="Bold"/>
     </Style>
 </ResourceDictionary>

@@ -20,59 +20,54 @@
         </Grid.RowDefinitions>
 
         <!-- SUCHFELD -->
-        <StackPanel Grid.Row="0"
-                        Name="spSuchfeld"
+        <Grid Grid.Row="0">
+            <StackPanel Name="spSuchfeld"
                         Orientation="Horizontal"
                         Background="{StaticResource colorLight}"
                         Height="50">
-            <Grid>
-                <StackPanel Orientation="Horizontal">
-                    <!-- Suchen -->
-                    <Label Content="{StaticResource Search}"
-                               FontFamily="{StaticResource FontAwesomeSolid}"
-                               FontSize="20"
-                               VerticalContentAlignment="Center"
-                               Foreground="{StaticResource colorFontLight}"
-                               Margin="10 0 0 0"/>
-                    <TextBox Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}"
-                                 Foreground="{StaticResource colorFontDark}"
-                                 Width="400" Margin="10"
-                                 BorderThickness="2"/>
+                <!-- Suchen -->
+                <Label Content="{StaticResource Search}"
+                       FontFamily="{StaticResource FontAwesomeSolid}"
+                       FontSize="20"
+                       VerticalContentAlignment="Center"
+                       Foreground="{StaticResource colorFontLight}"
+                       Margin="10 0 0 0"/>
+                <TextBox Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}"
+                         Foreground="{StaticResource colorFontDark}"
+                         Width="400" Margin="10"
+                         BorderThickness="2"/>
 
-                    <!-- Sortieren -->
-                    <Label Content="{StaticResource Sort}"
-                               FontFamily="{StaticResource FontAwesomeSolid}"
-                               FontSize="20"
-                               VerticalContentAlignment="Center"
-                               Foreground="{StaticResource colorFontLight}"
-                               Margin="10 0 10 0"/>
-                    <ComboBox ItemsSource="{Binding SortCriteria, Mode=OneWay}"
-                                  SelectedValue="{Binding SortByProperty}"
-                                  SelectedIndex="0"
-                                  Width="200" Margin="0 0 10 0"/>
+                <!-- Sortieren -->
+                <Label Content="{StaticResource Sort}"
+                       FontFamily="{StaticResource FontAwesomeSolid}"
+                       FontSize="20"
+                       VerticalContentAlignment="Center"
+                       Foreground="{StaticResource colorFontLight}"
+                       Margin="10 0 10 0"/>
+                <ComboBox ItemsSource="{Binding SortCriteria, Mode=OneWay}"
+                          SelectedValue="{Binding SortByProperty}"
+                          SelectedIndex="0"
+                          Width="200" Margin="0 0 10 0"/>
 
-                    <!-- Filtern -->
-                    <Label
-                        Content="{StaticResource Filter}"
-                        FontFamily="{StaticResource FontAwesomeSolid}"
-                        FontSize="20"
-                        VerticalContentAlignment="Center"
-                        Foreground="{StaticResource colorFontLight}"
-                        Margin="10 0 10 0"/>
-                    <ComboBox
-                        ItemsSource="{Binding FilterCriteria, Mode=OneWay}"
-                        SelectedValue="{Binding SelectedFilter}"
-                        SelectedIndex="0"
-                        Width="200" Margin="0 0 10 0"/>
-                </StackPanel>
-            </Grid>
-        </StackPanel>
+                <!-- Filtern -->
+                <Label Content="{StaticResource Filter}"
+                       FontFamily="{StaticResource FontAwesomeSolid}"
+                       FontSize="20"
+                       VerticalContentAlignment="Center"
+                       Foreground="{StaticResource colorFontLight}"
+                       Margin="10 0 10 0"/>
+                <ComboBox ItemsSource="{Binding FilterCriteria, Mode=OneWay}"
+                          SelectedValue="{Binding SelectedFilter}"
+                          SelectedIndex="0"
+                          Width="200" Margin="0 0 10 0"/>
+            </StackPanel>
+        </Grid>
 
         <!-- DATAGRID -->
-        <DataGrid Grid.Row="1"
-                  ItemsSource="{Binding ViewCollection}"
+        <DataGrid ItemsSource="{Binding ViewCollection}"
+                  Grid.Row="1"
                   Background="{StaticResource colorBackgroundLight}"
-                  Name="dgUsers"
+                  x:Name="dgUsers"
                   GridLinesVisibility="None"
                   SelectionMode="Single"
                   SelectedIndex="0"
@@ -83,93 +78,55 @@
                   SelectionUnit="FullRow"
                   AutoGenerateColumns="False"
                   VirtualizingPanel.ScrollUnit="Pixel">
+
+            <!-- HEADER -->
             <DataGrid.Columns>
 
                 <!-- Name-->
-                <DataGridTextColumn>
+                <DataGridTextColumn Width="300">
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding StringFormat="{}{0}, {1}">
+                            <Binding Path="LastName.Value"/>
+                            <Binding Path="FirstName.Value"/>
+                        </MultiBinding>
+                    </DataGridTextColumn.Binding>
                     <DataGridTextColumn.Header>
-                        <TextBlock Text="Name" Foreground="{StaticResource colorFontDark}"/>
+                        <TextBlock Text="NAME" Foreground="{StaticResource colorFontDark}"/>
                     </DataGridTextColumn.Header>
-                    <DataGridTextColumn.CellStyle>
-                        <Style>
-                            <Setter Property="ItemsControl.Template">
-                                <Setter.Value>
-                                    <ControlTemplate>
-                                        <TextBlock VerticalAlignment="Center" Margin="10 0">
-                                            <TextBlock.Text>
-                                                <MultiBinding StringFormat="{}{0} {1}">
-                                                    <Binding Path="LastName.Value"/>
-                                                    <Binding Path="FirstName.Value"/>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
 
                 <!-- Email -->
-                <DataGridTextColumn>
+                <DataGridTextColumn Width="200" Binding="{Binding Email.Value}">
                     <DataGridTextColumn.Header>
-                        <TextBlock Text="E-Mail" Foreground="{StaticResource colorFontDark}"/>
+                        <TextBlock Text="E-MAIL" Foreground="{StaticResource colorFontDark}"/>
                     </DataGridTextColumn.Header>
-                    <DataGridTextColumn.CellStyle>
-                        <Style>
-                            <Setter Property="ItemsControl.Template">
-                                <Setter.Value>
-                                    <ControlTemplate>
-                                        <TextBlock Text="{Binding Email.Value}" Margin="10 0" VerticalAlignment="Center"/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
 
-                <!-- Addresse -->
-                <DataGridTextColumn>
+                <!-- Adresse -->
+                <DataGridTextColumn Width="Auto">
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding StringFormat="{}{0} {1}, {2} {3}, {4}">
+                            <Binding Path="Adress.Street.Value"/>
+                            <Binding Path="Adress.Number.Value"/>
+                            <Binding Path="Adress.Zip.Value"/>
+                            <Binding Path="Adress.City.Value"/>
+                            <Binding Path="Adress.Country.Value"/>
+                        </MultiBinding>
+                    </DataGridTextColumn.Binding>
                     <DataGridTextColumn.Header>
-                        <TextBlock Text="Addresse" Foreground="{StaticResource colorFontDark}"/>
+                        <TextBlock Text="ADRESSE" Foreground="{StaticResource colorFontDark}"/>
                     </DataGridTextColumn.Header>
-                    <DataGridTextColumn.CellStyle>
-                        <Style>
-                            <Setter Property="ItemsControl.Template">
-                                <Setter.Value>
-                                    <ControlTemplate>
-                                        <StackPanel Orientation="Vertical">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Margin="10 10 10 0">
-                                                    <TextBlock.Text>
-                                                        <MultiBinding StringFormat="{}{0} {1}">
-                                                            <Binding Path="Adress.Street.Value"/>
-                                                            <Binding Path="Adress.Number.Value"/>
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Margin="10 0 10 0">
-                                                    <TextBlock.Text>
-                                                        <MultiBinding StringFormat="{}{0} {1}">
-                                                            <Binding Path="Adress.Zip.Value"/>
-                                                            <Binding Path="Adress.City.Value"/>
-                                                        </MultiBinding>
-                                                    </TextBlock.Text>
-                                                </TextBlock>
-                                            </StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding Adress.Country.Value}" Margin="10 0 10 10"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
             </DataGrid.Columns>
+
+            <!-- ROWDETAILS -->
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <Border Background="LightGray" BorderThickness="0 1 0 0" BorderBrush="{StaticResource colorBackgroundDark}">
+                        <TextBlock Text="{Binding FirstName.Value}" Foreground="{StaticResource colorFontDark}"/>
+                    </Border>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
         </DataGrid>
 
         <!-- MENÜ UNTEN -->
@@ -184,7 +141,8 @@
             <Button Content="&#xf0fe;"
                     Command="{Binding NewCommand}"
                     Style="{StaticResource btnBottomMenu}"
-                    Width="50" Height="50"/>
+                    Width="50" Height="50"
+                    Margin="20 0 0 0"/>
 
             <Button Content="&#xf2ea;"
                     Command="{Binding UndoCommand}"
