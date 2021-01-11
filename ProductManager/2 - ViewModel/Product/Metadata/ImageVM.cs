@@ -7,15 +7,17 @@ using System.Windows.Media.Imaging;
 
 namespace ProductManager.ViewModel.Product.Metadata
 {
-    public class ImageVM : ViewModelBase
+    public class ImageVM : ViewModelBase, IViewModel<ImageModel>
     {
+        #region "Private Felder"
         private string _originPath;
-
         private ImageModel _imageModel;
         private StringVM _fileName;
         private BitmapImage _currentImage;
         private bool _changed;
+        #endregion "Private Felder"
 
+        #region "Öffentliche Felder"
         public StringVM FileName => _fileName;
         public BitmapImage CurrentImage
         {
@@ -27,7 +29,9 @@ namespace ProductManager.ViewModel.Product.Metadata
             get => _changed;
             set => SetProperty(ref _changed, value);
         }
+        #endregion "Öffentliche Felder"
 
+        #region "Konstruktor"
         public ImageVM(ImageModel imageModel)
         {
             if (imageModel != null)
@@ -43,31 +47,21 @@ namespace ProductManager.ViewModel.Product.Metadata
 
             _fileName.PropertyChanged += Image_PropertyChanged;
         }
+        #endregion "Konstruktor"
 
-        private void Image_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (_fileName.HasChanged)
-            {
-                Changed = true;
-            }
-            else
-            {
-                Changed = false;
-            }
-        }
-
-        private void InitializeFields()
-        {
-            _fileName = new StringVM(_imageModel.FileName);
-            ChangeImage(_fileName.Value);
-        }
-
+        #region "Öffentliche Methoden"
+        /// <summary>
+        /// Setzt alle geänderten Werte zurück
+        /// </summary>
         public void UndoChanges()
         {
             _fileName.UndoChanges();
             ChangeImage(_fileName.Value);
         }
 
+        /// <summary>
+        /// Speichert permanent alle geänderten Werte
+        /// </summary>
         public void AcceptChanges()
         {
             if (File.Exists(_originPath + "/" + _fileName.Value))
@@ -128,6 +122,43 @@ namespace ProductManager.ViewModel.Product.Metadata
         }
 
         /// <summary>
+        /// Gibt das Model zurück
+        /// </summary>
+        /// <returns></returns>
+        public ImageModel GetModel()
+        {
+            return _imageModel;
+        }
+        #endregion "Öffentliche Methoden"
+
+        #region "Private Methoden"
+        /// <summary>
+        /// Wenn ein Wert geändert wurde wird <see cref="Changed"/> geflaggt
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Image_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (_fileName.HasChanged)
+            {
+                Changed = true;
+            }
+            else
+            {
+                Changed = false;
+            }
+        }
+
+        /// <summary>
+        /// Initialisiert alle Felder beim erstellen des <see cref="ImageVM"/>
+        /// </summary>
+        private void InitializeFields()
+        {
+            _fileName = new StringVM(_imageModel.FileName);
+            ChangeImage(_fileName.Value);
+        }
+
+        /// <summary>
         /// Übersetzt die Bilddatei in eine <see cref="BitmapImage"/>.
         /// </summary>
         private void BuildImage(string path = null)
@@ -161,5 +192,6 @@ namespace ProductManager.ViewModel.Product.Metadata
             var fc = new FilesController(FilesController.FileType.Image, newFilename, path + "/" + fileName);
             this._fileName.Value = FilesController.Save(fc);
         }
+        #endregion "Private Methoden"
     }
 }

@@ -4,8 +4,9 @@ using System.ComponentModel;
 
 namespace ProductManager.ViewModel
 {
-    public class UserVM : ViewModelBase
+    public class UserVM : ViewModelBase, IViewModel<UserModel>
     {
+        #region "Private Felder"
         private UserModel _userModel;
 
         private StringVM _firstName;
@@ -14,7 +15,9 @@ namespace ProductManager.ViewModel
         private AdressVM _adress;
         private PaymentVM _payment;
         private bool _changed;
+        #endregion "Private Felder"
 
+        #region "Öffentliche Felder"
         public StringVM FirstName => _firstName;
         public StringVM LastName => _lastName;
         public StringVM Email => _email;
@@ -25,7 +28,9 @@ namespace ProductManager.ViewModel
             get => _changed;
             set => SetProperty(ref _changed, value);
         }
+        #endregion "Öffentliche Felder"
 
+        #region "Konstruktor"
         public UserVM(UserModel user)
         {
             if (user == null)
@@ -43,7 +48,30 @@ namespace ProductManager.ViewModel
             _lastName.PropertyChanged += User_PropertyChanged;
             _email.PropertyChanged += User_PropertyChanged;
         }
+        #endregion "Konstruktor"
 
+        #region "Öffentliche Methoden"
+        public void UndoChanges()
+        {
+            _firstName.UndoChanges();
+            _lastName.UndoChanges();
+            _email.UndoChanges();
+        }
+
+        public void AcceptChanges()
+        {
+            _firstName.AcceptChanges();
+            _lastName.AcceptChanges();
+            _email.AcceptChanges();
+        }
+
+        public UserModel GetModel()
+        {
+            return _userModel;
+        }
+        #endregion "Öffentliche Methoden"
+
+        #region "Private Methoden"
         private void User_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (_firstName.HasChanged || _lastName.HasChanged || _email.HasChanged)
@@ -64,19 +92,6 @@ namespace ProductManager.ViewModel
             _adress = new AdressVM(_userModel.UserAdress);
             _payment = new PaymentVM(_userModel.UserPayment);
         }
-
-        public void UndoChanges()
-        {
-            _firstName.UndoChanges();
-            _lastName.UndoChanges();
-            _email.UndoChanges();
-        }
-
-        public void AcceptChanges()
-        {
-            _firstName.AcceptChanges();
-            _lastName.AcceptChanges();
-            _email.AcceptChanges();
-        }
+        #endregion "Private Methoden"
     }
 }

@@ -6,17 +6,15 @@
         <ResourceDictionary Source="/3 - View/Resource/FontIcons.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
+    <DropShadowEffect x:Key="dropShadow" BlurRadius="4" Direction="330" Color="Black" ShadowDepth="5" Opacity="0.5"/>
+
     <Style x:Key="btnBlue" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource colorLight}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Margin" Value="10"/>
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect ShadowDepth="3" Direction="330" Color="Black" Opacity="0.5" BlurRadius="4"/>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="Effect" Value="{StaticResource dropShadow}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -185,5 +183,39 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="btnBottomMenu" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource colorFontLight}"/>
+        <Setter Property="FontFamily" Value="{StaticResource FontAwesomeSolid}"/>
+        <Setter Property="FontSize" Value="40"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Effect" Value="{StaticResource dropShadow}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Label Content="{TemplateBinding Content}"
+                               Foreground="{TemplateBinding Foreground}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="Black"/>
+                <Setter Property="Foreground" Value="Gray"/>
+                <Setter Property="Effect" Value="{x:Null}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource colorDark}"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource colorLight}"/>
+                <Setter Property="Effect" Value="{x:Null}"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

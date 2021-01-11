@@ -80,24 +80,95 @@
                   d:RowDetailsVisibilityMode="VisibleWhenSelected"
                   RowHeaderWidth="0"
                   IsReadOnly="True"
+                  HeadersVisibility="Column"
                   SelectionUnit="FullRow"
                   AutoGenerateColumns="False"
                   VirtualizingPanel.ScrollUnit="Pixel">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding LastName.Value}">
-                    <DataGridTextColumn.Header>
-                        <TextBlock Text="Familienname" Foreground="{StaticResource colorFontLight}"/>
-                    </DataGridTextColumn.Header>
-                </DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding FirstName.Value}">
+
+                <!-- Name-->
+                <DataGridTextColumn>
                     <DataGridTextColumn.Header>
                         <TextBlock Text="Name" Foreground="{StaticResource colorFontLight}"/>
                     </DataGridTextColumn.Header>
+                    <DataGridTextColumn.CellStyle>
+                        <Style>
+                            <Setter Property="ItemsControl.Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <TextBlock VerticalAlignment="Center" Margin="10 0">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0} {1}">
+                                                    <Binding Path="LastName.Value"/>
+                                                    <Binding Path="FirstName.Value"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding Email.Value}">
+
+                <!-- Email -->
+                <DataGridTextColumn>
                     <DataGridTextColumn.Header>
                         <TextBlock Text="E-Mail" Foreground="{StaticResource colorFontLight}"/>
                     </DataGridTextColumn.Header>
+                    <DataGridTextColumn.CellStyle>
+                        <Style>
+                            <Setter Property="ItemsControl.Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <TextBlock Text="{Binding Email.Value}" Margin="10 0" VerticalAlignment="Center"/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+
+                <!-- Addresse -->
+                <DataGridTextColumn>
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="Addresse" Foreground="{StaticResource colorFontLight}"/>
+                    </DataGridTextColumn.Header>
+                    <DataGridTextColumn.CellStyle>
+                        <Style>
+                            <Setter Property="ItemsControl.Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <StackPanel Orientation="Vertical">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Margin="10 10 10 0">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} {1}">
+                                                            <Binding Path="Adress.Street.Value"/>
+                                                            <Binding Path="Adress.Number.Value"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Margin="10 0 10 0">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} {1}">
+                                                            <Binding Path="Adress.Zip.Value"/>
+                                                            <Binding Path="Adress.City.Value"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Adress.Country.Value}" Margin="10 0 10 10"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>

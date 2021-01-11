@@ -4,8 +4,9 @@ using System.ComponentModel;
 
 namespace ProductManager.ViewModel
 {
-    public class ProductVM : ViewModelBase
+    public class ProductVM : ViewModelBase, IViewModel<ProductModel>
     {
+        #region "Private Felder"
         private ProductModel _product;
         private StringVM _name;
         private PriceVM _price;
@@ -18,7 +19,9 @@ namespace ProductManager.ViewModel
         private bool _needRestock;
         private bool _isEmpty;
         private bool _isDeleted;
+        #endregion "Private Felder"
 
+        #region "Öffentliche Felder"
         public ProductModel Product => _product;
         public StringVM Name => _name;
         public PriceVM Price => _price;
@@ -47,7 +50,9 @@ namespace ProductManager.ViewModel
             get { return _isDeleted; }
             set => SetProperty(ref _isDeleted, value);
         }
+        #endregion "Öffentliche Felder"
 
+        #region "Konstruktor"
         public ProductVM(ProductModel product)
         {
             if (product != null)
@@ -78,53 +83,9 @@ namespace ProductManager.ViewModel
 
             CheckStock();
         }
+        #endregion "Konstruktor"
 
-        /// <summary>
-        /// Regelt die <see cref="Changed"/> Eigenschaft wenn ein Wert im Objekt geändert wurde
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Product_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (_name.HasChanged || _description.HasChanged || _quantity.HasChanged || _categoryId.HasChanged || _supplierId.HasChanged || _price.Changed || _image.Changed)
-            {
-                if (_quantity.HasChanged)
-                {
-                    CheckStock();
-                }
-
-                Changed = true;
-            }
-            else
-            {
-                Changed = false;
-            }
-        }
-
-        /// <summary>
-        /// Initialisieren der Felder des Objekts.
-        /// </summary>
-        private void InitializeFields()
-        {
-            _name = new StringVM(_product.ProductName);
-            _price = new PriceVM(_product.Price);
-            _quantity = new IntVM(_product.Quantity);
-            _description = new StringVM(_product.Description);
-            _categoryId = new IntNullVM(_product.CategoryID);
-            _supplierId = new IntNullVM(_product.SupplierID);
-            _image = new ImageVM(_product.Image);
-        }
-
-        /// <summary>
-        /// Zeichnet das aktuelle Objekt aus zum löschen. <see cref="Changed"/> wird auf true gesetzt.
-        /// </summary>
-        public void DeleteProduct()
-        {
-            _image.RemoveCurrentImage();
-            IsDeleted = true;
-            Changed = true;
-        }
-
+        #region "Öffentliche Methoden"
         /// <summary>
         /// Macht alle Änderungen der Daten, die diesen Objekt anhängen, rückgängig.
         /// </summary>
@@ -170,12 +131,60 @@ namespace ProductManager.ViewModel
         }
 
         /// <summary>
+        /// Zeichnet das aktuelle Objekt aus zum löschen. <see cref="Changed"/> wird auf true gesetzt.
+        /// </summary>
+        public void DeleteProduct()
+        {
+            _image.RemoveCurrentImage();
+            IsDeleted = true;
+            Changed = true;
+        }
+
+        /// <summary>
         /// Gibt das <see cref="ProductModel"/> zurück.
         /// </summary>
         /// <returns></returns>
-        public ProductModel GetProductModel()
+        public ProductModel GetModel()
         {
             return _product;
+        }
+        #endregion "Öffentliche Methoden"
+
+        #region "Private Methoden"
+        /// <summary>
+        /// Regelt die <see cref="Changed"/> Eigenschaft wenn ein Wert im Objekt geändert wurde
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Product_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (_name.HasChanged || _description.HasChanged || _quantity.HasChanged || _categoryId.HasChanged || _supplierId.HasChanged || _price.Changed || _image.Changed)
+            {
+                if (_quantity.HasChanged)
+                {
+                    CheckStock();
+                }
+
+                Changed = true;
+            }
+            else
+            {
+                Changed = false;
+            }
+        }
+
+        /// <summary>
+        /// Initialisieren der Felder des Objekts.
+        /// </summary>
+        private void InitializeFields()
+        {
+            _name = new StringVM(_product.ProductName);
+            _price = new PriceVM(_product.Price);
+            _quantity = new IntVM(_product.Quantity);
+            _description = new StringVM(_product.Description);
+            _categoryId = new IntNullVM(_product.CategoryID);
+            _supplierId = new IntNullVM(_product.SupplierID);
+            _image = new ImageVM(_product.Image);
         }
 
         /// <summary>
@@ -201,5 +210,6 @@ namespace ProductManager.ViewModel
                 IsEmpty = false;
             }
         }
+        #endregion "Private Methoden"
     }
 }
