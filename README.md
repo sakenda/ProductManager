@@ -3,12 +3,13 @@
 
 Mein Lernfortschritt und gelernte Konzepte werden in diesem Projekt dargestellt.
 
-# User Interface
+## User Interface
 ![](header.png)
 
-# Datenbank Diagramm
+## Datenbank Diagramm
 ![](dbdia.png)
 
 ## Über Mich
-
-Michael Barth – sakenda1207@gmail.com
+Michael Barth  
+Software Entwickler  
+sakenda1207@gmail.com  
