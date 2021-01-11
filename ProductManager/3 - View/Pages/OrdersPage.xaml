@@ -5,10 +5,106 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:ProductManager._3___View.Pages"
       mc:Ignorable="d"
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="1080"
+      d:DesignWidth="1920"
+      FontSize="14"
+      DataContext="{StaticResource vmOrders}"
+      Background="{StaticResource colorBackgroundDark}"
       Title="OrdersPage">
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{Binding ElementName=spSuchfeld, Path=Height}"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="{Binding ElementName=spMenuUnten, Path=Height}"/>
+        </Grid.RowDefinitions>
+
+        <!-- SUCHFELD -->
+        <StackPanel Grid.Row="0"
+                        Name="spSuchfeld"
+                        Orientation="Horizontal"
+                        Background="{StaticResource colorLight}"
+                        Height="50">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <!-- Suchen -->
+                    <Label Content="{StaticResource Search}"
+                               FontFamily="{StaticResource FontAwesomeSolid}"
+                               FontSize="20"
+                               VerticalContentAlignment="Center"
+                               Foreground="{StaticResource colorFontLight}"
+                               Margin="10 0 0 0"/>
+                    <TextBox Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged}"
+                                 Foreground="{StaticResource colorFontDark}"
+                                 Width="400" Margin="10"
+                                 BorderThickness="2"/>
+
+                    <!-- Sortieren -->
+                    <Label Content="{StaticResource Sort}"
+                               FontFamily="{StaticResource FontAwesomeSolid}"
+                               FontSize="20"
+                               VerticalContentAlignment="Center"
+                               Foreground="{StaticResource colorFontLight}"
+                               Margin="10 0 10 0"/>
+                    <ComboBox ItemsSource="{Binding SortCriteria, Mode=OneWay}"
+                                  SelectedValue="{Binding SortByProperty}"
+                                  SelectedIndex="0"
+                                  Width="200" Margin="0 0 10 0"/>
+
+                    <!-- Filtern -->
+                    <Label
+                        Content="{StaticResource Filter}"
+                        FontFamily="{StaticResource FontAwesomeSolid}"
+                        FontSize="20"
+                        VerticalContentAlignment="Center"
+                        Foreground="{StaticResource colorFontLight}"
+                        Margin="10 0 10 0"/>
+                    <ComboBox
+                        ItemsSource="{Binding FilterCriteria, Mode=OneWay}"
+                        SelectedValue="{Binding SelectedFilter}"
+                        SelectedIndex="0"
+                        Width="200" Margin="0 0 10 0"/>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+
         <TextBlock Text="ORDERS"/>
+
+        <!-- MENÜ UNTEN -->
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="2"
+                    Name="spMenuUnten"
+                    DockPanel.Dock="Bottom"
+                    HorizontalAlignment="Center"
+                    Height="80"
+                    Background="{StaticResource colorBackgroundDark}">
+
+            <Button Content="&#xf0fe;"
+                    Command="{Binding NewCommand}"
+                    Style="{StaticResource btnBottomMenu}"
+                    Width="50" Height="50"/>
+
+            <Button Content="&#xf2ea;"
+                    Command="{Binding UndoCommand}"
+                    Style="{StaticResource btnBottomMenu}"
+                    Width="50" Height="50"
+                    FontSize="38"/>
+
+            <Button Content="&#xf1f8;"
+                    Command="{Binding UndoCommand}"
+                    Style="{StaticResource btnBottomMenu}"
+                    Width="50" Height="50"/>
+
+            <Rectangle VerticalAlignment="Stretch"
+                       Width="1"
+                       Margin="20"
+                       Stroke="White"/>
+
+            <Button Content="&#xf0c7;"
+                    IsEnabled="{Binding Changed}"
+                    Command="{Binding SaveCommand}"
+                    Style="{StaticResource btnBottomMenu}"
+                    Width="50" Height="50"/>
+        </StackPanel>
     </Grid>
 </Page>

@@ -94,6 +94,8 @@ namespace ProductManager.ViewModel
                 UpdateSearch();
             }
         }
+
+        public static MainProductsViewModel CurrentMainProductViewModel;
         #endregion "Öffentliche Eigenschaften"
 
         #region "Konstruktor"
@@ -121,6 +123,8 @@ namespace ProductManager.ViewModel
 
             UpdateSorting();
             _viewCollection.MoveCurrentToFirst();
+
+            CurrentMainProductViewModel = this;
         }
 
         #endregion "Konstruktor"
@@ -354,7 +358,7 @@ namespace ProductManager.ViewModel
         {
             ProductVM product = obj as ProductVM;
 
-            if (product.Name.Value.ToLower().Contains(_searchString.ToLower())) return true;
+            if (product.Name.Value != null && product.Name.Value.ToLower().Contains(_searchString.ToLower())) return true;
             else return false;
         }
 
