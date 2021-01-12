@@ -23,7 +23,7 @@
         <Grid Grid.Row="0">
             <StackPanel Name="spSuchfeld"
                         Orientation="Horizontal"
-                        Background="{StaticResource colorLight}"
+                        Background="{StaticResource colorDark}"
                         Height="50">
                 <!-- Suchen -->
                 <Label Content="{StaticResource Search}"

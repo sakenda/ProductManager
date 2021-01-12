@@ -65,41 +65,8 @@
     </Style>
 -->
 
-    <Style x:Key="QuantityDataGridCell" TargetType="DataGridCell">
-        <Setter Property="FontSize" Value="14"/>
-        <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Foreground" Value="{StaticResource colorFontDark}"/>
-        <Setter Property="VerticalAlignment" Value="Stretch"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="DataGridCell">
-                    <Border IsHitTestVisible="True"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            Margin="0 20 0 20">
-                        <ContentPresenter VerticalAlignment="Center" Margin="10 0 0 0"/>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="{StaticResource colorDark}"/>
-                <Setter Property="Foreground" Value="{StaticResource colorFontLight}"/>
-            </Trigger>
-            <DataTrigger Binding="{Binding IsEmpty}" Value="True">
-                <Setter Property="BorderBrush" Value="{StaticResource colorHighlight}"/>
-                <Setter Property="BorderThickness" Value="5 0 0 0"/>
-            </DataTrigger>
-            <DataTrigger Binding="{Binding NeedRestock}" Value="True">
-                <Setter Property="BorderBrush" Value="{StaticResource colorLight}"/>
-                <Setter Property="BorderThickness" Value="5 0 0 0"/>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
     <Style TargetType="DataGridColumnHeader">
-        <Setter Property="Background" Value="{StaticResource colorBackgroundLight}"/>
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -107,34 +74,81 @@
                     <Grid Grid.Column="0"
                           Background="{TemplateBinding Background}"
                           HorizontalAlignment="Stretch">
-                        <ContentPresenter Margin="25 10 0 10"/>
+                        <ContentPresenter Margin="10 15"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
+    <Style TargetType="DataGridCell">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource colorFontDark}"/>
+    </Style>
+
     <Style TargetType="DataGridRow">
-        <Setter Property="Background" Value="{StaticResource colorBackgroundLight}"/>
-        <Setter Property="Margin" Value="15 5 15 5"/>
+        <Setter Property="Margin" Value="10 5"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="BorderBrush" Value="White"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Effect" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridRow">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="10">
+                        <SelectiveScrollingGrid>
+                            <SelectiveScrollingGrid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </SelectiveScrollingGrid.ColumnDefinitions>
+                            <SelectiveScrollingGrid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </SelectiveScrollingGrid.RowDefinitions>
+
+                            <DataGridRowHeader Grid.RowSpan="2"
+                                               SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical"
+                                               Visibility="{Binding HeadersVisibility, ConverterParameter={x:Static DataGridHeadersVisibility.Row}, Converter={x:Static DataGrid.HeadersVisibilityConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
+
+                            <DataGridCellsPresenter Grid.Column="1" Margin="10"
+                                                    ItemsPanel="{TemplateBinding ItemsPanel}"/>
+
+                            <DataGridDetailsPresenter Grid.Column="1" Grid.Row="1" Margin="0"
+                                                      SelectiveScrollingGrid.SelectiveScrollingOrientation="{Binding AreRowDetailsFrozen, ConverterParameter={x:Static SelectiveScrollingOrientation.Vertical}, Converter={x:Static DataGrid.RowDetailsScrollingConverter}, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                                      Visibility="{TemplateBinding DetailsVisibility}"/>
+                        </SelectiveScrollingGrid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource colorDark}"/>
+                <Setter Property="Background" Value="{StaticResource colorLight}"/>
                 <Setter Property="Effect" Value="{StaticResource dropShadow}"/>
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
+                <Setter Property="BorderThickness" Value="5 1 5 1"/>
+                <Setter Property="BorderBrush" Value="#FF8B1D"/>
                 <Setter Property="Background" Value="{StaticResource colorLight}"/>
-                <Setter Property="Foreground" Value="{StaticResource colorFontLight}"/>
+                <Setter Property="Foreground" Value="{StaticResource colorFontDark}"/>
                 <Setter Property="Effect" Value="{StaticResource dropShadow}"/>
             </Trigger>
+            <DataTrigger Binding="{Binding IsDeleted}" Value="True">
+                <Setter Property="BorderThickness" Value="5 1 5 1"/>
+                <Setter Property="BorderBrush" Value="Red"/>
+                <Setter Property="Background" Value="LightCoral"/>
+                <Setter Property="Foreground" Value="White"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Changed}" Value="True">
+                <Setter Property="BorderThickness" Value="5 1 5 1"/>
+                <Setter Property="BorderBrush" Value="ForestGreen"/>
+                <Setter Property="Background" Value="LightGreen"/>
+            </DataTrigger>
         </Style.Triggers>
-    </Style>
-
-    <Style TargetType="DataGridCell">
-        <Setter Property="Margin" Value="10"/>
-        <Setter Property="FontWeight" Value="Bold"/>
     </Style>
 </ResourceDictionary>
