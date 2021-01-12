@@ -137,7 +137,7 @@ namespace ProductManager.ViewModel
         {
             _image.RemoveCurrentImage();
             IsDeleted = true;
-            Changed = true;
+            Changed = false;
         }
 
         /// <summary>

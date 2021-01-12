@@ -88,7 +88,7 @@ namespace ProductManager.ViewModel
             NewCommand = new RelayCommand(NewExecuted);
             UndoCommand = new RelayCommand(UndoExecuted, UndoCanExecute);
 
-            _viewCollection.MoveCurrentToFirst();
+            //_viewCollection.MoveCurrentToFirst();
         }
         #endregion "Konstruktor"
 

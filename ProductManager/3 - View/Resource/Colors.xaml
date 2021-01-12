@@ -12,11 +12,12 @@
     <SolidColorBrush x:Key="dSchriftv2" Color="#212121"/>
     <SolidColorBrush x:Key="hSchriftv2" Color="#BDBDBD"/>
     -->
-    <SolidColorBrush x:Key="colorLight" Color="#d1462f"/>
-    <SolidColorBrush x:Key="colorDark" Color="#ffad05"/>
+    <SolidColorBrush x:Key="colorLight" Color="#FFC71D"/>
+    <SolidColorBrush x:Key="colorDark" Color="#CC0000"/>
     <SolidColorBrush x:Key="colorHighlight" Color="#990d35"/>
-    <SolidColorBrush x:Key="colorBackgroundLight" Color="#f5efed"/>
-    <SolidColorBrush x:Key="colorBackgroundDark" Color="#353a47"/>
-    <SolidColorBrush x:Key="colorFontLight" Color="#f5efed"/>
-    <SolidColorBrush x:Key="colorFontDark" Color="#353a47"/>
+    <SolidColorBrush x:Key="colorBackgroundLight" Color="#FDFDFD"/>
+    <SolidColorBrush x:Key="colorBackgroundMedium" Color="#C7C7C7"/>
+    <SolidColorBrush x:Key="colorBackgroundDark" Color="#161616"/>
+    <SolidColorBrush x:Key="colorFontLight" Color="#F4F4F4"/>
+    <SolidColorBrush x:Key="colorFontDark" Color="#3C3C3C"/>
 </ResourceDictionary>

@@ -171,13 +171,13 @@
 
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{StaticResource colorDark}"/>
+                            <Setter Property="Background" Value="{StaticResource colorLight}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="{StaticResource colorDark}"/>
+                            <Setter Property="Background" Value="{StaticResource colorLight}"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="Background" Value="{StaticResource colorLight}"/>
+                            <Setter Property="Background" Value="{StaticResource colorDark}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
