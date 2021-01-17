@@ -95,7 +95,7 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="DataGridColumnHeader">
+    <!--<Style TargetType="DataGridColumnHeader">
         <Setter Property="Background" Value="{StaticResource colorBackgroundLight}"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Template">
@@ -133,5 +133,5 @@
     <Style TargetType="DataGridCell">
         <Setter Property="Margin" Value="10"/>
         <Setter Property="FontWeight" Value="Bold"/>
-    </Style>
+    </Style>-->
 </ResourceDictionary>
