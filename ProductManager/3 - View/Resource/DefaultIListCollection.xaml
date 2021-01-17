@@ -8,63 +8,6 @@
 
     <viewModel:MainProductsViewModel x:Key="vmProducts"/>
 
-    <!--<Style TargetType="DataGridColumnHeader">
-        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Foreground" Value="{StaticResource colorFontDark}"/>
-        <Setter Property="FontSize" Value="18"/>
-        <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="DataGridColumnHeader">
-                    <Grid>
-                        <ContentPresenter Margin="15"/>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style TargetType="DataGridRow">
-        <Setter Property="Margin" Value="10 0 10 0"/>
-        <Setter Property="Background" Value="{StaticResource colorBackgroundLight}"/>
-        <Setter Property="IsHitTestVisible" Value="True"/>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource colorFontLight}"/>
-                <Setter Property="Background" Value="{StaticResource colorLight}"/>
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="BorderBrush" Value="Black"/>
-                <Setter Property="BorderThickness" Value="2"/>
-                <Setter Property="FontWeight" Value="Bold"/>
-                <Setter Property="Background" Value="{StaticResource colorLight}"/>
-                <Setter Property="Foreground" Value="{StaticResource colorFontLight}"/>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style TargetType="DataGridCell">
-        <Setter Property="Background" Value="{StaticResource colorBackgroundLight}"/>
-        <Setter Property="Foreground" Value="{StaticResource colorFontDark}"/>
-        <Setter Property="FontSize" Value="14"/>
-        <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="DataGridCell">
-                    <ContentPresenter Margin="20 0" VerticalAlignment="Center"/>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="{StaticResource colorDark}"/>
-                <Setter Property="Foreground" Value="{StaticResource colorFontLight}"/>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
--->
-
     <Style TargetType="DataGridColumnHeader">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="FontWeight" Value="Bold"/>

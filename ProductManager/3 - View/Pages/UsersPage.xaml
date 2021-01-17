@@ -3,7 +3,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:local="clr-namespace:ProductManager"
       mc:Ignorable="d"
       d:DesignHeight="1080"
       d:DesignWidth="1920"
@@ -79,10 +78,10 @@
                   AutoGenerateColumns="False"
                   VirtualizingPanel.ScrollUnit="Pixel">
 
-            <!-- HEADER -->
+            <!--HEADER-->
             <DataGrid.Columns>
 
-                <!-- Name-->
+                <!--Name-->
                 <DataGridTextColumn Width="300">
                     <DataGridTextColumn.Binding>
                         <MultiBinding StringFormat="{}{0}, {1}">
@@ -95,14 +94,14 @@
                     </DataGridTextColumn.Header>
                 </DataGridTextColumn>
 
-                <!-- Email -->
+                <!--Email-->
                 <DataGridTextColumn Width="200" Binding="{Binding Email.Value}">
                     <DataGridTextColumn.Header>
                         <TextBlock Text="E-MAIL" Foreground="{StaticResource colorFontDark}"/>
                     </DataGridTextColumn.Header>
                 </DataGridTextColumn>
 
-                <!-- Adresse -->
+                <!--Adresse-->
                 <DataGridTextColumn Width="Auto">
                     <DataGridTextColumn.Binding>
                         <MultiBinding StringFormat="{}{0} {1}, {2} {3}, {4}">
@@ -119,7 +118,7 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
 
-            <!-- ROWDETAILS -->
+            <!--ROWDETAILS-->
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <Border Background="LightGray" BorderThickness="0 1 0 0" BorderBrush="{StaticResource colorBackgroundDark}">
