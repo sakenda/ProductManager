@@ -1,0 +1,61 @@
+[33m837ca96[m[33m ([m[1;36mHEAD -> [m[1;32mMVVM[m[33m)[m Weitere Design anpassungen am Datagrid design
+[33m7818af4[m - Design
+[33mf515ea0[m Weitere implementierungen für die UserViewModelPage
+[33m63f7f2c[m Update README.md
+[33meb7b504[m Update README.md
+[33m07f2518[m - UserVM implementiert - UI Improvements
+[33m5805656[m Update README.md
+[33ma13e11a[m -
+[33m4aee577[m -
+[33mdc849f7[m User MVVM implementierung begonnen
+[33m33c062f[m - User implementierung angefangen. - Datenbank Queries für Supplier anpassen, wegen neuer Tables
+[33md90d237[m Create README.md
+[33me8ed49f[m Begonnen mit der Nutzer Page implementierung
+[33m1226b31[m -
+[33m5755563[m Datenbank überarbeitung soweit abgeschlossen.
+[33m6b56303[m kleine ergänzung in der RemoveCurrentImage-Methode
+[33m1918b11[m System für Bilder funktional. Mehrere und einzelne Bilder lassen sich Löschen oder Speichern.
+[33m0a5d57e[m Image System so nicht funktional, aktuell nur beschränkt nutzbar. Zukünftig robustes System implementieren
+[33m98bfc09[m Umbau an Modelübergabe zum speichern in der DB
+[33mee711c9[m Methode ChangeImage() vorläufig fertig. Bilder speichern und DB übergabe muss noch gemacht werden.
+[33mdb5f025[m Datenbank anpassungen für INSERT und UPDATE fast abgeschlossen. Image handeling umbau, da altes System nicht mehr geeignet ist.
+[33m5e49ec8[m Datenbank neugestaltung abgeschlossen. Neu implementierung im Client begonnen. Queries größtenteils implementiert, grenzfälle fehlen.
+[33m0a58a95[m -
+[33md77ea1b[m Datei und Bild System weiter angepasst für zukünftige Datenbank anpassungen
+[33m58b0530[m Weitere arbeiten am File-/Imagesystem.
+[33mf2d378e[m Bilder: speichern, laden, datenbank -> implementiert
+[33m19f4889[m Bilder importieren und in datenbank speichern implementiert
+[33mc5b64ab[m -
+[33md2bf3a2[m Erweitertes Preis Objekt dem Produkt hinzugefügt Databasequeries angepasst
+[33mf43bacf[m Design arbeiten
+[33m60caab6[m Suchen, filter und sort fertig implementiert
+[33m42e8e03[m Weitere MVVM anpassungen
+[33m151ba7b[m MVP funktionen zum laufen bekommen
+[33mf75f8b2[m MVVM umbau
+[33m948f8a8[m MVVM implementierung, ongoing
+[33m5c52a33[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m Gruppieren und ListBoxItem Style fehler behoben
+[33m56163d5[m CollectionViewSource probleme behoben sort und filter eingebaut
+[33m6d8f62b[m Sortieren hinzugefügt
+[33m50b5e5d[m Produktfilter und SaveWarning eingebaut bei wechselnder datanbank abfrage
+[33mb15541a[m binding und validation vorläufig fertig
+[33m80156e8[m Validation verstanden und eingebaut
+[33md380a8e[m Austausch von ListView auf ListBox + Custom Header
+[33m3c4db8a[m Bindings und projektstruktur verbessert
+[33md394d90[m WPF Bindings, Design
+[33mfdac93e[m Validation in New Product fertiggestellt
+[33md5cd009[m design umgestaltung
+[33m3e16c9b[m Design und validation anpassungen
+[33m751c92c[m Eingabe Validierung begonnen
+[33meae7246[m styling anpassungen
+[33mb06d15f[m Styling lernen
+[33mebb22db[m redundanzen entfernt testview eingerichtet
+[33m372854f[m Property Binding und ObservableCollections implementiert
+[33m89e234f[m -
+[33m22b1170[m Merge branch 'master' of https://github.com/sakenda/ProductManager
+[33m8285d87[m Delete gitignore
+[33mcc5961f[m -
+[33m226ce06[m Update .gitignore
+[33m194e50d[m -
+[33mc6714ab[m -
+[33m507e277[m Add project files.
+[33m871f6b2[m Add .gitignore and .gitattributes.
