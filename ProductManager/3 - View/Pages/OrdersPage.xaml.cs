@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ProductManager._3___View.Pages
+namespace ProductManager.View.Pages
 {
     /// <summary>
     /// Interaction logic for OrdersPage.xaml
