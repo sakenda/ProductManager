@@ -62,71 +62,83 @@
             </StackPanel>
         </Grid>
 
-        <!-- DATAGRID -->
-        <DataGrid ItemsSource="{Binding ViewCollection}"
-                  Grid.Row="1"
-                  Background="{StaticResource colorBackgroundLight}"
-                  x:Name="dgUsers"
-                  GridLinesVisibility="None"
-                  SelectionMode="Single"
-                  SelectedIndex="0"
-                  d:RowDetailsVisibilityMode="VisibleWhenSelected"
-                  RowHeaderWidth="0"
-                  IsReadOnly="True"
-                  HeadersVisibility="Column"
-                  SelectionUnit="FullRow"
-                  AutoGenerateColumns="False"
-                  VirtualizingPanel.ScrollUnit="Pixel">
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-            <!--HEADER-->
-            <DataGrid.Columns>
+            <!-- DATAGRID -->
+            <DataGrid ItemsSource="{Binding ViewCollection}"
+                      Background="{StaticResource colorBackgroundLight}"
+                      x:Name="dgUsers"
+                      GridLinesVisibility="None"
+                      SelectionMode="Single"
+                      SelectedIndex="0"
+                      d:RowDetailsVisibilityMode="VisibleWhenSelected"
+                      RowHeaderWidth="0"
+                      IsReadOnly="True"
+                      HeadersVisibility="Column"
+                      SelectionUnit="FullRow"
+                      AutoGenerateColumns="False"
+                      VirtualizingPanel.ScrollUnit="Pixel">
 
-                <!--Name-->
-                <DataGridTextColumn Width="300">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding StringFormat="{}{0}, {1}">
-                            <Binding Path="LastName.Value"/>
-                            <Binding Path="FirstName.Value"/>
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                    <DataGridTextColumn.Header>
-                        <TextBlock Text="NAME" Foreground="{StaticResource colorFontDark}"/>
-                    </DataGridTextColumn.Header>
-                </DataGridTextColumn>
+                <!--HEADER-->
+                <DataGrid.Columns>
 
-                <!--Email-->
-                <DataGridTextColumn Width="200" Binding="{Binding Email.Value}">
-                    <DataGridTextColumn.Header>
-                        <TextBlock Text="E-MAIL" Foreground="{StaticResource colorFontDark}"/>
-                    </DataGridTextColumn.Header>
-                </DataGridTextColumn>
+                    <!--Name-->
+                    <DataGridTextColumn Width="300">
+                        <DataGridTextColumn.Binding>
+                            <MultiBinding StringFormat="{}{0}, {1}">
+                                <Binding Path="LastName.Value"/>
+                                <Binding Path="FirstName.Value"/>
+                            </MultiBinding>
+                        </DataGridTextColumn.Binding>
+                        <DataGridTextColumn.Header>
+                            <TextBlock Text="NAME" Foreground="{StaticResource colorFontDark}"/>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
 
-                <!--Adresse-->
-                <DataGridTextColumn Width="Auto">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding StringFormat="{}{0} {1}, {2} {3}, {4}">
-                            <Binding Path="Adress.Street.Value"/>
-                            <Binding Path="Adress.Number.Value"/>
-                            <Binding Path="Adress.Zip.Value"/>
-                            <Binding Path="Adress.City.Value"/>
-                            <Binding Path="Adress.Country.Value"/>
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                    <DataGridTextColumn.Header>
-                        <TextBlock Text="ADRESSE" Foreground="{StaticResource colorFontDark}"/>
-                    </DataGridTextColumn.Header>
-                </DataGridTextColumn>
-            </DataGrid.Columns>
+                    <!--Email-->
+                    <DataGridTextColumn Width="200" Binding="{Binding Email.Value}">
+                        <DataGridTextColumn.Header>
+                            <TextBlock Text="E-MAIL" Foreground="{StaticResource colorFontDark}"/>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
 
-            <!--ROWDETAILS-->
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <Border Background="LightGray" BorderThickness="0 1 0 0" BorderBrush="{StaticResource colorBackgroundDark}">
-                        <TextBlock Text="{Binding FirstName.Value}" Foreground="{StaticResource colorFontDark}"/>
-                    </Border>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
-        </DataGrid>
+                    <!--Adresse-->
+                    <DataGridTextColumn Width="Auto">
+                        <DataGridTextColumn.Binding>
+                            <MultiBinding StringFormat="{}{0} {1}, {2} {3}, {4}">
+                                <Binding Path="Adress.Street.Value"/>
+                                <Binding Path="Adress.Number.Value"/>
+                                <Binding Path="Adress.Zip.Value"/>
+                                <Binding Path="Adress.City.Value"/>
+                                <Binding Path="Adress.Country.Value"/>
+                            </MultiBinding>
+                        </DataGridTextColumn.Binding>
+                        <DataGridTextColumn.Header>
+                            <TextBlock Text="ADRESSE" Foreground="{StaticResource colorFontDark}"/>
+                        </DataGridTextColumn.Header>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+
+                <!--ROWDETAILS-->
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <Border Background="LightGray" BorderThickness="0 1 0 0" BorderBrush="{StaticResource colorBackgroundDark}">
+                            <TextBlock Text="{Binding FirstName.Value}" Foreground="{StaticResource colorFontDark}"/>
+                        </Border>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+            </DataGrid>
+
+            <!-- USERDETAILS -->
+            <Border Grid.Column="1"
+                    Background="{StaticResource colorBackgroundMedium}"
+                    Width="600">
+            </Border>
+        </Grid>
 
         <!-- MENÜ UNTEN -->
         <StackPanel Orientation="Horizontal"
