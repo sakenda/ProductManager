@@ -136,7 +136,7 @@
             <!-- USERDETAILS -->
             <Border Grid.Column="1"
                     Background="{StaticResource colorBackgroundMedium}"
-                    Width="600">
+                    Width="800">
             </Border>
         </Grid>
 

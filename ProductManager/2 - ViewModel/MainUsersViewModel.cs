@@ -1,6 +1,7 @@
 ﻿using ProductManager.Model.User;
 using ProductManager.ViewModel.Database;
 using ProductManager.ViewModel.Helper;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -97,14 +98,25 @@ namespace ProductManager.ViewModel
         #region "Commands"
         private void NewExecuted(object sender)
         {
+            UserVM user = new UserVM(null);
+            _listCollection.Add(user);
+            _viewCollection.MoveCurrentTo(user);
         }
 
         private bool SaveCanExecute(object sender)
         {
+            foreach (UserVM item in _listCollection)
+            {
+                if (item.Changed)
+                {
+                    return true;
+                }
+            }
             return false;
         }
         private void SaveExecuted(object sender)
         {
+            throw new NotImplementedException();
         }
 
         private bool DeleteCanExecute(object sender)
@@ -113,14 +125,21 @@ namespace ProductManager.ViewModel
         }
         private void DeleteExecuted(object sender)
         {
+            throw new NotImplementedException();
         }
 
         private bool UndoCanExecute(object sender)
         {
+            if (_viewCollection.CurrentItem != null && ((UserVM)_viewCollection.CurrentItem).Changed)
+            {
+                return true;
+            }
             return false;
         }
         private void UndoExecuted(object sender)
         {
+            UserVM user = _viewCollection.CurrentItem as UserVM;
+            user.UndoChanges();
         }
         #endregion "Commands"
 
