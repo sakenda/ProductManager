@@ -1,5 +1,7 @@
 ﻿using ProductManager.Model.User;
 using ProductManager.Model.User.Metadata;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.SqlClient;
 
@@ -49,13 +51,51 @@ namespace ProductManager.ViewModel.Database
                                 reader["payment_bankname"].ToString())
                             );
 
-                        user.SetID(DatabaseClientCast.DBToValue<int>(reader["user_id"]));
+                        user.SetID((int)reader["user_id"]);
                         list.Add(user);
                     }
                 }
             }
 
             return list;
+        }
+
+        public void SaveUserList(ref List<UserModel> changedUsers, ref List<UserModel> deletedUsers)
+        {
+            if (deletedUsers.Count > 0)
+            {
+                foreach (UserModel user in deletedUsers)
+                {
+                    this.DeleteUser(user);
+                }
+            }
+
+            foreach (UserModel user in changedUsers)
+            {
+                if (user.ID > 0)
+                {
+                    this.UpdateUser(user);
+                }
+                else
+                {
+                    this.InsertUser(user);
+                }
+            }
+        }
+
+        private void InsertUser(UserModel user)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void UpdateUser(UserModel user)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void DeleteUser(UserModel user)
+        {
+            throw new NotImplementedException();
         }
     }
 }
