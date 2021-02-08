@@ -1,17 +1,12 @@
-﻿using ProductManager.ViewModel;
-using System;
+﻿using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Navigation;
 
 namespace ProductManager
 {
     public partial class MainWindow : Window
     {
         private Uri productsPage = new Uri("pack://application:,,,/3 - View/Pages/ProductsPage.xaml");
-        private Uri usersPage = new Uri("pack://application:,,,/3 - View/Pages/UsersPage.xaml");
-        private Uri ordersPage = new Uri("pack://application:,,,/3 - View/Pages/OrdersPage.xaml");
 
         private (ToggleButton, Uri)[] toggleButtons;
 
@@ -21,8 +16,6 @@ namespace ProductManager
 
             toggleButtons = new (ToggleButton, Uri)[] {
                 (tbProducts, productsPage),
-                (tbUsers, usersPage),
-                (tbOrders, ordersPage)
             };
 
             mainFrame.Source = productsPage;
